@@ -174,13 +174,6 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya }: Props
             className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100"
           />
         )}
-        <p className="text-xs text-gray-400 mt-1">
-          {isKoTsumo
-            ? '子のツモ和了: 子からの点数 / 親からの点数'
-            : isOya && isTsumo
-              ? '親のツモ和了: 子1人あたりの点数（オール）'
-              : 'ロン和了: 振り込んだプレイヤーからの点数'}
-        </p>
       </div>
 
       {/* 送信ボタン */}

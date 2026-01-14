@@ -33,71 +33,70 @@ export function ResultDisplay({ question, userAnswer, result, onNext }: Props) {
     <div className="space-y-4">
       {/* 正解/不正解 */}
       <div
-        className={`text-center py-4 rounded-lg ${
+        className={`text-center py-3 rounded-lg ${
           result.isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
         }`}
       >
-        <div className="text-2xl font-bold">
+        <div className="text-base font-bold">
           {result.isCorrect ? '正解!' : '不正解...'}
         </div>
       </div>
 
       {/* 詳細比較 */}
-      <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-        <h3 className="font-bold text-gray-700 border-b pb-2">回答の詳細</h3>
+      <div className="bg-gray-50 rounded-lg p-4">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b">
+              <th className="text-left text-gray-600 py-2 pr-4 font-medium"></th>
+              <th className="text-left text-gray-600 py-2 pr-4 font-medium">回答</th>
+              <th className="text-left text-gray-600 py-2 font-medium">正解</th>
+            </tr>
+          </thead>
+          <tbody>
+            {/* 翻 */}
+            <tr>
+              <td className="text-gray-600 py-2 pr-4 whitespace-nowrap">翻数</td>
+              <td className={`py-2 pr-4 ${result.isHanCorrect ? 'text-green-600' : 'text-red-600'}`}>
+                {userAnswer.han}翻 {result.isHanCorrect ? '✓' : '✗'}
+              </td>
+              <td className="text-gray-800 font-bold py-2">
+                {answer.han}翻{scoreLevelName && ` (${scoreLevelName})`}
+              </td>
+            </tr>
 
-        {/* 翻 */}
-        <div className="flex justify-between items-center">
-          <span className="text-gray-600">翻数</span>
-          <div className="flex items-center gap-4">
-            <span className={result.isHanCorrect ? 'text-green-600' : 'text-red-600'}>
-              あなた: {userAnswer.han}翻
-              {result.isHanCorrect ? ' ✓' : ' ✗'}
-            </span>
-            <span className="text-gray-800 font-bold">
-              正解: {answer.han}翻
-              {scoreLevelName && ` (${scoreLevelName})`}
-            </span>
-          </div>
-        </div>
+            {/* 符 */}
+            {!isManganOrAbove && (
+              <tr>
+                <td className="text-gray-600 py-2 pr-4 whitespace-nowrap">符</td>
+                <td className={`py-2 pr-4 ${result.isFuCorrect ? 'text-green-600' : 'text-red-600'}`}>
+                  {userAnswer.fu ?? '-'}符 {result.isFuCorrect ? '✓' : '✗'}
+                </td>
+                <td className="text-gray-800 font-bold py-2">
+                  {answer.fu}符
+                </td>
+              </tr>
+            )}
 
-        {/* 符 */}
-        {!isManganOrAbove && (
-          <div className="flex justify-between items-center">
-            <span className="text-gray-600">符</span>
-            <div className="flex items-center gap-4">
-              <span className={result.isFuCorrect ? 'text-green-600' : 'text-red-600'}>
-                あなた: {userAnswer.fu ?? '-'}符
-                {result.isFuCorrect ? ' ✓' : ' ✗'}
-              </span>
-              <span className="text-gray-800 font-bold">
-                正解: {answer.fu}符
-              </span>
-            </div>
-          </div>
-        )}
-
-        {/* 点数 */}
-        <div className="flex justify-between items-center">
-          <span className="text-gray-600">点数</span>
-          <div className="flex items-center gap-4">
-            <span className={result.isScoreCorrect ? 'text-green-600' : 'text-red-600'}>
-              あなた: {userAnswer.scoreFromKo !== undefined
-                ? `${userAnswer.scoreFromKo}/${userAnswer.scoreFromOya}`
-                : `${userAnswer.score}点`}
-              {result.isScoreCorrect ? ' ✓' : ' ✗'}
-            </span>
-            <span className="text-gray-800 font-bold">
-              正解: {getPaymentDescription()}
-            </span>
-          </div>
-        </div>
+            {/* 点数 */}
+            <tr>
+              <td className="text-gray-600 py-2 pr-4 whitespace-nowrap">点数</td>
+              <td className={`py-2 pr-4 ${result.isScoreCorrect ? 'text-green-600' : 'text-red-600'}`}>
+                {userAnswer.scoreFromKo !== undefined
+                  ? `${userAnswer.scoreFromKo}/${userAnswer.scoreFromOya}`
+                  : `${userAnswer.score}点`} {result.isScoreCorrect ? '✓' : '✗'}
+              </td>
+              <td className="text-gray-800 font-bold py-2">
+                {getPaymentDescription()}
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       {/* 次の問題ボタン */}
       <button
         onClick={onNext}
-        className="w-full py-3 px-4 bg-blue-600 text-white font-bold rounded-md hover:bg-blue-700 transition-colors"
+        className="w-full !py-3 !px-6 !bg-blue-600 !text-white font-bold rounded-lg hover:!bg-blue-700 transition-colors"
       >
         次の問題へ
       </button>

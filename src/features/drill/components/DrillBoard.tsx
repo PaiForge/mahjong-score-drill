@@ -65,6 +65,7 @@ export function DrillBoard() {
             />
           ) : (
             <AnswerForm
+              key={stats.total}
               onSubmit={submitAnswer}
               disabled={isAnswered}
               isTsumo={currentQuestion.isTsumo}
