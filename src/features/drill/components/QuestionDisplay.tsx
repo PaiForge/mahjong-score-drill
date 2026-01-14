@@ -1,4 +1,5 @@
 import { Hai, Furo } from '@pai-forge/mahjong-react-ui'
+import { HaiKind } from '@pai-forge/riichi-mahjong'
 import type { DrillQuestion } from '../types'
 import { getKazeName, getDoraFromIndicator } from '../utils/haiNames'
 import { useResponsiveHaiSize } from '../../../hooks/useResponsiveHaiSize'
@@ -9,7 +10,7 @@ interface Props {
 
 export function QuestionDisplay({ question }: Props) {
   const { tehai, agariHai, isTsumo, jikaze, bakaze, doraMarkers } = question
-  const isOya = jikaze === bakaze
+  const isOya = jikaze === HaiKind.Ton // 親は常に東家
   const haiSize = useResponsiveHaiSize()
 
   // 手牌から和了牌を1枚除外して13枚にする

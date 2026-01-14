@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { HaiKind } from '@pai-forge/riichi-mahjong'
 import { useDrillStore } from '../stores/useDrillStore'
 import { QuestionDisplay } from './QuestionDisplay'
 import { AnswerForm } from './AnswerForm'
@@ -69,7 +70,7 @@ export function DrillBoard() {
               onSubmit={submitAnswer}
               disabled={isAnswered}
               isTsumo={currentQuestion.isTsumo}
-              isOya={currentQuestion.jikaze === currentQuestion.bakaze}
+              isOya={currentQuestion.jikaze === HaiKind.Ton}
             />
           )}
         </div>
