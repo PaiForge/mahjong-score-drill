@@ -10,6 +10,7 @@ interface Props {
 
 // 翻数オプション（1〜13翻 + 役満）
 const HAN_OPTIONS = [
+  { value: '', label: '選択してください' },
   { value: 1, label: '1翻' },
   { value: 2, label: '2翻' },
   { value: 3, label: '3翻' },
@@ -27,6 +28,7 @@ const HAN_OPTIONS = [
 
 // 符オプション
 const FU_OPTIONS = [
+  { value: '', label: '選択してください' },
   { value: 20, label: '20符' },
   { value: 25, label: '25符' },
   { value: 30, label: '30符' },
@@ -41,23 +43,32 @@ const FU_OPTIONS = [
 ]
 
 export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya }: Props) {
-  const [han, setHan] = useState<number>(1)
-  const [fu, setFu] = useState<number>(30)
+  const [han, setHan] = useState<number | null>(null)
+  const [fu, setFu] = useState<number | null>(null)
   // ロン or 親ツモ用
   const [score, setScore] = useState<string>('')
   // 子ツモ用
   const [scoreFromKo, setScoreFromKo] = useState<string>('')
   const [scoreFromOya, setScoreFromOya] = useState<string>('')
 
-  const isMangan = han >= 5
+  const isMangan = han !== null && han >= 5
   const isKoTsumo = isTsumo && !isOya
 
-  const handleHanChange = (value: number) => {
-    setHan(value)
+  const handleHanChange = (value: string) => {
+    setHan(value === '' ? null : Number(value))
+  }
+
+  const handleFuChange = (value: string) => {
+    setFu(value === '' ? null : Number(value))
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+
+    // 翻数は必須
+    if (han === null) return
+    // 満貫未満の場合は符も必須
+    if (!isMangan && fu === null) return
 
     if (isKoTsumo) {
       const koScore = parseInt(scoreFromKo, 10)
@@ -90,11 +101,11 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya }: Props
           翻数
         </label>
         <select
-          value={han}
-          onChange={(e) => handleHanChange(Number(e.target.value))}
+          value={han ?? ''}
+          onChange={(e) => handleHanChange(e.target.value)}
           disabled={disabled}
           required
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-base focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100"
+          className={`w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-base focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100 ${han === null ? '!text-gray-400' : '!text-gray-900'}`}
         >
           {HAN_OPTIONS.map((option) => (
             <option key={option.value} value={option.value}>
@@ -111,11 +122,11 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya }: Props
             符
           </label>
           <select
-            value={fu}
-            onChange={(e) => setFu(Number(e.target.value))}
+            value={fu ?? ''}
+            onChange={(e) => handleFuChange(e.target.value)}
             disabled={disabled}
             required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-base focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100"
+            className={`w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-base focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100 ${fu === null ? '!text-gray-400' : '!text-gray-900'}`}
           >
             {FU_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
