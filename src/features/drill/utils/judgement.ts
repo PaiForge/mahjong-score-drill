@@ -1,4 +1,3 @@
-import { getPaymentTotal } from '@pai-forge/riichi-mahjong'
 import type { DrillQuestion, UserAnswer, JudgementResult } from '../types'
 
 // ScoreLevel定数（ライブラリのメインエクスポートにないためローカル定義）
@@ -27,6 +26,28 @@ export function isMangan(scoreLevel: string): boolean {
 }
 
 /**
+ * 点数の判定
+ */
+function judgeScore(
+  payment: DrillQuestion['answer']['payment'],
+  userAnswer: UserAnswer
+): boolean {
+  switch (payment.type) {
+    case 'ron':
+      return userAnswer.score === payment.amount
+    case 'oyaTsumo':
+      // 親ツモ: オールなので単一の点数
+      return userAnswer.score === payment.amount
+    case 'koTsumo':
+      // 子ツモ: [子からの点数, 親からの点数]
+      return (
+        userAnswer.scoreFromKo === payment.amount[0] &&
+        userAnswer.scoreFromOya === payment.amount[1]
+      )
+  }
+}
+
+/**
  * ユーザーの回答を判定
  */
 export function judgeAnswer(
@@ -34,7 +55,6 @@ export function judgeAnswer(
   userAnswer: UserAnswer
 ): JudgementResult {
   const { answer } = question
-  const correctScore = getPaymentTotal(answer.payment)
   const isManganOrAbove = isMangan(answer.scoreLevel)
 
   // 翻の判定
@@ -44,7 +64,7 @@ export function judgeAnswer(
   const isFuCorrect = isManganOrAbove || userAnswer.fu === answer.fu
 
   // 点数の判定
-  const isScoreCorrect = userAnswer.score === correctScore
+  const isScoreCorrect = judgeScore(answer.payment, userAnswer)
 
   // 総合判定
   const isCorrect = isHanCorrect && isFuCorrect && isScoreCorrect

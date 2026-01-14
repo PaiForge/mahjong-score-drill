@@ -82,7 +82,9 @@ export function ResultDisplay({ question, userAnswer, result, onNext }: Props) {
           <span className="text-gray-600">点数</span>
           <div className="flex items-center gap-4">
             <span className={result.isScoreCorrect ? 'text-green-600' : 'text-red-600'}>
-              あなた: {userAnswer.score}点
+              あなた: {userAnswer.scoreFromKo !== undefined
+                ? `${userAnswer.scoreFromKo}/${userAnswer.scoreFromOya}`
+                : `${userAnswer.score}点`}
               {result.isScoreCorrect ? ' ✓' : ' ✗'}
             </span>
             <span className="text-gray-800 font-bold">

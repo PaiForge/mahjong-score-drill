@@ -24,7 +24,7 @@ export function QuestionDisplay({ question }: Props) {
       {/* 手牌表示 */}
       <div className="bg-green-800 rounded-lg p-2">
         {/* 場風・自風 */}
-        <div className="text-white text-sm mb-1">
+        <div className="text-white text-sm mb-4">
           {getKazeName(bakaze)}場 {getKazeName(jikaze)}家
           {isOya && <span className="text-yellow-300">(親)</span>}
         </div>

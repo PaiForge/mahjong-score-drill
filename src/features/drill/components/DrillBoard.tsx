@@ -64,7 +64,12 @@ export function DrillBoard() {
               onNext={nextQuestion}
             />
           ) : (
-            <AnswerForm onSubmit={submitAnswer} disabled={isAnswered} />
+            <AnswerForm
+              onSubmit={submitAnswer}
+              disabled={isAnswered}
+              isTsumo={currentQuestion.isTsumo}
+              isOya={currentQuestion.jikaze === currentQuestion.bakaze}
+            />
           )}
         </div>
       </div>

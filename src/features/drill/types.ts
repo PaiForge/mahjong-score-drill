@@ -33,8 +33,12 @@ export interface UserAnswer {
   han: number
   /** 符（満貫以上の場合はnull） */
   fu: number | null
-  /** 点数 */
-  score: number
+  /** 点数（ロンまたは親ツモの場合） */
+  score?: number
+  /** 子のツモ時: 子からの点数 */
+  scoreFromKo?: number
+  /** 子のツモ時: 親からの点数 */
+  scoreFromOya?: number
 }
 
 /**
