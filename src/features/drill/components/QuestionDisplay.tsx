@@ -1,6 +1,7 @@
 import { Hai, Furo } from '@pai-forge/mahjong-react-ui'
 import type { DrillQuestion } from '../types'
 import { getKazeName, getDoraFromIndicator } from '../utils/haiNames'
+import { useResponsiveHaiSize } from '../../../hooks/useResponsiveHaiSize'
 
 interface Props {
   question: DrillQuestion
@@ -9,27 +10,37 @@ interface Props {
 export function QuestionDisplay({ question }: Props) {
   const { tehai, agariHai, isTsumo, jikaze, bakaze, doraMarkers } = question
   const isOya = jikaze === bakaze
+  const haiSize = useResponsiveHaiSize()
+
+  // 手牌から和了牌を1枚除外して13枚にする
+  const closedWithoutAgari = (() => {
+    const index = tehai.closed.lastIndexOf(agariHai)
+    if (index === -1) return tehai.closed
+    return [...tehai.closed.slice(0, index), ...tehai.closed.slice(index + 1)]
+  })()
 
   return (
     <div className="space-y-6">
       {/* 手牌表示 */}
-      <div className="bg-green-800 rounded-lg p-4">
-        <div className="flex items-end justify-center gap-1 flex-wrap">
-          {/* 門前手牌 */}
-          {tehai.closed.map((kindId, index) => (
-            <div
-              key={index}
-              className={kindId === agariHai && index === tehai.closed.lastIndexOf(agariHai) ? 'ring-2 ring-yellow-400 rounded' : ''}
-            >
-              <Hai hai={kindId} size="md" />
-            </div>
-          ))}
+      <div className="bg-green-800 rounded-lg p-2">
+        {/* 場風・自風 */}
+        <div className="text-white text-sm mb-1">
+          {getKazeName(bakaze)}場 {getKazeName(jikaze)}家
+          {isOya && <span className="text-yellow-300">(親)</span>}
+        </div>
+        <div className="flex items-end justify-center w-full">
+          {/* 門前手牌（13枚） */}
+          <div className="flex shrink-0">
+            {closedWithoutAgari.map((kindId, index) => (
+              <Hai key={index} hai={kindId} size={haiSize} />
+            ))}
+          </div>
 
           {/* 副露 */}
           {tehai.exposed.length > 0 && (
-            <div className="flex gap-2 ml-4">
+            <div className={`flex shrink-0 ${haiSize === 'xs' ? 'ml-1' : 'ml-2'}`}>
               {tehai.exposed.map((mentsu, index) => (
-                <Furo key={index} mentsu={mentsu} furo={mentsu.furo} size="md" />
+                <Furo key={index} mentsu={mentsu} furo={mentsu.furo} size={haiSize} />
               ))}
             </div>
           )}
@@ -38,49 +49,22 @@ export function QuestionDisplay({ question }: Props) {
 
       {/* 状況表示 */}
       <div className="grid grid-cols-2 gap-4 text-sm">
-        {/* 場風・自風 */}
+        {/* ツモ/ロン + 和了牌 */}
         <div className="bg-gray-100 rounded-lg p-3">
-          <div className="text-gray-500 text-xs mb-1">場風 / 自風</div>
-          <div className="font-bold text-lg">
-            {getKazeName(bakaze)}場 {getKazeName(jikaze)}家
-            {isOya && <span className="ml-2 text-red-600">(親)</span>}
+          <div className="text-gray-500 text-xs mb-1">和了</div>
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-lg">{isTsumo ? 'ツモ' : 'ロン'}</span>
+            <Hai hai={agariHai} size={haiSize} highlighted />
           </div>
         </div>
 
-        {/* ツモ/ロン */}
+        {/* ドラ */}
         <div className="bg-gray-100 rounded-lg p-3">
-          <div className="text-gray-500 text-xs mb-1">和了方法</div>
-          <div className="font-bold text-lg">
-            {isTsumo ? 'ツモ' : 'ロン'}
-          </div>
-        </div>
-
-        {/* ドラ表示牌 */}
-        <div className="bg-gray-100 rounded-lg p-3 col-span-2">
-          <div className="text-gray-500 text-xs mb-2">ドラ表示牌</div>
+          <div className="text-gray-500 text-xs mb-1">ドラ</div>
           <div className="flex gap-1">
             {doraMarkers.map((marker, index) => (
-              <Hai key={index} hai={marker} size="sm" />
+              <Hai key={index} hai={getDoraFromIndicator(marker)} size={haiSize} />
             ))}
-          </div>
-          <div className="text-xs text-gray-400 mt-1">
-            ドラ:
-            {doraMarkers.map((marker, index) => {
-              const dora = getDoraFromIndicator(marker)
-              return (
-                <span key={index} className="ml-1">
-                  <Hai hai={dora} size="xs" />
-                </span>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* 和了牌 */}
-        <div className="bg-gray-100 rounded-lg p-3 col-span-2">
-          <div className="text-gray-500 text-xs mb-2">和了牌</div>
-          <div className="flex items-center gap-2">
-            <Hai hai={agariHai} size="sm" highlighted />
           </div>
         </div>
       </div>

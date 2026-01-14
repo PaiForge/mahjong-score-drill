@@ -32,11 +32,11 @@ export function DrillBoard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-2xl mx-auto px-4">
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
+      <div className="max-w-2xl mx-auto px-1 sm:px-4">
         {/* ヘッダー */}
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">
+        <div className="flex justify-between items-center mb-4 sm:mb-6 px-2 sm:px-0">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800">
             麻雀点数計算ドリル
           </h1>
           <div className="text-sm text-gray-600">
@@ -50,12 +50,12 @@ export function DrillBoard() {
         </div>
 
         {/* 問題表示 */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div className="bg-white rounded-lg shadow-md p-2 sm:p-6 mb-4 sm:mb-6">
           <QuestionDisplay question={currentQuestion} />
         </div>
 
         {/* 回答エリア */}
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
           {isAnswered && userAnswer && judgementResult ? (
             <ResultDisplay
               question={currentQuestion}

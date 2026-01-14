@@ -240,10 +240,18 @@ function generateChiitoitsuTehai(): { tehai: Tehai14; agariHai: HaiKindId } | nu
 }
 
 /**
- * ドラ表示牌を生成
+ * 槓子の数をカウント
  */
-function generateDoraMarkers(): HaiKindId[] {
-  const count = randomInt(1, 3) // 1-3枚のドラ
+function countKantsu(tehai: Tehai14): number {
+  return tehai.exposed.filter((mentsu) => mentsu.type === MentsuType.Kantsu).length
+}
+
+/**
+ * ドラ表示牌を生成
+ * 基本1枚、槓子がある場合はその分だけ追加
+ */
+function generateDoraMarkers(kantsuCount: number): HaiKindId[] {
+  const count = 1 + kantsuCount // 基本1枚 + 槓子の数
   const markers: HaiKindId[] = []
 
   for (let i = 0; i < count; i++) {
@@ -276,7 +284,8 @@ export function generateQuestion(
   const isTsumo = Math.random() < 0.5
   const jikaze = randomChoice(KAZEHAI)
   const bakaze = randomChoice([HaiKind.Ton, HaiKind.Nan] as Kazehai[])
-  const doraMarkers = generateDoraMarkers()
+  const kantsuCount = countKantsu(tehai)
+  const doraMarkers = generateDoraMarkers(kantsuCount)
 
   // 点数を計算
   try {
