@@ -1,0 +1,62 @@
+import type {
+  HaiKindId,
+  Tehai14,
+  Kazehai,
+  ScoreResult,
+} from '@pai-forge/riichi-mahjong'
+
+/**
+ * ドリル問題
+ */
+export interface DrillQuestion {
+  /** 手牌（14枚） */
+  tehai: Tehai14
+  /** 和了牌 */
+  agariHai: HaiKindId
+  /** ツモ和了かどうか */
+  isTsumo: boolean
+  /** 自風 */
+  jikaze: Kazehai
+  /** 場風 */
+  bakaze: Kazehai
+  /** ドラ表示牌 */
+  doraMarkers: readonly HaiKindId[]
+  /** 正解の点数計算結果 */
+  answer: ScoreResult
+}
+
+/**
+ * ユーザーの回答
+ */
+export interface UserAnswer {
+  /** 翻数 */
+  han: number
+  /** 符（満貫以上の場合はnull） */
+  fu: number | null
+  /** 点数 */
+  score: number
+}
+
+/**
+ * 判定結果
+ */
+export interface JudgementResult {
+  /** 正解かどうか */
+  isCorrect: boolean
+  /** 翻が正解かどうか */
+  isHanCorrect: boolean
+  /** 符が正解かどうか（満貫以上は常にtrue） */
+  isFuCorrect: boolean
+  /** 点数が正解かどうか */
+  isScoreCorrect: boolean
+}
+
+/**
+ * 問題生成オプション
+ */
+export interface QuestionGeneratorOptions {
+  /** 副露を含めるかどうか */
+  includeFuro?: boolean
+  /** 七対子を含めるかどうか */
+  includeChiitoi?: boolean
+}
