@@ -1,5 +1,5 @@
 import { Hai, Furo } from '@pai-forge/mahjong-react-ui'
-import { HaiKind } from '@pai-forge/riichi-mahjong'
+import { HaiKind, MentsuType } from '@pai-forge/riichi-mahjong'
 import { RiichiStick } from './RiichiStick'
 import type { DrillQuestion } from '../types'
 import { getKazeName, getDoraFromIndicator } from '../utils/haiNames'
@@ -21,6 +21,10 @@ export function QuestionDisplay({ question }: Props) {
     return [...tehai.closed.slice(0, index), ...tehai.closed.slice(index + 1)]
   })()
 
+  // 槓子とそれ以外の副露を分離
+  const kantsuList = tehai.exposed.filter(m => m.type === MentsuType.Kantsu)
+  const otherFuroList = tehai.exposed.filter(m => m.type !== MentsuType.Kantsu)
+
   return (
     <div className="space-y-6">
       {/* 手牌表示 */}
@@ -38,6 +42,18 @@ export function QuestionDisplay({ question }: Props) {
             </div>
           )}
         </div>
+
+        {/* 副露 (槓子のみ右上) */}
+        {kantsuList.length > 0 && (
+          <div className="flex justify-end w-full mb-2 px-4">
+            <div className="flex gap-2">
+              {kantsuList.map((mentsu, index) => (
+                <Furo key={`kan-${index}`} mentsu={mentsu} furo={mentsu.furo} size={haiSize} />
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="flex items-end justify-center w-full">
           {/* 門前手牌（13枚） */}
           <div className="flex shrink-0">
@@ -46,14 +62,15 @@ export function QuestionDisplay({ question }: Props) {
             ))}
           </div>
 
-          {/* 副露 */}
-          {tehai.exposed.length > 0 && (
+          {/* その他の副露 (右下) */}
+          {otherFuroList.length > 0 && (
             <div className={`flex shrink-0 ${haiSize === 'xs' ? 'ml-1' : 'ml-2'}`}>
-              {tehai.exposed.map((mentsu, index) => (
-                <Furo key={index} mentsu={mentsu} furo={mentsu.furo} size={haiSize} />
+              {otherFuroList.map((mentsu, index) => (
+                <Furo key={`other-${index}`} mentsu={mentsu} furo={mentsu.furo} size={haiSize} />
               ))}
             </div>
           )}
+
         </div>
       </div>
 

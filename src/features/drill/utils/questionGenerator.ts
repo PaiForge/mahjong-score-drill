@@ -11,6 +11,7 @@ import {
   type CompletedMentsu,
   type Shuntsu,
   type Koutsu,
+  type Kantsu,
 } from '@pai-forge/riichi-mahjong'
 import {
   calculateFuDetails,
@@ -19,6 +20,7 @@ import {
   type MentsuShape,
 } from './fuCalculator'
 import { recalculateScore } from './scoreCalculator'
+import { getDoraFromIndicator } from './haiNames'
 import type { DrillQuestion, QuestionGeneratorOptions } from '../types'
 
 // 数牌の範囲
@@ -47,12 +49,17 @@ function generateMentsuTehai(
   // 4面子を生成
   for (let i = 0; i < 4; i++) {
     const isFuro = i < furoCount
-    // 順子か刻子かをランダムに決定（7:3の比率で順子を優先）
-    const isShuntsu = Math.random() < 0.7
+    // 面子の種類を決定
+    // 順子: 65%, 刻子: 30%, 槓子: 5%
+    const rand = Math.random()
+    const isShuntsu = rand < 0.65
+    const isKantsu = rand >= 0.95
 
     let mentsu: CompletedMentsu | null = null
     if (isShuntsu) {
       mentsu = generateShuntsu(tracker, isFuro) || generateKoutsu(tracker, isFuro)
+    } else if (isKantsu) {
+      mentsu = generateKantsu(tracker, isFuro) || generateKoutsu(tracker, isFuro) || generateShuntsu(tracker, isFuro)
     } else {
       mentsu = generateKoutsu(tracker, isFuro) || generateShuntsu(tracker, isFuro)
     }
@@ -65,7 +72,7 @@ function generateMentsuTehai(
       isFuro: !!mentsu.furo,
     })
 
-    if (mentsu.furo) {
+    if (mentsu.furo || mentsu.type === MentsuType.Kantsu) {
       exposed.push(mentsu)
     } else {
       closedHais.push(...mentsu.hais)
@@ -226,8 +233,20 @@ export function generateQuestion(
     if (isRiichi) {
       uraDoraMarkers = generateDoraMarkers(kantsuCount)
 
-      // 点数再計算 (+1翻)
-      finalAnswer = recalculateScore(answer, 1, {
+      // 裏ドラの翻数を計算
+      let uraDoraHan = 0
+      uraDoraMarkers.forEach((marker) => {
+        const doraHai = getDoraFromIndicator(marker)
+        // 閉じた手牌からカウント
+        uraDoraHan += tehai.closed.filter((h) => h === doraHai).length
+        // 副露からカウント
+        tehai.exposed.forEach((mentsu) => {
+          uraDoraHan += mentsu.hais.filter((h) => h === doraHai).length
+        })
+      })
+
+      // 点数再計算 (+1翻(リーチ) + 裏ドラ翻数)
+      finalAnswer = recalculateScore(answer, 1 + uraDoraHan, {
         isTsumo,
         isOya: jikaze === HaiKind.Ton,
       })
@@ -398,6 +417,42 @@ function generateKoutsu(
         }
       }
       return koutsu
+    }
+  }
+  return null
+}
+
+/**
+ * 槓子を生成
+ */
+function generateKantsu(
+  tracker: HaiUsageTracker,
+  furo: boolean = false
+): Kantsu | null {
+  // すべての牌種からランダムに選択
+  const allKinds = shuffle(Array.from({ length: 34 }, (_, i) => i as HaiKindId))
+
+  for (const kindId of allKinds) {
+    if (tracker.canUse(kindId, 4)) {
+      tracker.use(kindId, 4)
+
+      const kantsu: Kantsu = {
+        type: MentsuType.Kantsu,
+        hais: [kindId, kindId, kindId, kindId] as const,
+      }
+
+      if (furo) {
+        // 明槓 (大明槓)
+        return {
+          ...kantsu,
+          furo: {
+            type: FuroType.Daiminkan,
+            from: randomChoice([Tacha.Shimocha, Tacha.Toimen, Tacha.Kamicha]),
+          },
+        }
+      }
+      // 暗槓 (furoプロパティなし)
+      return kantsu
     }
   }
   return null
