@@ -29,6 +29,18 @@ export interface DrillQuestion {
   answer: ScoreResult
   /** 符計算の内訳 */
   fuDetails?: FuDetail[]
+  /** 役の内訳 */
+  yakuDetails?: YakuDetail[]
+}
+
+/**
+ * 役の内訳詳細
+ */
+export interface YakuDetail {
+  /** 役名（日本語） */
+  name: string
+  /** 翻数 */
+  han: number
 }
 
 /**

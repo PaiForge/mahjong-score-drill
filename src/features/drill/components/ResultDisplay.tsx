@@ -16,6 +16,7 @@ export function ResultDisplay({ question, userAnswer, result, onNext }: Props) {
   const isManganOrAbove = isMangan(answer.scoreLevel)
   const scoreLevelName = getScoreLevelName(answer.scoreLevel)
   const [showFuDetails, setShowFuDetails] = useState(false)
+  const [showYakuDetails, setShowYakuDetails] = useState(false)
 
   const getPaymentDescription = () => {
     const { payment } = answer
@@ -63,8 +64,36 @@ export function ResultDisplay({ question, userAnswer, result, onNext }: Props) {
                 </td>
                 <td className="text-gray-800 font-bold py-2">
                   {answer.han}翻{scoreLevelName && ` (${scoreLevelName})`}
+                  {question.yakuDetails && question.yakuDetails.length > 0 && (
+                    <button
+                      onClick={() => setShowYakuDetails(!showYakuDetails)}
+                      className="ml-2 text-xs !text-blue-600 hover:!text-blue-800 font-normal focus:outline-none"
+                    >
+                      {showYakuDetails ? '▲' : '▼'}
+                    </button>
+                  )}
                 </td>
               </tr>
+              {showYakuDetails && question.yakuDetails && (
+                <tr>
+                  <td colSpan={3} className="py-2">
+                    <div className="bg-white rounded p-2 text-xs text-gray-600">
+                      {question.yakuDetails.map((detail, idx) => (
+                        <div key={idx} className="flex justify-between border-b border-gray-100 last:border-0 py-1">
+                          <span>{detail.name}</span>
+                          <span>{detail.han}翻</span>
+                        </div>
+                      ))}
+                      <div className="flex justify-between font-bold mt-2 pt-1 border-t border-gray-200">
+                        <span>合計</span>
+                        <span>
+                          {question.yakuDetails.reduce((acc, curr) => acc + curr.han, 0)}翻
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              )}
 
               {/* 符 */}
               {!isManganOrAbove && (

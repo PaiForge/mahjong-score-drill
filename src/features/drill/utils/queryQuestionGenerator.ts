@@ -3,13 +3,29 @@ import {
     parseExtendedMspz,
     parseMspz,
     calculateScoreForTehai,
+    detectYaku,
     type HaiKindId,
     type Kazehai,
     type Tehai14,
 } from '@pai-forge/riichi-mahjong'
-import type { DrillQuestion } from '../types'
+import type { DrillQuestion, YakuDetail } from '../types'
 import { recalculateScore } from './scoreCalculator'
 import { getDoraFromIndicator } from './haiNames'
+
+// Yaku Name Mapping (Duplicate from questionGenerator.ts - should refactor but fine for now)
+const YAKU_NAME_MAP: Record<string, string> = {
+    'Tanyao': '断変九', 'Pinfu': '平和', 'Iipeikou': '一盃口', 'MenzenTsumo': '門前清自摸和', 'Riichi': '立直',
+    'Yakuhai': '役牌', 'Haku': '役牌 白', 'Hatsu': '役牌 發', 'Chun': '役牌 中',
+    'SanshokuDoujun': '三色同順', 'Ikkitsuukan': '一気通貫', 'Honchan': '混全帯么九', 'Chiitoitsu': '七対子',
+    'Toitoi': '対々和', 'Sanankou': '三暗刻', 'Sankantsu': '三槓子', 'SanshokuDoukou': '三色同刻',
+    'Honroutou': '混老頭', 'Shousangen': '小三元', 'DoubleRiichi': 'ダブル立直',
+    'Honitsu': '混一色', 'Junchan': '純全帯么九', 'Ryanpeikou': '二盃口',
+    'Chinitsu': '清一色',
+    'KokushiMusou': '国士無双', 'Suuankou': '四暗刻', 'Daisangen': '大三元', 'Shousuushii': '小四喜',
+    'Daisuushii': '大四喜', 'Tsuuiisou': '字一色', 'Chinroutou': '清老頭', 'Ryuuiisou': '緑一色',
+    'ChuurenPoutou': '九蓮宝燈', 'Suukantsu': '四槓子',
+}
+function getYakuNameJa(name: string): string { return YAKU_NAME_MAP[name] || name }
 
 
 export type QueryResult =
@@ -119,7 +135,16 @@ export function generateQuestionFromQuery(params: URLSearchParams): QueryResult 
             doraMarkers,
         })
 
+        if (answer.han === 0) return { type: 'error', message: 'No yaku (Yaku Nashi).' }
+
+        const yakuResult = detectYaku(tehai, agariHai, bakaze, jikaze, doraMarkers, uraDoraMarkers, isTsumo)
+        const yakuDetails: YakuDetail[] = yakuResult.map(([name, han]) => ({
+            name: getYakuNameJa(name),
+            han: han
+        }))
+
         // リーチ・裏ドラの加算
+        let finalAnswer = answer;
         if (isRiichi) {
             const addedHan = 1 // リーチ
             let uraDoraHan = 0
@@ -134,7 +159,24 @@ export function generateQuestionFromQuery(params: URLSearchParams): QueryResult 
                 })
             }
 
-            answer = recalculateScore(answer, addedHan + uraDoraHan, { isTsumo, isOya })
+            finalAnswer = recalculateScore(answer, addedHan + uraDoraHan, { isTsumo, isOya })
+
+            yakuDetails.unshift({ name: '立直', han: 1 })
+            if (uraDoraHan > 0) {
+                yakuDetails.push({ name: '裏ドラ', han: uraDoraHan })
+            }
+        }
+
+        // ドラ (表ドラ) の加算
+        let doraHan = 0
+        doraMarkers.forEach(marker => {
+            const doraHai = getDoraFromIndicator(marker)
+            doraHan += tehai.closed.filter(h => h === doraHai).length
+            tehai.exposed.forEach(m => doraHan += m.hais.filter(h => h === doraHai).length)
+        })
+
+        if (doraHan > 0) {
+            yakuDetails.push({ name: 'ドラ', han: doraHan })
         }
 
         return {
@@ -148,8 +190,9 @@ export function generateQuestionFromQuery(params: URLSearchParams): QueryResult 
                 doraMarkers,
                 isRiichi,
                 uraDoraMarkers,
-                answer,
+                answer: finalAnswer,
                 fuDetails: undefined,
+                yakuDetails,
             }
         }
 

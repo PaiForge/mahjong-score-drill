@@ -4,6 +4,7 @@ import {
   FuroType,
   Tacha,
   calculateScoreForTehai,
+  detectYaku,
   isMenzen,
   type HaiKindId,
   type Tehai14,
@@ -21,7 +22,58 @@ import {
 } from './fuCalculator'
 import { recalculateScore } from './scoreCalculator'
 import { getDoraFromIndicator } from './haiNames'
-import type { DrillQuestion, QuestionGeneratorOptions } from '../types'
+import type { DrillQuestion, QuestionGeneratorOptions, YakuDetail } from '../types'
+
+// Yaku Name Mapping (English -> Japanese)
+const YAKU_NAME_MAP: Record<string, string> = {
+  // 1 Han
+  'Tanyao': '断変九',
+  'Pinfu': '平和',
+  'Iipeikou': '一盃口',
+  'MenzenTsumo': '門前清自摸和',
+  'Riichi': '立直',
+  'Yakuhai': '役牌', // Special handling needed for specific yakuhai
+  'Haku': '役牌 白',
+  'Hatsu': '役牌 發',
+  'Chun': '役牌 中',
+
+  // 2 Han
+  'SanshokuDoujun': '三色同順',
+  'Ikkitsuukan': '一気通貫',
+  'Honchan': '混全帯么九',
+  'Chiitoitsu': '七対子',
+  'Toitoi': '対々和',
+  'Sanankou': '三暗刻',
+  'Sankantsu': '三槓子',
+  'SanshokuDoukou': '三色同刻',
+  'Honroutou': '混老頭',
+  'Shousangen': '小三元',
+  'DoubleRiichi': 'ダブル立直',
+
+  // 3 Han
+  'Honitsu': '混一色',
+  'Junchan': '純全帯么九',
+  'Ryanpeikou': '二盃口',
+
+  // 6 Han
+  'Chinitsu': '清一色',
+
+  // Yakuman (Example subset)
+  'KokushiMusou': '国士無双',
+  'Suuankou': '四暗刻',
+  'Daisangen': '大三元',
+  'Shousuushii': '小四喜',
+  'Daisuushii': '大四喜',
+  'Tsuuiisou': '字一色',
+  'Chinroutou': '清老頭',
+  'Ryuuiisou': '緑一色',
+  'ChuurenPoutou': '九蓮宝燈',
+  'Suukantsu': '四槓子',
+}
+
+function getYakuNameJa(name: string): string {
+  return YAKU_NAME_MAP[name] || name
+}
 
 // 数牌の範囲
 const MANZU_START = HaiKind.ManZu1 // 0
@@ -221,6 +273,13 @@ export function generateQuestion(
       doraMarkers,
     })
 
+    // 役情報を取得
+    const yakuResult = detectYaku(tehai, agariHai, bakaze, jikaze, doraMarkers, undefined, isTsumo)
+    const yakuDetails: YakuDetail[] = yakuResult.map(([name, han]) => ({
+      name: getYakuNameJa(name),
+      han: han
+    }))
+
     // 役なしの場合は再生成
     if (answer.han === 0) return null
 
@@ -250,6 +309,25 @@ export function generateQuestion(
         isTsumo,
         isOya: jikaze === HaiKind.Ton,
       })
+
+      // 役詳細に追加 (リーチは先頭)
+      yakuDetails.unshift({ name: '立直', han: 1 })
+
+      if (uraDoraHan > 0) {
+        yakuDetails.push({ name: '裏ドラ', han: uraDoraHan })
+      }
+    }
+
+    // ドラのカウントと追加 (表ドラ)
+    let doraHan = 0
+    doraMarkers.forEach(marker => {
+      const doraHai = getDoraFromIndicator(marker)
+      doraHan += tehai.closed.filter(h => h === doraHai).length
+      tehai.exposed.forEach(m => doraHan += m.hais.filter(h => h === doraHai).length)
+    })
+
+    if (doraHan > 0) {
+      yakuDetails.push({ name: 'ドラ', han: doraHan })
     }
 
     // 符の内訳を計算
@@ -287,6 +365,7 @@ export function generateQuestion(
       uraDoraMarkers,
       answer: finalAnswer,
       fuDetails,
+      yakuDetails,
     }
   } catch {
     // 計算エラーの場合はnullを返す
