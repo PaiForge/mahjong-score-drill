@@ -4,6 +4,7 @@ import {
   FuroType,
   Tacha,
   calculateScoreForTehai,
+  isMenzen,
   type HaiKindId,
   type Tehai14,
   type Kazehai,
@@ -17,6 +18,7 @@ import {
   type HandStructure,
   type MentsuShape,
 } from './fuCalculator'
+import { recalculateScore } from './scoreCalculator'
 import type { DrillQuestion, QuestionGeneratorOptions } from '../types'
 
 // 数牌の範囲
@@ -215,6 +217,22 @@ export function generateQuestion(
     // 役なしの場合は再生成
     if (answer.han === 0) return null
 
+    // リーチ判定 (門前の場合のみ、20%の確率)
+    let finalAnswer = answer
+    const isRiichi = isMenzen(tehai) && Math.random() < 0.2
+
+    // 裏ドラ生成
+    let uraDoraMarkers: HaiKindId[] | undefined
+    if (isRiichi) {
+      uraDoraMarkers = generateDoraMarkers(kantsuCount)
+
+      // 点数再計算 (+1翻)
+      finalAnswer = recalculateScore(answer, 1, {
+        isTsumo,
+        isOya: jikaze === HaiKind.Ton,
+      })
+    }
+
     // 符の内訳を計算
     let fuDetails
     if (isChiitoi) {
@@ -246,8 +264,10 @@ export function generateQuestion(
       jikaze,
       bakaze,
       doraMarkers,
-      answer,
-      fuDetails, // 追加
+      isRiichi,
+      uraDoraMarkers,
+      answer: finalAnswer,
+      fuDetails,
     }
   } catch {
     // 計算エラーの場合はnullを返す

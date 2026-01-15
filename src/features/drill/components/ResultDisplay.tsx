@@ -131,6 +131,8 @@ export function ResultDisplay({ question, userAnswer, result, onNext }: Props) {
         </div>
       )}
 
+
+
       {/* 次の問題ボタン */}
       <button
         onClick={onNext}

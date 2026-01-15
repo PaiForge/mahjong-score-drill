@@ -1,5 +1,6 @@
 import { Hai, Furo } from '@pai-forge/mahjong-react-ui'
 import { HaiKind } from '@pai-forge/riichi-mahjong'
+import { RiichiStick } from './RiichiStick'
 import type { DrillQuestion } from '../types'
 import { getKazeName, getDoraFromIndicator } from '../utils/haiNames'
 import { useResponsiveHaiSize } from '../../../hooks/useResponsiveHaiSize'
@@ -25,9 +26,17 @@ export function QuestionDisplay({ question }: Props) {
       {/* 手牌表示 */}
       <div className="bg-green-800 rounded-lg p-2">
         {/* 場風・自風 */}
-        <div className="text-white text-sm mb-4">
-          {getKazeName(bakaze)}場 {getKazeName(jikaze)}家
-          {isOya ? <span className="text-yellow-300 ml-2">(親)</span> : <span className="text-white ml-2">(子)</span>}
+        <div className="text-white text-sm mb-4 flex items-center justify-center gap-4">
+          <div>
+            {getKazeName(bakaze)}場 {getKazeName(jikaze)}家
+            {isOya ? <span className="text-yellow-300 ml-2">(親)</span> : <span className="text-white ml-2">(子)</span>}
+          </div>
+          {question.isRiichi && (
+            <div className="flex items-center gap-2">
+              <RiichiStick width={80} className="scale-75 origin-left" />
+              <span className="text-red-400 font-bold text-xs">リーチ</span>
+            </div>
+          )}
         </div>
         <div className="flex items-end justify-center w-full">
           {/* 門前手牌（13枚） */}
@@ -54,21 +63,36 @@ export function QuestionDisplay({ question }: Props) {
         <div className="bg-gray-100 rounded-lg p-3">
           <div className="text-gray-500 text-xs mb-1">和了</div>
           <div className="flex items-center gap-2">
-            <span className="font-bold text-lg">{isTsumo ? 'ツモ' : 'ロン'}</span>
+            <span className="font-bold text-xs">{isTsumo ? 'ツモ' : 'ロン'}</span>
             <Hai hai={agariHai} size={haiSize} highlighted />
           </div>
         </div>
 
         {/* ドラ */}
-        <div className="bg-gray-100 rounded-lg p-3">
-          <div className="text-gray-500 text-xs mb-1">ドラ</div>
-          <div className="flex gap-1">
-            {doraMarkers.map((marker, index) => (
-              <Hai key={index} hai={getDoraFromIndicator(marker)} size={haiSize} />
-            ))}
+        {/* ドラ & 裏ドラ */}
+        <div className="bg-gray-100 rounded-lg p-3 flex gap-4">
+          <div>
+            <div className="text-gray-500 text-xs mb-1">ドラ</div>
+            <div className="flex gap-1">
+              {doraMarkers.map((marker, index) => (
+                <Hai key={index} hai={getDoraFromIndicator(marker)} size={haiSize} />
+              ))}
+            </div>
           </div>
+          {question.isRiichi && question.uraDoraMarkers && (
+            <div className="border-l border-gray-300 pl-4">
+              <div className="text-gray-500 text-xs mb-1">裏ドラ</div>
+              <div className="flex gap-1">
+                {question.uraDoraMarkers.map((marker, index) => (
+                  <Hai key={`ura-${index}`} hai={getDoraFromIndicator(marker)} size={haiSize} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
+
+
     </div>
   )
 }

@@ -21,6 +21,10 @@ export interface DrillQuestion {
   bakaze: Kazehai
   /** ドラ表示牌 */
   doraMarkers: readonly HaiKindId[]
+  /** リーチ有無 */
+  isRiichi?: boolean
+  /** 裏ドラ表示牌 */
+  uraDoraMarkers?: readonly HaiKindId[]
   /** 正解の点数計算結果 */
   answer: ScoreResult
   /** 符計算の内訳 */
