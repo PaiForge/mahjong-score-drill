@@ -23,6 +23,18 @@ export interface DrillQuestion {
   doraMarkers: readonly HaiKindId[]
   /** 正解の点数計算結果 */
   answer: ScoreResult
+  /** 符計算の内訳 */
+  fuDetails?: FuDetail[]
+}
+
+/**
+ * 符計算の内訳詳細
+ */
+export interface FuDetail {
+  /** 理由（例: 副底, 中張牌 暗刻, 等） */
+  reason: string
+  /** 符数 */
+  fu: number
 }
 
 /**
