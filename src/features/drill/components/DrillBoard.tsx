@@ -1,9 +1,11 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { HaiKind } from '@pai-forge/riichi-mahjong'
 import { useDrillStore } from '../stores/useDrillStore'
 import { QuestionDisplay } from './QuestionDisplay'
 import { AnswerForm } from './AnswerForm'
 import { ResultDisplay } from './ResultDisplay'
+import { generateQuestionFromQuery } from '../utils/queryQuestionGenerator'
+import type { UserAnswer } from '../types'
 
 export function DrillBoard() {
   const {
@@ -17,12 +19,48 @@ export function DrillBoard() {
     nextQuestion,
   } = useDrillStore()
 
+  const [error, setError] = useState<string | null>(null)
+
   // 初回マウント時に問題を生成
   useEffect(() => {
     if (!currentQuestion) {
-      generateNewQuestion()
+      // URLパラメータからの生成を試みる
+      const params = new URLSearchParams(window.location.search)
+      const queryResult = generateQuestionFromQuery(params)
+
+      if (queryResult) {
+        if (queryResult.type === 'success') {
+          useDrillStore.getState().setQuestion(queryResult.question)
+        } else {
+          setError(queryResult.message)
+        }
+      } else {
+        generateNewQuestion()
+      }
     }
   }, [currentQuestion, generateNewQuestion])
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-red-50">
+        <div className="bg-white p-6 rounded-lg shadow-md max-w-md w-full">
+          <h2 className="text-xl font-bold text-red-600 mb-4">エラー (無効なパラメータ)</h2>
+          <p className="text-gray-700 mb-6">{error}</p>
+          <button
+            onClick={() => {
+              // クエリパラメータを削除してリロード（ランダム生成へ）
+              window.history.replaceState(null, '', window.location.pathname);
+              setError(null);
+              generateNewQuestion();
+            }}
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          >
+            ランダム問題へ戻る
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   if (!currentQuestion) {
     return (
@@ -30,6 +68,12 @@ export function DrillBoard() {
         <div className="text-gray-500">問題を生成中...</div>
       </div>
     )
+  }
+
+  const handleSubmit = (answer: UserAnswer) => {
+    submitAnswer(answer)
+    // URLパラメータを削除
+    window.history.replaceState(null, '', window.location.pathname)
   }
 
   return (
@@ -67,7 +111,7 @@ export function DrillBoard() {
           ) : (
             <AnswerForm
               key={stats.total}
-              onSubmit={submitAnswer}
+              onSubmit={handleSubmit}
               disabled={isAnswered}
               isTsumo={currentQuestion.isTsumo}
               isOya={currentQuestion.jikaze === HaiKind.Ton}

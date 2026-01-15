@@ -31,7 +31,10 @@ interface DrillActions {
   /** 統計をリセット */
   resetStats: () => void
   /** オプションを更新 */
+  /** オプションを更新 */
   setOptions: (options: Partial<QuestionGeneratorOptions>) => void
+  /** 問題を直接設定 */
+  setQuestion: (question: DrillQuestion) => void
 }
 
 type DrillStore = DrillState & DrillActions
@@ -98,5 +101,14 @@ export const useDrillStore = create<DrillStore>((set, get) => ({
         ...options,
       },
     }))
+  },
+
+  setQuestion: (question: DrillQuestion) => {
+    set({
+      currentQuestion: question,
+      userAnswer: null,
+      judgementResult: null,
+      isAnswered: false,
+    })
   },
 }))
