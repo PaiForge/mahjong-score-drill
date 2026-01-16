@@ -23,12 +23,21 @@ export function SetupScreen() {
           </p>
         </div>
 
-        <button
-          onClick={handleStart}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg text-lg transition-colors shadow-sm"
-        >
-          スタート
-        </button>
+        <div className="space-y-4 w-full">
+          <button
+            onClick={handleStart}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg text-lg transition-colors shadow-sm"
+          >
+            スタート
+          </button>
+
+          <button
+            onClick={() => router.push('/cheatsheet')}
+            className="w-full bg-white hover:bg-gray-50 text-gray-700 font-bold py-3 px-6 rounded-lg border border-gray-300 transition-colors shadow-sm"
+          >
+            点数早見表
+          </button>
+        </div>
       </div>
     </div>
   )
