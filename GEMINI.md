@@ -10,3 +10,4 @@
 ## ローカルドキュメント（読み込み）
 
 - .agent/rules/general-rules.md
+- docs/architecture.md
