@@ -21,55 +21,10 @@ import {
   type MentsuShape,
 } from './fuCalculator'
 import { recalculateScore } from './scoreCalculator'
-import { getDoraFromIndicator } from './haiNames'
+import { getDoraFromIndicator, getKeyForKazehai } from './haiNames'
 import type { DrillQuestion, QuestionGeneratorOptions, YakuDetail } from '../types'
 
-// Yaku Name Mapping (English -> Japanese)
-const YAKU_NAME_MAP: Record<string, string> = {
-  // 1 Han
-  'Tanyao': '断変九',
-  'Pinfu': '平和',
-  'Iipeikou': '一盃口',
-  'MenzenTsumo': '門前清自摸和',
-  'Riichi': '立直',
-  'Yakuhai': '役牌', // Special handling needed for specific yakuhai
-  'Haku': '役牌 白',
-  'Hatsu': '役牌 發',
-  'Chun': '役牌 中',
-
-  // 2 Han
-  'SanshokuDoujun': '三色同順',
-  'Ikkitsuukan': '一気通貫',
-  'Honchan': '混全帯么九',
-  'Chiitoitsu': '七対子',
-  'Toitoi': '対々和',
-  'Sanankou': '三暗刻',
-  'Sankantsu': '三槓子',
-  'SanshokuDoukou': '三色同刻',
-  'Honroutou': '混老頭',
-  'Shousangen': '小三元',
-  'DoubleRiichi': 'ダブル立直',
-
-  // 3 Han
-  'Honitsu': '混一色',
-  'Junchan': '純全帯么九',
-  'Ryanpeikou': '二盃口',
-
-  // 6 Han
-  'Chinitsu': '清一色',
-
-  // Yakuman (Example subset)
-  'KokushiMusou': '国士無双',
-  'Suuankou': '四暗刻',
-  'Daisangen': '大三元',
-  'Shousuushii': '小四喜',
-  'Daisuushii': '大四喜',
-  'Tsuuiisou': '字一色',
-  'Chinroutou': '清老頭',
-  'Ryuuiisou': '緑一色',
-  'ChuurenPoutou': '九蓮宝燈',
-  'Suukantsu': '四槓子',
-}
+import { YAKU_NAME_MAP } from '../constants'
 
 function getYakuNameJa(name: string): string {
   return YAKU_NAME_MAP[name] || name
@@ -275,10 +230,61 @@ export function generateQuestion(
 
     // 役情報を取得
     const yakuResult = detectYaku(tehai, agariHai, bakaze, jikaze, doraMarkers, undefined, isTsumo)
-    const yakuDetails: YakuDetail[] = yakuResult.map(([name, han]) => ({
-      name: getYakuNameJa(name),
-      han: han
-    }))
+    const yakuDetails: YakuDetail[] = []
+
+    yakuResult.forEach(([name, han]) => {
+      const jaName = getYakuNameJa(name)
+      const yakuName = name as string
+
+      // 役牌（風）の特別対応
+      // ライブラリが `Yakuhai` を返すとき、それがどの風によるものか特定する
+      if (yakuName === 'Yakuhai') {
+        // 後でまとめて追加するのでここではスキップ
+        return
+      }
+
+      yakuDetails.push({
+        name: jaName,
+        han: han
+      })
+    })
+
+    // 'Yakuhai' の置換処理
+    const yakuhaiCount = yakuResult.filter(r => (r[0] as string) === 'Yakuhai').reduce((acc, curr) => acc + curr[1], 0)
+
+    if (yakuhaiCount > 0) {
+      // 場風
+      const countHai = (id: HaiKindId) => {
+        let c = tehai.closed.filter(h => h === id).length
+        tehai.exposed.forEach(m => c += m.hais.filter(h => h === id).length)
+        return c
+      }
+
+      const bakazeCount = countHai(bakaze)
+      const jikazeCount = countHai(jikaze)
+
+      if (bakazeCount >= 3) {
+        const name = `役牌 ${getYakuNameJa(getKeyForKazehai(bakaze))}`
+        const existing = yakuDetails.find(d => d.name === name)
+        if (existing) {
+          existing.han += 1
+        } else {
+          yakuDetails.push({ name, han: 1 })
+        }
+      }
+
+      if (jikazeCount >= 3) {
+        const name = `役牌 ${getYakuNameJa(getKeyForKazehai(jikaze))}`
+        const existing = yakuDetails.find(d => d.name === name)
+        if (existing) {
+          existing.han += 1
+        } else {
+          yakuDetails.push({ name, han: 1 })
+        }
+      }
+    }
+
+
 
     // 役なしの場合は再生成
     if (answer.han === 0) return null

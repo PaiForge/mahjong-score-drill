@@ -50,6 +50,45 @@ function judgeScore(
 /**
  * ユーザーの回答を判定
  */
+import { IGNORE_YAKU_FOR_JUDGEMENT } from '../constants'
+// ... (ScoreLevel imports/definitions remain same or assume imports if any)
+
+// ... (existing isMangan, judgeScore functions)
+
+/**
+ * 役の判定
+ * ドラ・裏ドラなどは無視して比較する
+ */
+function judgeYaku(
+  answerYakuDetails: DrillQuestion['yakuDetails'],
+  userYakus: string[]
+): boolean {
+  if (!answerYakuDetails) return userYakus.length === 0
+
+  // 正解データから判定対象外の役（ドラなど）を除外してセット化
+  const expectedYakus = new Set(
+    answerYakuDetails
+      .map(d => d.name)
+      .filter(name => !IGNORE_YAKU_FOR_JUDGEMENT.includes(name))
+  )
+
+  // ユーザー回答もセット化
+  const userYakuSet = new Set(userYakus)
+
+  // サイズチェック
+  if (expectedYakus.size !== userYakuSet.size) return false
+
+  // 内容チェック
+  for (const yaku of expectedYakus) {
+    if (!userYakuSet.has(yaku)) return false
+  }
+
+  return true
+}
+
+/**
+ * ユーザーの回答を判定
+ */
 export function judgeAnswer(
   question: DrillQuestion,
   userAnswer: UserAnswer
@@ -66,14 +105,18 @@ export function judgeAnswer(
   // 点数の判定
   const isScoreCorrect = judgeScore(answer.payment, userAnswer)
 
+  // 役の判定
+  const isYakuCorrect = judgeYaku(question.yakuDetails, userAnswer.yakus)
+
   // 総合判定
-  const isCorrect = isHanCorrect && isFuCorrect && isScoreCorrect
+  const isCorrect = isHanCorrect && isFuCorrect && isScoreCorrect && isYakuCorrect
 
   return {
     isCorrect,
     isHanCorrect,
     isFuCorrect,
     isScoreCorrect,
+    isYakuCorrect,
   }
 }
 

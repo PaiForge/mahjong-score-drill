@@ -67,6 +67,8 @@ export interface UserAnswer {
   scoreFromKo?: number
   /** 子のツモ時: 親からの点数 */
   scoreFromOya?: number
+  /** 選択された役 */
+  yakus: string[]
 }
 
 /**
@@ -81,6 +83,8 @@ export interface JudgementResult {
   isFuCorrect: boolean
   /** 点数が正解かどうか */
   isScoreCorrect: boolean
+  /** 役が正解かどうか */
+  isYakuCorrect: boolean
 }
 
 /**

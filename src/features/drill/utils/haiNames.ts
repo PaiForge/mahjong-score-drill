@@ -54,3 +54,15 @@ export function getDoraFromIndicator(indicator: HaiKindId): HaiKindId {
   }
   return indicator
 }
+
+/**
+ * 風牌のキー名（英語）を取得（YAKU_NAME_MAP用）
+ */
+export function getKeyForKazehai(kaze: Kazehai): string {
+  switch (kaze) {
+    case HaiKind.Ton: return 'Ton'
+    case HaiKind.Nan: return 'Nan'
+    case HaiKind.Sha: return 'Sha'
+    case HaiKind.Pei: return 'Pei'
+  }
+}

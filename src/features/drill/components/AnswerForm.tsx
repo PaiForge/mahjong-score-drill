@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { UserAnswer } from '../types'
+import { YakuSelect } from './YakuSelect'
 
 interface Props {
   onSubmit: (answer: UserAnswer) => void
@@ -8,7 +9,7 @@ interface Props {
   isOya: boolean
 }
 
-// 翻数オプション（1〜13翻 + 役満）
+// ... (HAN_OPTIONS, FU_OPTIONS remain same)
 const HAN_OPTIONS = [
   { value: '', label: '選択してください' },
   { value: 1, label: '1翻' },
@@ -45,6 +46,7 @@ const FU_OPTIONS = [
 export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya }: Props) {
   const [han, setHan] = useState<number | null>(null)
   const [fu, setFu] = useState<number | null>(null)
+  const [yakus, setYakus] = useState<string[]>([])
   // ロン or 親ツモ用
   const [score, setScore] = useState<string>('')
   // 子ツモ用
@@ -80,6 +82,7 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya }: Props
         fu: isMangan ? null : fu,
         scoreFromKo: koScore,
         scoreFromOya: oyaScore,
+        yakus,
       })
     } else {
       const scoreNum = parseInt(score, 10)
@@ -89,12 +92,20 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya }: Props
         han,
         fu: isMangan ? null : fu,
         score: scoreNum,
+        yakus,
       })
     }
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
+      {/* 役入力 */}
+      <YakuSelect
+        value={yakus}
+        onChange={setYakus}
+        disabled={disabled}
+      />
+
       {/* 翻数入力 */}
       <div>
         <label className="block text-sm font-bold text-gray-700 mb-2">
