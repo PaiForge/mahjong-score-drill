@@ -7,7 +7,11 @@ import { ResultDisplay } from './ResultDisplay'
 import { generateQuestionFromQuery } from '../utils/queryQuestionGenerator'
 import type { UserAnswer } from '../types'
 
-export function DrillBoard() {
+interface DrillBoardProps {
+  onBackToSetup: () => void
+}
+
+export function DrillBoard({ onBackToSetup }: DrillBoardProps) {
   const {
     currentQuestion,
     userAnswer,
@@ -81,9 +85,12 @@ export function DrillBoard() {
       <div className="max-w-2xl mx-auto px-1 sm:px-4">
         {/* ヘッダー */}
         <div className="flex justify-between items-center mb-4 sm:mb-6 px-2 sm:px-0">
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-800">
+          <button
+            onClick={onBackToSetup}
+            className="text-xl sm:text-2xl font-bold text-gray-800 hover:opacity-75 transition-opacity text-left"
+          >
             麻雀点数計算ドリル
-          </h1>
+          </button>
           <div className="text-sm text-gray-600">
             {stats.correct} / {stats.total} 正解
             {stats.total > 0 && (
