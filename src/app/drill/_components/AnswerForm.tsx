@@ -11,6 +11,7 @@ interface Props {
   isOya: boolean
   requireYaku?: boolean
   simplifyMangan?: boolean
+  requireFuForMangan?: boolean
 }
 
 const HAN_OPTIONS = [
@@ -59,7 +60,7 @@ const FU_OPTIONS = [
   { value: 110, label: '110符' },
 ]
 
-export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, requireYaku = false, simplifyMangan = false }: Props) {
+export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, requireYaku = false, simplifyMangan = false, requireFuForMangan = false }: Props) {
   const [han, setHan] = useState<number | null>(null)
   const [fu, setFu] = useState<number | null>(null)
   const [yakus, setYakus] = useState<string[]>([])
@@ -70,6 +71,8 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
   const [scoreFromOya, setScoreFromOya] = useState<string>('')
 
   const isMangan = han !== null && han >= 5
+  // 満貫未満、または満貫以上でも符入力が求められている場合は符の入力が必要
+  const isFuRequired = !isMangan || requireFuForMangan
   const isKoTsumo = isTsumo && !isOya
 
   const hanOptions = simplifyMangan ? SIMPLIFIED_HAN_OPTIONS : HAN_OPTIONS
@@ -87,8 +90,8 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
 
     // 翻数は必須
     if (han === null) return
-    // 満貫未満の場合は符も必須
-    if (!isMangan && fu === null) return
+    // 符が必要な場合は必須
+    if (isFuRequired && fu === null) return
 
     // 役入力が必要な場合、役が選択されているかチェックできるが、
     // 現在の仕様では空でもOKとするか、バリデーションを追加するかは要検討
@@ -97,6 +100,8 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
     // 提出する役リスト（不要なら空にする）
     const submitYakus = requireYaku ? yakus : []
 
+    const submitFu = isFuRequired ? fu : (isMangan ? null : fu)
+
     if (isKoTsumo) {
       const koScore = parseInt(scoreFromKo, 10)
       const oyaScore = parseInt(scoreFromOya, 10)
@@ -104,7 +109,7 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
 
       onSubmit({
         han,
-        fu: isMangan ? null : fu,
+        fu: submitFu,
         scoreFromKo: koScore,
         scoreFromOya: oyaScore,
         yakus: submitYakus,
@@ -115,7 +120,7 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
 
       onSubmit({
         han,
-        fu: isMangan ? null : fu,
+        fu: submitFu,
         score: scoreNum,
         yakus: submitYakus,
       })
@@ -153,8 +158,8 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
         </select>
       </div>
 
-      {/* 符入力（満貫未満のみ） */}
-      {!isMangan && (
+      {/* 符入力（満貫未満または符入力必須の場合） */}
+      {isFuRequired && (
         <div>
           <label className="block text-sm font-bold text-gray-700 mb-2">
             符
@@ -175,7 +180,7 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
         </div>
       )}
 
-      {isMangan && (
+      {!isFuRequired && isMangan && (
         <div className="text-sm text-gray-500 italic">
           5翻以上のため符の入力は不要です
         </div>

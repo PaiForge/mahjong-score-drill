@@ -105,7 +105,8 @@ export function judgeAnswer(
   question: DrillQuestion,
   userAnswer: UserAnswer,
   requireYaku: boolean = false,
-  simplifyMangan: boolean = false
+  simplifyMangan: boolean = false,
+  requireFuForMangan: boolean = false
 ): JudgementResult {
   const { answer } = question
   const isManganOrAbove = isMangan(answer.scoreLevel)
@@ -120,8 +121,10 @@ export function judgeAnswer(
     }
   }
 
-  // 符の判定（満貫以上は常に正解扱い）
-  const isFuCorrect = isManganOrAbove || userAnswer.fu === answer.fu
+  // 符の判定
+  // 満貫以上で、符入力が求められていない場合は常に正解扱い
+  // それ以外（満貫未満、または符入力必須）は比較する
+  const isFuCorrect = (isManganOrAbove && !requireFuForMangan) || userAnswer.fu === answer.fu
 
   // 点数の判定
   const isScoreCorrect = judgeScore(answer.payment, userAnswer)

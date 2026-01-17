@@ -6,6 +6,8 @@ interface SettingsState {
     setRequireYaku: (enabled: boolean) => void
     simplifyMangan: boolean
     setSimplifyMangan: (enabled: boolean) => void
+    requireFuForMangan: boolean
+    setRequireFuForMangan: (enabled: boolean) => void
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -15,6 +17,8 @@ export const useSettingsStore = create<SettingsState>()(
             setRequireYaku: (requireYaku) => set({ requireYaku }),
             simplifyMangan: false,
             setSimplifyMangan: (simplifyMangan) => set({ simplifyMangan }),
+            requireFuForMangan: false,
+            setRequireFuForMangan: (requireFuForMangan) => set({ requireFuForMangan }),
         }),
         {
             name: 'mahjong-drill-settings',
