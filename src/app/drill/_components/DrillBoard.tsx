@@ -189,6 +189,7 @@ export function DrillBoard() {
               onNext={nextQuestion}
               requireYaku={requireYaku}
               simplifyMangan={simplifyMangan}
+              requireFuForMangan={requireFuForMangan}
             />
           ) : (
             <AnswerForm

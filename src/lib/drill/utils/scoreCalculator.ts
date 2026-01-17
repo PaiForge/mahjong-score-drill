@@ -10,13 +10,13 @@ import {
  */
 export function recalculateScore(
     originalResult: ScoreResult,
-    addedHan: number,
+    newHanValue: number,
     config: {
         isTsumo: boolean
         isOya: boolean
     }
 ): ScoreResult {
-    const newHan = originalResult.han + addedHan
+    const newHan = newHanValue
     const fu = originalResult.fu
     const { isTsumo, isOya } = config
 

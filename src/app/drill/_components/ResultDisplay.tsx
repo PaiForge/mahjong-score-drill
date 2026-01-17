@@ -12,9 +12,10 @@ interface Props {
   onNext: () => void
   requireYaku?: boolean
   simplifyMangan?: boolean
+  requireFuForMangan?: boolean
 }
 
-export function ResultDisplay({ question, userAnswer, result, onNext, requireYaku = false, simplifyMangan = false }: Props) {
+export function ResultDisplay({ question, userAnswer, result, onNext, requireYaku = false, simplifyMangan = false, requireFuForMangan = false }: Props) {
   const { answer } = question
   const correctScore = getPaymentTotal(answer.payment)
   const isManganOrAbove = isMangan(answer.scoreLevel)
@@ -144,8 +145,8 @@ export function ResultDisplay({ question, userAnswer, result, onNext, requireYak
                 </tr>
               )}
 
-              {/* 符 */}
-              {!isManganOrAbove && (
+              {/* 符 (満貫未満、または符入力を要求している場合に表示) */}
+              {(!isManganOrAbove || requireFuForMangan) && (
                 <>
                   <tr>
                     <td className="text-gray-600 py-2 pr-4 whitespace-nowrap">符</td>

@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useSettingsStore } from '@/lib/drill/stores/useSettingsStore'
+import { useDrillStore } from '@/lib/drill/stores/useDrillStore'
 import { useEffect, useState } from 'react'
 
 export function SetupScreen() {
@@ -35,6 +36,17 @@ export function SetupScreen() {
       // UI上で「選択してください」と出すバリデーションが必要かもしれない。
       // 現状は全範囲として振る舞うことにする
     }
+
+    // Reset current question to force re-initialization in DrillBoard
+    useDrillStore.getState().setQuestion(null as any) // nullを許容するように型を修正するか、anyで回避。DrillBoardはnullチェックしている。
+    // setQuestionの型定義はDrillQuestionでnull不可だが、初期状態はnullなので実際はnullが入るはず。
+    // useDrillStore.tsの定義を確認すると: setQuestion: (question: DrillQuestion) => void
+    // しかし初期値は currentQuestion: null
+    // 型安全にするなら GenerateNewQuestion() を呼ぶ手もあるが、パラメータがまだセットされていない。
+    // ここでは resetStats() ではなく、 currentQuestion を null にしたいため、
+    // useDrillStoreに reset() アクションを追加するのがベストだが、簡易的に any キャストで対応するか、
+    // あるいは DrillBoard 側で navigate 時に強制リセットする手もある。
+    // 今回は any キャストで null を入れる。
 
     const queryString = params.toString()
     router.push(queryString ? `/drill?${queryString}` : '/drill')
@@ -121,11 +133,10 @@ export function SetupScreen() {
               </span>
             </label>
 
-            {/* 点数範囲設定 */}
             <div className="w-full pt-4 border-t border-slate-100 mt-2">
               <div className="text-sm font-bold text-slate-500 mb-3 text-center">出題する点数</div>
-              <div className="flex justify-center gap-2">
-                <label className="group inline-flex items-center space-x-2 py-2 px-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200">
+              <div className="flex justify-center !gap-6">
+                <label className="group inline-flex items-center !gap-3 py-2 px-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200">
                   <input
                     type="checkbox"
                     checked={targetScoreRanges.includes('non_mangan')}
@@ -136,7 +147,7 @@ export function SetupScreen() {
                     満貫未満
                   </span>
                 </label>
-                <label className="group inline-flex items-center space-x-2 py-2 px-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200">
+                <label className="group inline-flex items-center !gap-3 py-2 px-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200">
                   <input
                     type="checkbox"
                     checked={targetScoreRanges.includes('mangan_plus')}
@@ -154,8 +165,13 @@ export function SetupScreen() {
           {/* Main Action */}
           <button
             onClick={handleStart}
+            disabled={targetScoreRanges.length === 0}
             // AnswerFormのボタンと同じスタイルを適用 (!py-3 !px-6 !bg-amber-500 rounded-lg etc)
-            className="w-full !py-3 !px-6 !bg-amber-500 !text-white !font-bold !rounded-lg hover:!bg-amber-600 transition-colors shadow-sm flex items-center justify-center gap-2"
+            className={`w-full !py-3 !px-6 !font-bold !rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2
+              ${targetScoreRanges.length === 0
+                ? '!bg-slate-300 !text-slate-500 cursor-not-allowed'
+                : '!bg-amber-500 !text-white hover:!bg-amber-600'
+              }`}
           >
             <span>ドリルを開始</span>
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

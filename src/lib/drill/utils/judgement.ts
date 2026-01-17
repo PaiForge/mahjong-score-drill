@@ -116,7 +116,10 @@ export function judgeAnswer(
 
   if (simplifyMangan) {
     // 簡略化モードの場合、5翻以上はクラス判定
-    if (userAnswer.han >= 5 || answer.han >= 5) {
+    // ただし、4翻以下でも満貫（60符3翻、40符4翻など）の場合は「満貫（5翻扱い）」も正解とする
+    if (isManganOrAbove && answer.han < 5 && userAnswer.han === 5) {
+      isHanCorrect = true
+    } else if (userAnswer.han >= 5 || answer.han >= 5) {
       isHanCorrect = getSimplifiedHan(userAnswer.han) === getSimplifiedHan(answer.han)
     }
   }

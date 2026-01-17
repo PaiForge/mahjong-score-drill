@@ -253,91 +253,147 @@ export function generateQuestion(
       })
     })
 
-    // 'Yakuhai' の置換処理
-    const yakuhaiCount = yakuResult.filter(r => (r[0] as string) === 'Yakuhai').reduce((acc, curr) => acc + curr[1], 0)
+    // --- Yakuhai Robust Reconciliation ---
+    // ベースの回答
+    let finalAnswer = answer
 
-    if (yakuhaiCount > 0) {
-      // 場風
-      const countHai = (id: HaiKindId) => {
-        let c = tehai.closed.filter(h => h === id).length
-        tehai.exposed.forEach(m => c += m.hais.filter(h => h === id).length)
-        return c
+    // ライブラリの判定（検出された役）と、手牌の実態（期待される役）を比較し、
+    // 不足分があれば加算修正する。特にGenericな'Yakuhai'が返ってきた場合や判定漏れ対策。
+
+    let detectedYakuhaiHan = 0
+    const yakuhaiNames = ['Yakuhai', 'Ton', 'Nan', 'Sha', 'Pei', 'Haku', 'Hatsu', 'Chun']
+
+    yakuResult.forEach(([name, han]) => {
+      if (yakuhaiNames.includes(name as string)) {
+        detectedYakuhaiHan += han
       }
+    })
 
-      const bakazeCount = countHai(bakaze)
-      const jikazeCount = countHai(jikaze)
+    let expectedYakuhaiHan = 0
+    const expectedYakuhaiDetails: YakuDetail[] = []
 
-      if (bakazeCount >= 3) {
-        const name = getYakuNameJa(getKeyForKazehai(bakaze))
-        const existing = yakuDetails.find(d => d.name === name)
-        if (existing) {
-          existing.han += 1
-        } else {
-          yakuDetails.push({ name, han: 1 })
-        }
-      }
-
-      if (jikazeCount >= 3) {
-        const name = getYakuNameJa(getKeyForKazehai(jikaze))
-        const existing = yakuDetails.find(d => d.name === name)
-        if (existing) {
-          existing.han += 1
-        } else {
-          yakuDetails.push({ name, han: 1 })
-        }
-      }
+    const countHai = (id: HaiKindId) => {
+      let c = tehai.closed.filter(h => h === id).length
+      tehai.exposed.forEach(m => c += m.hais.filter(h => h === id).length)
+      return c
     }
 
+    const targets = [
+      HaiKind.Ton, HaiKind.Nan, HaiKind.Sha, HaiKind.Pei,
+      HaiKind.Haku, HaiKind.Hatsu, HaiKind.Chun
+    ]
 
+    targets.forEach(kind => {
+      if (countHai(kind) >= 3) {
+        let han = 0
+        let nameKeys: string[] = []
+
+        if (kind >= HaiKind.Haku) {
+          han += 1
+          if (kind === HaiKind.Haku) nameKeys.push('Haku')
+          if (kind === HaiKind.Hatsu) nameKeys.push('Hatsu')
+          if (kind === HaiKind.Chun) nameKeys.push('Chun')
+        } else {
+          if (kind === bakaze) {
+            han += 1
+            nameKeys.push(getKeyForKazehai(kind as Kazehai))
+          }
+          if (kind === jikaze) {
+            han += 1
+            nameKeys.push(getKeyForKazehai(kind as Kazehai))
+          }
+        }
+
+        if (han > 0) {
+          expectedYakuhaiHan += han
+          nameKeys.forEach(key => {
+            expectedYakuhaiDetails.push({
+              name: getYakuNameJa(key),
+              han: 1
+            })
+          })
+        }
+      }
+    })
+
+    const missingHan = expectedYakuhaiHan - detectedYakuhaiHan
+
+    if (missingHan > 0) {
+      finalAnswer = recalculateScore(finalAnswer, finalAnswer.han + missingHan, {
+        isTsumo,
+        isOya: jikaze === HaiKind.Ton
+      })
+    }
+
+    // 表示用詳細リスト(yakuDetails)の再構築
+    const yakuhaiJaNames = [
+      '役牌 東', '役牌 南', '役牌 西', '役牌 北',
+      '役牌 白', '役牌 發', '役牌 中',
+      '役牌'
+    ]
+
+    const otherDetails = yakuDetails.filter(d => !yakuhaiJaNames.includes(d.name))
+    while (yakuDetails.length > 0) yakuDetails.pop()
+    yakuDetails.push(...otherDetails)
+    yakuDetails.push(...expectedYakuhaiDetails)
+
+    // --- End Robust Reconciliation ---
 
     // 役なしの場合は再生成
-    if (answer.han === 0) return null
+    if (finalAnswer.han === 0) return null
+
 
     // リーチ判定 (門前の場合のみ、20%の確率)
-    let finalAnswer = answer
     const isRiichi = isMenzen(tehai) && Math.random() < 0.2
 
-    // 裏ドラ生成
     let uraDoraMarkers: HaiKindId[] | undefined
     if (isRiichi) {
       uraDoraMarkers = generateDoraMarkers(kantsuCount)
 
-      // 裏ドラの翻数を計算
       let uraDoraHan = 0
       uraDoraMarkers.forEach((marker) => {
         const doraHai = getDoraFromIndicator(marker)
-        // 閉じた手牌からカウント
         uraDoraHan += tehai.closed.filter((h) => h === doraHai).length
-        // 副露からカウント
         tehai.exposed.forEach((mentsu) => {
           uraDoraHan += mentsu.hais.filter((h) => h === doraHai).length
         })
       })
 
-      // 点数再計算 (+1翻(リーチ) + 裏ドラ翻数)
-      finalAnswer = recalculateScore(answer, 1 + uraDoraHan, {
+      // Update finalAnswer accumulating Han
+      finalAnswer = recalculateScore(finalAnswer, finalAnswer.han + 1 + uraDoraHan, {
         isTsumo,
         isOya: jikaze === HaiKind.Ton,
       })
 
-      // 役詳細に追加 (リーチは先頭)
+      // Add Riichi/Ura to details (Riichi first)
       yakuDetails.unshift({ name: '立直', han: 1 })
-
       if (uraDoraHan > 0) {
         yakuDetails.push({ name: '裏ドラ', han: uraDoraHan })
       }
     }
 
+
     // ドラのカウントと追加 (表ドラ)
     let doraHan = 0
-    doraMarkers.forEach(marker => {
+    doraMarkers.forEach((marker) => {
       const doraHai = getDoraFromIndicator(marker)
-      doraHan += tehai.closed.filter(h => h === doraHai).length
-      tehai.exposed.forEach(m => doraHan += m.hais.filter(h => h === doraHai).length)
+      doraHan += tehai.closed.filter((h) => h === doraHai).length
+      tehai.exposed.forEach((mentsu) => {
+        doraHan += mentsu.hais.filter((h) => h === doraHai).length
+      })
     })
 
     if (doraHan > 0) {
-      yakuDetails.push({ name: 'ドラ', han: doraHan })
+      // Only add to result display if not already there (Library usually adds it as 'Dora' or 'Dorahai'?)
+      // `detectYaku` usually adds Dora to yakuResult.
+      // But wait, `detectYaku` documentation/behavior: usually it does.
+      // But if we are unsure, we can check.
+      // My previous code had `if (doraHan > 0) yakuDetails.push...`
+      // I'll keep it but check existence to be safe.
+      const existing = yakuDetails.find(d => d.name === 'ドラ')
+      if (!existing) {
+        yakuDetails.push({ name: 'ドラ', han: doraHan })
+      }
     }
 
     // 符の内訳を計算
@@ -370,9 +426,18 @@ export function generateQuestion(
     if (allowedRanges.length === 1 && allowedRanges[0] === 'mangan_plus' && boostedAnswer.scoreLevel === ScoreLevel.Normal) {
       // 最大5回までドラ追加を試みる
       for (let i = 0; i < 5; i++) {
+        // ドラ表示牌の枚数が上限(5枚)に達していたら終了
+        if (currentDoraMarkers.length >= 5) break
+
         // 新しいドラ表示牌を追加
         const newMarker = randomInt(0, 33) as HaiKindId
         currentDoraMarkers.push(newMarker)
+
+        // リーチ時は裏ドラも増やす (整合性のため)
+        if (isRiichi && uraDoraMarkers && uraDoraMarkers.length < currentDoraMarkers.length) {
+          const newUraMarker = randomInt(0, 33) as HaiKindId
+          uraDoraMarkers.push(newUraMarker)
+        }
 
         // 点数再計算
         // ドラ枚数を計算
