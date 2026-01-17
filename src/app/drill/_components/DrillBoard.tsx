@@ -142,21 +142,17 @@ export function DrillBoard({ initialParams }: DrillBoardProps) {
     <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
       <div className="max-w-2xl mx-auto px-1 sm:px-4">
         {/* ヘッダー */}
+        {/* ヘッダー */}
         <div className="flex justify-between items-center mb-4 sm:mb-6 px-2 sm:px-0">
           <button
             onClick={handleBackToSetup}
-            className="text-xl sm:text-2xl font-bold text-gray-800 hover:opacity-75 transition-opacity text-left"
+            className="inline-flex items-center text-slate-500 hover:text-blue-600 font-medium transition-colors"
           >
-            麻雀点数計算ドリル
+            <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            ホームに戻る
           </button>
-          <div className="text-sm text-gray-600">
-            {stats.correct} / {stats.total} 正解
-            {stats.total > 0 && (
-              <span className="ml-2">
-                ({Math.round((stats.correct / stats.total) * 100)}%)
-              </span>
-            )}
-          </div>
         </div>
 
         {/* 問題表示 */}
