@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-
+import { useScoreTableStore } from '@/lib/drill/stores/useScoreTableStore'
 
 const HAN_COLS = [1, 2, 3, 4]
 const FU_ROWS = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110]
@@ -33,7 +33,7 @@ const calculateKoScore = (han: number, fu: number) => {
     const tsumoKo = Math.ceil((base * 1) / 100) * 100
     const tsumoOya = Math.ceil((base * 2) / 100) * 100
 
-    return { isMangan: false, ron, tsumo: `${tsumoKo}-${tsumoOya}` }
+    return { isMangan: false, ron, tsumo: `${tsumoKo}/${tsumoOya}` }
 }
 
 // Calculate score for Oya (Parent)
@@ -50,14 +50,12 @@ const calculateOyaScore = (han: number, fu: number) => {
     return { isMangan: false, ron, tsumo: `${tsumo}オール` } // "オール" will be handled in render
 }
 
-import { useScoreTableStore } from '@/lib/drill/stores/useScoreTableStore'
-
 const HIGH_SCORES = [
-    { name: '満貫', han: '5翻', ronKo: 8000, tsumoKo: '2000-4000', ronOya: 12000, tsumoOya: '4000オール' },
-    { name: '跳満', han: '6-7翻', ronKo: 12000, tsumoKo: '3000-6000', ronOya: 18000, tsumoOya: '6000オール' },
-    { name: '倍満', han: '8-10翻', ronKo: 16000, tsumoKo: '4000-8000', ronOya: 24000, tsumoOya: '8000オール' },
-    { name: '三倍満', han: '11-12翻', ronKo: 24000, tsumoKo: '6000-12000', ronOya: 36000, tsumoOya: '12000オール' },
-    { name: '役満', han: '13翻~', ronKo: 32000, tsumoKo: '8000-16000', ronOya: 48000, tsumoOya: '16000オール' },
+    { name: '満貫', han: '5翻', ronKo: 8000, tsumoKo: '2000/4000', ronOya: 12000, tsumoOya: '4000オール' },
+    { name: '跳満', han: '6-7翻', ronKo: 12000, tsumoKo: '3000/6000', ronOya: 18000, tsumoOya: '6000オール' },
+    { name: '倍満', han: '8-10翻', ronKo: 16000, tsumoKo: '4000/8000', ronOya: 24000, tsumoOya: '8000オール' },
+    { name: '三倍満', han: '11-12翻', ronKo: 24000, tsumoKo: '6000/12000', ronOya: 36000, tsumoOya: '12000オール' },
+    { name: '役満', han: '13翻~', ronKo: 32000, tsumoKo: '8000/16000', ronOya: 48000, tsumoOya: '16000オール' },
 ]
 
 export function ScoreTable() {
@@ -66,7 +64,7 @@ export function ScoreTable() {
     const isKo = activeTab === 'ko'
 
     const getCellClass = (isHidden: boolean) => {
-        const base = "border border-gray-300 p-2 relative h-12 align-middle cursor-pointer transition-all duration-200 select-none"
+        const base = "border border-gray-300 p-2 relative h-16 align-middle cursor-pointer transition-all duration-200 select-none"
         if (isHidden) {
             return `${base} bg-gray-200 hover:bg-gray-200`
         }
@@ -77,17 +75,32 @@ export function ScoreTable() {
         return `transition-all duration-300 ${isHidden ? '!filter !blur-md !opacity-100' : ''}`
     }
 
+    const renderTsumoScore = (score: string | number) => {
+        if (typeof score !== 'string') return score
+        const text = score.replace('オール', '')
+        if (text.includes('/')) {
+            const [ko, oya] = text.split('/')
+            return (
+                <div className="flex flex-col items-center leading-tight">
+                    <span>{ko} /</span>
+                    <span>{oya}</span>
+                </div>
+            )
+        }
+        return text
+    }
+
     return (
         <div className="w-full relative pb-20">
             {/* Header Area */}
             <div className="flex items-center justify-end mb-4">
                 {/* Win Type Switcher */}
-                <div className="bg-gray-100 p-0.5 rounded-lg flex shadow-sm border border-gray-200">
+                <div className="bg-blue-50 p-1 rounded-lg flex shadow-inner border border-blue-100">
                     <button
                         onClick={() => setWinType('ron')}
                         className={`px-4 py-1.5 rounded-md font-bold text-sm transition-all min-w-[80px] ${winType === 'ron'
-                            ? '!bg-red-500 !text-white shadow-sm'
-                            : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200/50'
+                            ? '!bg-blue-600 !text-white shadow-sm'
+                            : 'text-gray-700 hover:bg-blue-100'
                             }`}
                     >
                         ロン
@@ -95,8 +108,8 @@ export function ScoreTable() {
                     <button
                         onClick={() => setWinType('tsumo')}
                         className={`px-4 py-1.5 rounded-md font-bold text-sm transition-all min-w-[80px] ${winType === 'tsumo'
-                            ? '!bg-gray-800 !text-white shadow-sm'
-                            : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200/50'
+                            ? '!bg-blue-600 !text-white shadow-sm'
+                            : 'text-gray-700 hover:bg-blue-100'
                             }`}
                     >
                         ツモ
@@ -105,44 +118,44 @@ export function ScoreTable() {
             </div>
 
             {/* Main Tabs */}
-            <div className="flex justify-center mb-4">
+            <div className="flex justify-end mb-4">
                 <button
                     onClick={() => setActiveTab('ko')}
-                    className={`w-40 py-3 font-bold text-lg rounded-l-lg shadow-md transition-all border-y border-l ${activeTab === 'ko'
+                    className={`w-28 py-3 font-bold text-lg rounded-l-lg shadow-md transition-all border-y border-l ${activeTab === 'ko'
                         ? '!bg-blue-600 !text-white !border-blue-600'
-                        : '!bg-blue-100 !text-blue-600 !border-blue-600 hover:!bg-blue-200'
+                        : '!bg-blue-100 !text-gray-700 !border-blue-600 hover:!bg-blue-200'
                         }`}
                 >
-                    子の点数表
+                    子
                 </button>
                 <button
                     onClick={() => setActiveTab('oya')}
-                    className={`w-40 py-3 font-bold text-lg rounded-r-lg shadow-md transition-all border-y border-r ${activeTab === 'oya'
+                    className={`w-28 py-3 font-bold text-lg rounded-r-lg shadow-md transition-all border-y border-r ${activeTab === 'oya'
                         ? '!bg-blue-600 !text-white !border-blue-600'
-                        : '!bg-blue-100 !text-blue-600 !border-blue-600 hover:!bg-blue-200'
+                        : '!bg-blue-100 !text-gray-700 !border-blue-600 hover:!bg-blue-200'
                         }`}
                 >
-                    親の点数表
+                    親
                 </button>
             </div>
 
             {/* View Mode Switcher (Segmented Control) */}
-            <div className="flex justify-center mb-6">
+            <div className="flex justify-end mb-6">
                 <div className="bg-blue-50 p-1 rounded-lg flex shadow-inner border border-blue-100">
                     <button
                         onClick={() => setViewMode('normal')}
                         className={`px-6 py-2 rounded-md font-bold text-sm transition-all min-w-[120px] ${viewMode === 'normal'
                             ? '!bg-blue-600 !text-white shadow-sm'
-                            : 'text-blue-600 hover:bg-blue-100'
+                            : 'text-gray-700 hover:bg-blue-100'
                             }`}
                     >
-                        通常 (符計算)
+                        符計算
                     </button>
                     <button
                         onClick={() => setViewMode('high_score')}
                         className={`px-6 py-2 rounded-md font-bold text-sm transition-all min-w-[120px] ${viewMode === 'high_score'
                             ? '!bg-blue-600 !text-white shadow-sm'
-                            : 'text-blue-600 hover:bg-blue-100'
+                            : 'text-gray-700 hover:bg-blue-100'
                             }`}
                     >
                         満貫以上
@@ -159,7 +172,7 @@ export function ScoreTable() {
                             <tr>
                                 <th className="bg-gray-100 border border-gray-300 w-14"></th>
                                 {HAN_COLS.map(han => (
-                                    <th key={han} className="bg-gray-200 border border-gray-300 py-3 font-bold text-lg text-gray-700">
+                                    <th key={han} className="bg-gray-200 border border-gray-300 py-3 text-base text-gray-700 font-normal">
                                         {han}翻
                                     </th>
                                 ))}
@@ -168,14 +181,18 @@ export function ScoreTable() {
                         <tbody>
                             {FU_ROWS.map((fu, idx) => (
                                 <tr key={fu} className={idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                                    <td className="bg-gray-200 border border-gray-300 font-bold text-lg text-gray-700 py-1">
+                                    <td className="bg-gray-200 border border-gray-300 text-sm text-gray-700 py-1 font-normal">
                                         {fu}符
                                     </td>
                                     {HAN_COLS.map(han => {
-                                        if ((han === 1 && fu === 20) || (han === 1 && fu === 25) || (han === 2 && fu === 25)) {
+                                        if (
+                                            (han === 1 && fu === 20) ||
+                                            (winType === 'ron' && fu === 20) ||
+                                            (han === 1 && fu === 25)
+                                        ) {
                                             return (
-                                                <td key={han} className="border border-gray-300 text-gray-300 bg-gray-50/50">
-                                                    <div className="text-gray-300 text-lg">-</div>
+                                                <td key={han} className="border border-gray-300 text-gray-300 bg-gray-50/50 h-16">
+                                                    <div className="text-gray-300 text-sm">-</div>
                                                 </td>
                                             )
                                         }
@@ -194,14 +211,12 @@ export function ScoreTable() {
                                                     className={`border border-gray-300 p-1 cursor-pointer transition-all duration-300 select-none ${isHidden ? 'bg-gray-200' : 'bg-blue-50/30 hover:bg-blue-100/50'}`}
                                                     onClick={() => toggleCellVisibility(cellId)}
                                                 >
-                                                    <div className={`flex items-center justify-center h-full text-lg text-gray-600 py-2 ${getContentClass(isHidden)}`}>
+                                                    <div className={`flex items-center justify-center h-full text-sm text-gray-600 py-2 ${getContentClass(isHidden)}`}>
                                                         満貫
                                                     </div>
                                                 </td>
                                             )
                                         }
-
-                                        // Special case marker logic removed as requested
 
                                         return (
                                             <td
@@ -210,16 +225,13 @@ export function ScoreTable() {
                                                 onClick={() => toggleCellVisibility(cellId)}
                                             >
                                                 {winType === 'ron' && (
-                                                    <div className={`text-gray-800 text-lg ${getContentClass(isHidden)}`}>
+                                                    <div className={`text-gray-800 text-sm ${getContentClass(isHidden)}`}>
                                                         {score.ron}
                                                     </div>
                                                 )}
                                                 {winType === 'tsumo' && (
-                                                    <div className={`text-gray-800 text-lg ${getContentClass(isHidden)}`}>
-                                                        {typeof score.tsumo === 'string'
-                                                            ? score.tsumo.replace('オール', '')
-                                                            : score.tsumo
-                                                        }
+                                                    <div className={`text-gray-800 text-sm flex items-center justify-center h-full ${getContentClass(isHidden)}`}>
+                                                        {renderTsumoScore(score.tsumo)}
                                                     </div>
                                                 )}
                                             </td>
@@ -234,9 +246,9 @@ export function ScoreTable() {
                     <table className="w-full text-center border-collapse border border-gray-300 bg-white shadow-sm rounded-lg overflow-hidden">
                         <thead>
                             <tr>
-                                <th className="bg-gray-200 border border-gray-300 py-3 font-bold text-gray-700">役</th>
-                                <th className="bg-gray-200 border border-gray-300 py-3 font-bold text-gray-700">翻数</th>
-                                <th className="bg-gray-200 border border-gray-300 py-3 font-bold text-gray-700">
+                                <th className="bg-gray-200 border border-gray-300 py-3 text-gray-700 font-normal">役</th>
+                                <th className="bg-gray-200 border border-gray-300 py-3 text-gray-700 font-normal">翻数</th>
+                                <th className="bg-gray-200 border border-gray-300 py-3 text-gray-700 font-normal">
                                     点数
                                 </th>
                             </tr>
@@ -248,7 +260,7 @@ export function ScoreTable() {
 
                                 return (
                                     <tr key={item.name} className={idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                                        <td className="bg-gray-200 border border-gray-300 font-bold text-lg text-gray-700 py-4">
+                                        <td className="bg-gray-200 border border-gray-300 text-sm text-gray-700 py-4 font-normal">
                                             {item.name}
                                         </td>
                                         <td className="border border-gray-300 font-medium text-gray-600">
@@ -259,13 +271,13 @@ export function ScoreTable() {
                                             onClick={() => toggleCellVisibility(cellId)}
                                         >
                                             {winType === 'ron' && (
-                                                <div className={`text-gray-800 text-lg ${getContentClass(isHidden)}`}>
+                                                <div className={`text-gray-800 text-sm ${getContentClass(isHidden)}`}>
                                                     {isKo ? item.ronKo : item.ronOya}
                                                 </div>
                                             )}
                                             {winType === 'tsumo' && (
-                                                <div className={`text-gray-800 text-lg ${getContentClass(isHidden)}`}>
-                                                    {isKo ? item.tsumoKo.replace('オール', '') : typeof item.tsumoOya === 'string' ? item.tsumoOya.replace('オール', '') : item.tsumoOya}
+                                                <div className={`text-gray-800 text-sm flex items-center justify-center h-full ${getContentClass(isHidden)}`}>
+                                                    {renderTsumoScore(isKo ? item.tsumoKo : item.tsumoOya)}
                                                 </div>
                                             )}
                                         </td>
