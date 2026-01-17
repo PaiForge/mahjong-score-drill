@@ -50,6 +50,8 @@ const calculateOyaScore = (han: number, fu: number) => {
     return { isMangan: false, ron, tsumo: `${tsumo}オール` } // "オール" will be handled in render
 }
 
+import { useScoreTableStore } from '@/lib/drill/stores/useScoreTableStore'
+
 const HIGH_SCORES = [
     { name: '満貫', han: '5翻', ronKo: 8000, tsumoKo: '2000-4000', ronOya: 12000, tsumoOya: '4000オール' },
     { name: '跳満', han: '6-7翻', ronKo: 12000, tsumoKo: '3000-6000', ronOya: 18000, tsumoOya: '6000オール' },
@@ -58,15 +60,8 @@ const HIGH_SCORES = [
     { name: '役満', han: '13翻~', ronKo: 32000, tsumoKo: '8000-16000', ronOya: 48000, tsumoOya: '16000オール' },
 ]
 
-type WinType = 'ron' | 'tsumo'
-
 export function ScoreTable() {
-    const [activeTab, setActiveTab] = useState<Role>('ko')
-    const [viewMode, setViewMode] = useState<ViewMode>('normal')
-    const [winType, setWinType] = useState<WinType>('ron')
-
-    const toggleRole = () => setActiveTab(prev => prev === 'ko' ? 'oya' : 'ko')
-    const toggleViewMode = () => setViewMode(prev => prev === 'normal' ? 'high_score' : 'normal')
+    const { activeTab, setActiveTab, viewMode, setViewMode, winType, setWinType } = useScoreTableStore()
 
     const isKo = activeTab === 'ko'
 
