@@ -82,9 +82,13 @@ function judgeYaku(
 /**
  * ユーザーの回答を判定
  */
+/**
+ * ユーザーの回答を判定
+ */
 export function judgeAnswer(
   question: DrillQuestion,
-  userAnswer: UserAnswer
+  userAnswer: UserAnswer,
+  requireYaku: boolean = false
 ): JudgementResult {
   const { answer } = question
   const isManganOrAbove = isMangan(answer.scoreLevel)
@@ -99,7 +103,10 @@ export function judgeAnswer(
   const isScoreCorrect = judgeScore(answer.payment, userAnswer)
 
   // 役の判定
-  const isYakuCorrect = judgeYaku(question.yakuDetails, userAnswer.yakus)
+  // 役回答が必須でない場合は常に正解とする
+  const isYakuCorrect = requireYaku
+    ? judgeYaku(question.yakuDetails, userAnswer.yakus)
+    : true
 
   // 総合判定
   const isCorrect = isHanCorrect && isFuCorrect && isScoreCorrect && isYakuCorrect

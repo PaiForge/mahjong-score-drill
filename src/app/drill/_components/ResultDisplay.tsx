@@ -10,9 +10,10 @@ interface Props {
   userAnswer: UserAnswer
   result: JudgementResult
   onNext: () => void
+  requireYaku?: boolean
 }
 
-export function ResultDisplay({ question, userAnswer, result, onNext }: Props) {
+export function ResultDisplay({ question, userAnswer, result, onNext, requireYaku = false }: Props) {
   const { answer } = question
   const correctScore = getPaymentTotal(answer.payment)
   const isManganOrAbove = isMangan(answer.scoreLevel)
@@ -59,31 +60,33 @@ export function ResultDisplay({ question, userAnswer, result, onNext }: Props) {
             </thead>
             <tbody>
               {/* 役 */}
-              <tr>
-                <td className="text-gray-600 py-2 pr-4 whitespace-nowrap align-top">役</td>
-                <td className="py-2 pr-4 align-top">
-                  <div className="flex flex-wrap gap-1">
-                    {userAnswer.yakus.length > 0 ? (
-                      userAnswer.yakus.map((yaku, idx) => (
-                        <span
-                          key={idx}
-                          className={`inline-block px-2 py-0.5 rounded text-xs border ${result.isYakuCorrect ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'
-                            }`}
-                        >
-                          {yaku}
-                        </span>
-                      ))
-                    ) : (
-                      <span className="text-gray-400 text-sm">（選択なし）</span>
-                    )}
-                    <span className={`ml-1 ${result.isYakuCorrect ? 'text-green-600' : 'text-red-600'}`}>
-                      {result.isYakuCorrect ? '✓' : '✗'}
-                    </span>
-                  </div>
-                </td>
-                <td className="text-gray-800 font-bold py-2 align-top">
-                </td>
-              </tr>
+              {requireYaku && (
+                <tr>
+                  <td className="text-gray-600 py-2 pr-4 whitespace-nowrap align-top">役</td>
+                  <td className="py-2 pr-4 align-top">
+                    <div className="flex flex-wrap gap-1">
+                      {userAnswer.yakus.length > 0 ? (
+                        userAnswer.yakus.map((yaku, idx) => (
+                          <span
+                            key={idx}
+                            className={`inline-block px-2 py-0.5 rounded text-xs border ${result.isYakuCorrect ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'
+                              }`}
+                          >
+                            {yaku}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-gray-400 text-sm">（選択なし）</span>
+                      )}
+                      <span className={`ml-1 ${result.isYakuCorrect ? 'text-green-600' : 'text-red-600'}`}>
+                        {result.isYakuCorrect ? '✓' : '✗'}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="text-gray-800 font-bold py-2 align-top">
+                  </td>
+                </tr>
+              )}
 
               {/* 翻 */}
               <tr>

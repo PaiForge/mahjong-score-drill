@@ -9,6 +9,7 @@ interface Props {
   disabled?: boolean
   isTsumo: boolean
   isOya: boolean
+  requireYaku?: boolean
 }
 
 const HAN_OPTIONS = [
@@ -44,7 +45,7 @@ const FU_OPTIONS = [
   { value: 110, label: '110符' },
 ]
 
-export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya }: Props) {
+export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, requireYaku = false }: Props) {
   const [han, setHan] = useState<number | null>(null)
   const [fu, setFu] = useState<number | null>(null)
   const [yakus, setYakus] = useState<string[]>([])
@@ -73,6 +74,13 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya }: Props
     // 満貫未満の場合は符も必須
     if (!isMangan && fu === null) return
 
+    // 役入力が必要な場合、役が選択されているかチェックできるが、
+    // 現在の仕様では空でもOKとするか、バリデーションを追加するかは要検討
+    // いったんそのまま通す（役なし＝空配列）
+
+    // 提出する役リスト（不要なら空にする）
+    const submitYakus = requireYaku ? yakus : []
+
     if (isKoTsumo) {
       const koScore = parseInt(scoreFromKo, 10)
       const oyaScore = parseInt(scoreFromOya, 10)
@@ -83,7 +91,7 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya }: Props
         fu: isMangan ? null : fu,
         scoreFromKo: koScore,
         scoreFromOya: oyaScore,
-        yakus,
+        yakus: submitYakus,
       })
     } else {
       const scoreNum = parseInt(score, 10)
@@ -93,7 +101,7 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya }: Props
         han,
         fu: isMangan ? null : fu,
         score: scoreNum,
-        yakus,
+        yakus: submitYakus,
       })
     }
   }
@@ -101,11 +109,13 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya }: Props
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {/* 役入力 */}
-      <YakuSelect
-        value={yakus}
-        onChange={setYakus}
-        disabled={disabled}
-      />
+      {requireYaku && (
+        <YakuSelect
+          value={yakus}
+          onChange={setYakus}
+          disabled={disabled}
+        />
+      )}
 
       {/* 翻数入力 */}
       <div>

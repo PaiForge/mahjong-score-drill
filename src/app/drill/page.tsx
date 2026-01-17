@@ -10,14 +10,15 @@ interface DrillPageProps {
     riichi?: string
     ba?: string
     ji?: string
+    mode?: string
   }>
 }
 
 export default async function DrillPage({ searchParams }: DrillPageProps) {
   const params = await searchParams
 
-  // パラメータがあればパーマリンクモード
-  const hasQueryParams = !!(params.tehai || params.agari || params.dora)
+  // パラメータがあればパーマリンクモード or 設定あり
+  const hasQueryParams = !!(params.tehai || params.agari || params.dora || params.mode)
 
   return (
     <DrillBoard

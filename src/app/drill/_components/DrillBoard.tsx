@@ -20,13 +20,14 @@ interface DrillBoardProps {
     riichi?: string
     ba?: string
     ji?: string
+    mode?: string
   }
 }
 
 // SSR安全なクライアント判定フック
 function useIsClient() {
   return useSyncExternalStore(
-    () => () => {},
+    () => () => { },
     () => true,
     () => false
   )
@@ -125,10 +126,16 @@ export function DrillBoard({ initialParams }: DrillBoardProps) {
     )
   }
 
+  const requireYaku = initialParams?.mode === 'with_yaku'
+
   const handleSubmit = (answer: UserAnswer) => {
-    submitAnswer(answer)
-    // URLパラメータを削除
-    router.replace('/drill')
+    submitAnswer(answer, requireYaku)
+    // URLパラメータを削除（モードは維持）
+    if (requireYaku) {
+      router.replace('/drill?mode=with_yaku')
+    } else {
+      router.replace('/drill')
+    }
   }
 
   return (
@@ -165,6 +172,7 @@ export function DrillBoard({ initialParams }: DrillBoardProps) {
               userAnswer={userAnswer}
               result={judgementResult}
               onNext={nextQuestion}
+              requireYaku={requireYaku}
             />
           ) : (
             <AnswerForm
@@ -173,6 +181,7 @@ export function DrillBoard({ initialParams }: DrillBoardProps) {
               disabled={isAnswered}
               isTsumo={currentQuestion.isTsumo}
               isOya={currentQuestion.jikaze === HaiKind.Ton}
+              requireYaku={requireYaku}
             />
           )}
         </div>
