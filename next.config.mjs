@@ -5,6 +5,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  distDir: 'dist',
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
