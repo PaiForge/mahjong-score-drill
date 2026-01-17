@@ -47,6 +47,7 @@ export const useDrillStore = create<DrillStore>((set, get) => ({
   options: {
     includeFuro: true,
     includeChiitoi: false,
+    allowedRanges: ['non_mangan', 'mangan_plus'],
   },
   stats: {
     total: 0,

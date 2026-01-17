@@ -95,4 +95,6 @@ export interface QuestionGeneratorOptions {
   includeFuro?: boolean
   /** 七対子を含めるかどうか */
   includeChiitoi?: boolean
+  /** 出題する点数範囲 */
+  allowedRanges?: ('non_mangan' | 'mangan_plus')[]
 }

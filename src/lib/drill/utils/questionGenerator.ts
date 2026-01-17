@@ -35,6 +35,16 @@ const MANZU_START = HaiKind.ManZu1 // 0
 const PINZU_START = HaiKind.PinZu1 // 9
 const SOUZU_START = HaiKind.SouZu1 // 18
 
+const ScoreLevel = {
+  Normal: 'Normal',
+  Mangan: 'Mangan',
+  Haneman: 'Haneman',
+  Baiman: 'Baiman',
+  Sanbaiman: 'Sanbaiman',
+  Yakuman: 'Yakuman',
+  DoubleYakuman: 'DoubleYakuman',
+} as const
+
 /**
  * 面子手（4面子1雀頭）を生成
  */
@@ -343,16 +353,126 @@ export function generateQuestion(
       })
     }
 
-    // 計算した符の合計が、ライブラリの計算結果と一致するか確認（デバッグ用）
-    // ライブラリは切り上げ後の値(answer.fu)。内訳の合計は切り上げ前。
-    // 内訳の合計を切り上げて answer.fu と一致すればOK。
-    // 一致しない場合は、ライブラリの方が最適解を見つけている可能性があるので、
-    // 生成された構造が「最適ではない」待ちとして解釈されている可能性がある。
-    // この場合、問題として不適切（曖昧）かもしれないが、
-    // ドリルとしては「意図した構造」での符を表示するのが親切。
-    // ただし、解答（answer.fu）と内訳合計が矛盾すると混乱するので、
-    // 矛盾する場合は内訳を採用せず、非表示にする手もある。
-    // ここでは一旦そのまま出す。
+    const { allowedRanges = ['non_mangan', 'mangan_plus'] } = options
+
+    // ドラ調整 (Boosting)
+    // 満貫以上が要求されているのに満貫未満の場合、ドラを乗せて調整する
+    let boostedAnswer = finalAnswer
+    let currentDoraMarkers = [...doraMarkers] // コピーを作成
+    let currentTehai = { ...tehai }
+
+    // 満貫未満のみ許可 かつ 現状が満貫以上 -> リトライ対象 (nullを返して再生成させる)
+    if (allowedRanges.length === 1 && allowedRanges[0] === 'non_mangan' && boostedAnswer.scoreLevel !== ScoreLevel.Normal) {
+      return null
+    }
+
+    // 満貫以上のみ許可 かつ 現状が満貫未満 -> ドラを増やして調整
+    if (allowedRanges.length === 1 && allowedRanges[0] === 'mangan_plus' && boostedAnswer.scoreLevel === ScoreLevel.Normal) {
+      // 最大5回までドラ追加を試みる
+      for (let i = 0; i < 5; i++) {
+        // 新しいドラ表示牌を追加
+        const newMarker = randomInt(0, 33) as HaiKindId
+        currentDoraMarkers.push(newMarker)
+
+        // 点数再計算
+        // ドラ枚数を計算
+        let additionalDoraHan = 0
+        currentDoraMarkers.forEach(marker => {
+          const doraHai = getDoraFromIndicator(marker)
+          additionalDoraHan += currentTehai.closed.filter(h => h === doraHai).length
+          currentTehai.exposed.forEach(m => additionalDoraHan += m.hais.filter(h => h === doraHai).length)
+        })
+
+        // 裏ドラも考慮 (リーチ時)
+        let additionalUraDoraHan = 0
+        if (isRiichi && uraDoraMarkers) {
+          uraDoraMarkers.forEach(marker => {
+            const doraHai = getDoraFromIndicator(marker)
+            additionalUraDoraHan += currentTehai.closed.filter(h => h === doraHai).length
+            currentTehai.exposed.forEach(m => additionalUraDoraHan += m.hais.filter(h => h === doraHai).length)
+          })
+        }
+
+        // 基本点数計算にドラ分を加算して再計算するのは難しい（calculateScoreForTehaiはドラ表示牌を受け取る）
+        // なので、calculateScoreForTehai を再度呼ぶのが確実だが、tehai構造が変わるわけではないので
+        // recalculateScore を使う手もあるが、ドラの翻数が変わるので calculateScoreForTehai に新しいドラ表示牌を渡すのがベスト。
+        // ただし、uraDoraMarkers は calculateScoreForTehai には渡せない（裏ドラは役ではないため）。
+        // ここでは、answer (基本計算結果) はそのままで、最終的な点数を調整する必要がある。
+        // しかし、DoraはYakuとして扱われるため、calculateScoreForTehai に渡せば ScoreResult に反映される。
+
+        // 再計算
+        const newAnswer = calculateScoreForTehai(currentTehai, {
+          agariHai,
+          isTsumo,
+          jikaze,
+          bakaze,
+          doraMarkers: currentDoraMarkers,
+        })
+
+        // リーチ、裏ドラがある場合はそれらを加算
+        let finalHan = newAnswer.han
+        if (isRiichi) {
+          finalHan += 1 // リーチ
+          finalHan += additionalUraDoraHan
+        }
+
+        // 点数計算のみ実行（役判定等は calculateScoreForTehai で済んでいるが、リーチ・裏ドラは手動加算が必要）
+        // recalculateScore を使って、newAnswer をベースに最終的な翻数を適用する
+        // newAnswer.han はドラ込み、役込みの翻数。
+        // ここにリーチと裏ドラを足す。
+
+        // 正確には:
+        // calculateScoreForTehai の結果には「リーチ」「裏ドラ」は含まれていない（オプションにない）。
+        // なので、newAnswer.han + (isRiichi ? 1 : 0) + additionalUraDoraHan で再計算する。
+
+        const boostResult = recalculateScore(newAnswer, finalHan, {
+          isTsumo,
+          isOya: jikaze === HaiKind.Ton
+        })
+
+        if (boostResult.scoreLevel !== ScoreLevel.Normal) {
+          // 満貫に到達した！
+          boostedAnswer = boostResult
+
+          // yakuDetails を更新
+          // 既存のリストをベースに、ドラの項目を更新または追加する必要がある
+
+          // まずドラ以外の役を抽出
+          const nonDoraDetails = yakuDetails.filter(d => d.name !== 'ドラ' && d.name !== '裏ドラ' && d.name !== '立直')
+
+          // 再構築
+          const newYakuDetails: YakuDetail[] = []
+          if (isRiichi) newYakuDetails.push({ name: '立直', han: 1 })
+
+          newYakuDetails.push(...nonDoraDetails)
+
+          // ドラ
+          if (additionalDoraHan > 0) {
+            newYakuDetails.push({ name: 'ドラ', han: additionalDoraHan })
+          }
+          // 裏ドラ
+          if (additionalUraDoraHan > 0) {
+            newYakuDetails.push({ name: '裏ドラ', han: additionalUraDoraHan })
+          }
+
+          // 結果を更新してループを抜ける
+          while (yakuDetails.length > 0) yakuDetails.pop()
+          yakuDetails.push(...newYakuDetails)
+
+          break
+        }
+      }
+
+      // ブーストしても届かなかった場合 -> 今回は諦めて null (リトライ)
+      if (boostedAnswer.scoreLevel === ScoreLevel.Normal) {
+        return null
+      }
+    }
+
+    // 最終確認: 範囲外ならnull (例えば意図せず高くなりすぎた場合など)
+    // non_mangan 指定で mangan になったケースは上で弾いているが、念のため
+    if (allowedRanges.length === 1 && allowedRanges[0] === 'non_mangan' && boostedAnswer.scoreLevel !== ScoreLevel.Normal) return null
+    if (allowedRanges.length === 1 && allowedRanges[0] === 'mangan_plus' && boostedAnswer.scoreLevel === ScoreLevel.Normal) return null
 
     return {
       tehai,
@@ -360,12 +480,12 @@ export function generateQuestion(
       isTsumo,
       jikaze,
       bakaze,
-      doraMarkers,
+      doraMarkers: currentDoraMarkers, // 更新されたドラ表示牌
       isRiichi,
       uraDoraMarkers,
-      answer: finalAnswer,
+      answer: boostedAnswer, // 更新された回答
       fuDetails,
-      yakuDetails,
+      yakuDetails, // 更新された役詳細
     }
   } catch {
     // 計算エラーの場合はnullを返す

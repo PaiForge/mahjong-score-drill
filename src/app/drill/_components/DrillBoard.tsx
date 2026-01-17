@@ -47,6 +47,7 @@ export function DrillBoard() {
     const hasQueryParams = params.has('tehai') || params.has('agari') || params.has('dora')
 
     // URLパラメータからの生成を試みる
+    // URLパラメータからの生成を試みる
     if (hasQueryParams) {
       const queryResult = generateQuestionFromQuery(params)
 
@@ -60,6 +61,28 @@ export function DrillBoard() {
         generateNewQuestion()
       }
     } else {
+      // 範囲設定の読み込み
+      const rangesParam = params.getAll('ranges') // Next.js read of comma separated? No, standard URLSearchParams.
+      // SetupScreen uses params.append, so it might be ranges=non&ranges=plus or ranges=non,plus depending on implementation.
+      // SetupScreen implementation: params.append('ranges', 'non'), params.append('ranges', 'plus').
+      // So getAll is correct.
+
+      const allowedRanges: ('non_mangan' | 'mangan_plus')[] = []
+      // getAll returns array of values.
+      const rangesValues = params.getAll('ranges')
+
+      if (rangesValues.length > 0) {
+        if (rangesValues.includes('non')) allowedRanges.push('non_mangan')
+        if (rangesValues.includes('plus')) allowedRanges.push('mangan_plus')
+      } else {
+        // デフォルト: 両方
+        allowedRanges.push('non_mangan', 'mangan_plus')
+      }
+
+      useDrillStore.getState().setOptions({
+        allowedRanges
+      })
+
       generateNewQuestion()
     }
   }, [searchParams, generateNewQuestion])
@@ -124,6 +147,11 @@ export function DrillBoard() {
     if (requireYaku) params.set('mode', 'with_yaku')
     if (simplifyMangan) params.set('simple', '1')
     if (requireFuForMangan) params.set('fu_mangan', '1')
+
+    // 現在のパラメータからrangesを引き継ぐ
+    const currentParams = new URLSearchParams(searchParams.toString())
+    const ranges = currentParams.getAll('ranges')
+    ranges.forEach(r => params.append('ranges', r))
 
     const queryString = params.toString()
     router.replace(queryString ? `/drill?${queryString}` : '/drill')

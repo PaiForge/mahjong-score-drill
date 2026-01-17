@@ -8,7 +8,7 @@ export function SetupScreen() {
   const router = useRouter()
   // Hydration mismatch avoidance: wait for client mount
   const [mounted, setMounted] = useState(false)
-  const { requireYaku, setRequireYaku, simplifyMangan, setSimplifyMangan, requireFuForMangan, setRequireFuForMangan } = useSettingsStore()
+  const { requireYaku, setRequireYaku, simplifyMangan, setSimplifyMangan, requireFuForMangan, setRequireFuForMangan, targetScoreRanges, setTargetScoreRanges } = useSettingsStore()
 
   useEffect(() => {
     setMounted(true)
@@ -19,15 +19,33 @@ export function SetupScreen() {
     if (requireYaku) {
       params.set('mode', 'with_yaku')
     }
-    // settings param for future extensibility (though simple=1 is easier for now)
     if (simplifyMangan) {
       params.set('simple', '1')
     }
     if (requireFuForMangan) {
       params.set('fu_mangan', '1')
     }
+    // ranges=non,plus
+    if (targetScoreRanges.length > 0 && targetScoreRanges.length < 2) {
+      // 全選択(デフォルト)の場合はパラメータ省略可だが、明示的に片方だけの場合は指定
+      if (targetScoreRanges.includes('non_mangan')) params.append('ranges', 'non')
+      if (targetScoreRanges.includes('mangan_plus')) params.append('ranges', 'plus')
+    } else if (targetScoreRanges.length === 0) {
+      // 何も選択されていない場合はデフォルト動作（全範囲）として扱うが、
+      // UI上で「選択してください」と出すバリデーションが必要かもしれない。
+      // 現状は全範囲として振る舞うことにする
+    }
+
     const queryString = params.toString()
     router.push(queryString ? `/drill?${queryString}` : '/drill')
+  }
+
+  const handleToggleRange = (range: 'non_mangan' | 'mangan_plus') => {
+    if (targetScoreRanges.includes(range)) {
+      setTargetScoreRanges(targetScoreRanges.filter(r => r !== range))
+    } else {
+      setTargetScoreRanges([...targetScoreRanges, range])
+    }
   }
 
   // Prevent hydration mismatch by rendering a placeholder or default until mounted
@@ -102,6 +120,35 @@ export function SetupScreen() {
                 満貫以上も符を入力
               </span>
             </label>
+
+            {/* 点数範囲設定 */}
+            <div className="w-full pt-4 border-t border-slate-100 mt-2">
+              <div className="text-sm font-bold text-slate-500 mb-3 text-center">出題する点数</div>
+              <div className="flex justify-center gap-2">
+                <label className="group inline-flex items-center space-x-2 py-2 px-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200">
+                  <input
+                    type="checkbox"
+                    checked={targetScoreRanges.includes('non_mangan')}
+                    onChange={() => handleToggleRange('non_mangan')}
+                    className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 focus:ring-offset-0"
+                  />
+                  <span className="text-slate-700 text-sm font-semibold select-none">
+                    満貫未満
+                  </span>
+                </label>
+                <label className="group inline-flex items-center space-x-2 py-2 px-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200">
+                  <input
+                    type="checkbox"
+                    checked={targetScoreRanges.includes('mangan_plus')}
+                    onChange={() => handleToggleRange('mangan_plus')}
+                    className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 focus:ring-offset-0"
+                  />
+                  <span className="text-slate-700 text-sm font-semibold select-none">
+                    満貫以上
+                  </span>
+                </label>
+              </div>
+            </div>
           </div>
 
           {/* Main Action */}
