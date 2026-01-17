@@ -10,6 +10,7 @@ interface Props {
   isTsumo: boolean
   isOya: boolean
   requireYaku?: boolean
+  simplifyMangan?: boolean
 }
 
 const HAN_OPTIONS = [
@@ -29,6 +30,19 @@ const HAN_OPTIONS = [
   { value: 13, label: '役満' },
 ]
 
+const SIMPLIFIED_HAN_OPTIONS = [
+  { value: '', label: '選択してください' },
+  { value: 1, label: '1翻' },
+  { value: 2, label: '2翻' },
+  { value: 3, label: '3翻' },
+  { value: 4, label: '4翻' },
+  { value: 5, label: '満貫' },
+  { value: 6, label: '跳満' },
+  { value: 8, label: '倍満' },
+  { value: 11, label: '三倍満' },
+  { value: 13, label: '役満' },
+]
+
 // 符オプション
 const FU_OPTIONS = [
   { value: '', label: '選択してください' },
@@ -45,7 +59,7 @@ const FU_OPTIONS = [
   { value: 110, label: '110符' },
 ]
 
-export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, requireYaku = false }: Props) {
+export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, requireYaku = false, simplifyMangan = false }: Props) {
   const [han, setHan] = useState<number | null>(null)
   const [fu, setFu] = useState<number | null>(null)
   const [yakus, setYakus] = useState<string[]>([])
@@ -57,6 +71,8 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
 
   const isMangan = han !== null && han >= 5
   const isKoTsumo = isTsumo && !isOya
+
+  const hanOptions = simplifyMangan ? SIMPLIFIED_HAN_OPTIONS : HAN_OPTIONS
 
   const handleHanChange = (value: string) => {
     setHan(value === '' ? null : Number(value))
@@ -129,7 +145,7 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
           required
           className={`w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-base focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100 ${han === null ? '!text-gray-400' : '!text-gray-900'}`}
         >
-          {HAN_OPTIONS.map((option) => (
+          {hanOptions.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>

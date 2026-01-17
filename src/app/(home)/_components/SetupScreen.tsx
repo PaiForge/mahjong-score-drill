@@ -8,7 +8,7 @@ export function SetupScreen() {
   const router = useRouter()
   // Hydration mismatch avoidance: wait for client mount
   const [mounted, setMounted] = useState(false)
-  const { requireYaku, setRequireYaku } = useSettingsStore()
+  const { requireYaku, setRequireYaku, simplifyMangan, setSimplifyMangan } = useSettingsStore()
 
   useEffect(() => {
     setMounted(true)
@@ -18,6 +18,10 @@ export function SetupScreen() {
     const params = new URLSearchParams()
     if (requireYaku) {
       params.set('mode', 'with_yaku')
+    }
+    // settings param for future extensibility (though simple=1 is easier for now)
+    if (simplifyMangan) {
+      params.set('simple', '1')
     }
     const queryString = params.toString()
     router.push(queryString ? `/drill?${queryString}` : '/drill')
@@ -53,8 +57,8 @@ export function SetupScreen() {
 
         <div className="space-y-6">
           {/* Settings Area */}
-          <div className="flex justify-center">
-            <label className="group inline-flex items-center space-x-3 py-3 px-5 bg-slate-50 rounded-xl cursor-pointer hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200">
+          <div className="flex flex-col items-center gap-3">
+            <label className="group inline-flex items-center space-x-3 py-3 px-5 bg-slate-50 rounded-xl cursor-pointer hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200 w-full justify-center">
               <div className="relative flex items-center">
                 <input
                   type="checkbox"
@@ -65,6 +69,20 @@ export function SetupScreen() {
               </div>
               <span className="text-slate-700 font-semibold select-none group-hover:text-slate-900">
                 役も回答する
+              </span>
+            </label>
+
+            <label className="group inline-flex items-center space-x-3 py-3 px-5 bg-slate-50 rounded-xl cursor-pointer hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200 w-full justify-center">
+              <div className="relative flex items-center">
+                <input
+                  type="checkbox"
+                  checked={simplifyMangan}
+                  onChange={(e) => setSimplifyMangan(e.target.checked)}
+                  className="peer w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 focus:ring-offset-0"
+                />
+              </div>
+              <span className="text-slate-700 font-semibold select-none group-hover:text-slate-900">
+                5翻以降を簡略化
               </span>
             </label>
           </div>

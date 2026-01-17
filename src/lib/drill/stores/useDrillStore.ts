@@ -25,7 +25,7 @@ interface DrillActions {
   /** 新しい問題を生成 */
   generateNewQuestion: () => void
   /** 回答を送信 */
-  submitAnswer: (answer: UserAnswer, requireYaku?: boolean) => void
+  submitAnswer: (answer: UserAnswer, requireYaku?: boolean, simplifyMangan?: boolean) => void
   /** 次の問題へ */
   nextQuestion: () => void
   /** 統計をリセット */
@@ -64,11 +64,11 @@ export const useDrillStore = create<DrillStore>((set, get) => ({
     })
   },
 
-  submitAnswer: (answer: UserAnswer, requireYaku: boolean = false) => {
+  submitAnswer: (answer: UserAnswer, requireYaku: boolean = false, simplifyMangan: boolean = false) => {
     const { currentQuestion, stats } = get()
     if (!currentQuestion) return
 
-    const result = judgeAnswer(currentQuestion, answer, requireYaku)
+    const result = judgeAnswer(currentQuestion, answer, requireYaku, simplifyMangan)
 
     set({
       userAnswer: answer,

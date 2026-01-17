@@ -85,16 +85,40 @@ function judgeYaku(
 /**
  * ユーザーの回答を判定
  */
+/**
+ * 簡略化された翻数を取得
+ * 5翻以上をクラスごとの代表値に変換
+ */
+function getSimplifiedHan(han: number): number {
+  if (han >= 13) return 13 // 役満
+  if (han >= 11) return 11 // 三倍満
+  if (han >= 8) return 8   // 倍満
+  if (han >= 6) return 6   // 跳満
+  if (han >= 5) return 5   // 満貫
+  return han
+}
+
+/**
+ * ユーザーの回答を判定
+ */
 export function judgeAnswer(
   question: DrillQuestion,
   userAnswer: UserAnswer,
-  requireYaku: boolean = false
+  requireYaku: boolean = false,
+  simplifyMangan: boolean = false
 ): JudgementResult {
   const { answer } = question
   const isManganOrAbove = isMangan(answer.scoreLevel)
 
   // 翻の判定
-  const isHanCorrect = userAnswer.han === answer.han
+  let isHanCorrect = userAnswer.han === answer.han
+
+  if (simplifyMangan) {
+    // 簡略化モードの場合、5翻以上はクラス判定
+    if (userAnswer.han >= 5 || answer.han >= 5) {
+      isHanCorrect = getSimplifiedHan(userAnswer.han) === getSimplifiedHan(answer.han)
+    }
+  }
 
   // 符の判定（満貫以上は常に正解扱い）
   const isFuCorrect = isManganOrAbove || userAnswer.fu === answer.fu

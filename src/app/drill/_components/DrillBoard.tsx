@@ -114,15 +114,17 @@ export function DrillBoard() {
   }
 
   const requireYaku = searchParams.get('mode') === 'with_yaku'
+  const simplifyMangan = searchParams.get('simple') === '1'
 
   const handleSubmit = (answer: UserAnswer) => {
-    submitAnswer(answer, requireYaku)
-    // URLパラメータを削除（モードは維持）
-    if (requireYaku) {
-      router.replace('/drill?mode=with_yaku')
-    } else {
-      router.replace('/drill')
-    }
+    submitAnswer(answer, requireYaku, simplifyMangan)
+    // URLパラメータを維持
+    const params = new URLSearchParams()
+    if (requireYaku) params.set('mode', 'with_yaku')
+    if (simplifyMangan) params.set('simple', '1')
+
+    const queryString = params.toString()
+    router.replace(queryString ? `/drill?${queryString}` : '/drill')
   }
 
   return (
@@ -156,6 +158,7 @@ export function DrillBoard() {
               result={judgementResult}
               onNext={nextQuestion}
               requireYaku={requireYaku}
+              simplifyMangan={simplifyMangan}
             />
           ) : (
             <AnswerForm
@@ -165,6 +168,7 @@ export function DrillBoard() {
               isTsumo={currentQuestion.isTsumo}
               isOya={currentQuestion.jikaze === HaiKind.Ton}
               requireYaku={requireYaku}
+              simplifyMangan={simplifyMangan}
             />
           )}
         </div>

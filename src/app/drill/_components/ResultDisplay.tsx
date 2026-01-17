@@ -11,9 +11,10 @@ interface Props {
   result: JudgementResult
   onNext: () => void
   requireYaku?: boolean
+  simplifyMangan?: boolean
 }
 
-export function ResultDisplay({ question, userAnswer, result, onNext, requireYaku = false }: Props) {
+export function ResultDisplay({ question, userAnswer, result, onNext, requireYaku = false, simplifyMangan = false }: Props) {
   const { answer } = question
   const correctScore = getPaymentTotal(answer.payment)
   const isManganOrAbove = isMangan(answer.scoreLevel)
@@ -33,6 +34,21 @@ export function ResultDisplay({ question, userAnswer, result, onNext, requireYak
       return `${payment.amount}オール (計${correctScore}点)`
     }
     return ''
+  }
+
+  const getHanDisplay = (han: number, scoreLevelName?: string) => {
+    if (simplifyMangan && han >= 5) {
+      // 簡略化モードかつ5翻以上の場合はクラス名を表示
+      // ユーザー回答の場合はhanから推測する（5=満貫, 6=跳満, 8=倍満, 11=三倍満, 13=役満）
+      if (scoreLevelName) return scoreLevelName
+
+      if (han >= 13) return '役満'
+      if (han >= 11) return '三倍満'
+      if (han >= 8) return '倍満'
+      if (han >= 6) return '跳満'
+      if (han >= 5) return '満貫'
+    }
+    return `${han}翻`
   }
 
   return (
@@ -92,10 +108,11 @@ export function ResultDisplay({ question, userAnswer, result, onNext, requireYak
               <tr>
                 <td className="text-gray-600 py-2 pr-4 whitespace-nowrap">翻数</td>
                 <td className={`py-2 pr-4 ${result.isHanCorrect ? 'text-green-600' : 'text-red-600'}`}>
-                  {userAnswer.han}翻 {result.isHanCorrect ? '✓' : '✗'}
+                  {getHanDisplay(userAnswer.han)} {result.isHanCorrect ? '✓' : '✗'}
                 </td>
                 <td className="text-gray-800 font-bold py-2">
-                  {answer.han}翻{scoreLevelName && ` (${scoreLevelName})`}
+                  {getHanDisplay(answer.han, scoreLevelName)}
+                  {!simplifyMangan && scoreLevelName && ` (${scoreLevelName})`}
                   {question.yakuDetails && question.yakuDetails.length > 0 && (
                     <button
                       onClick={() => setShowYakuDetails(!showYakuDetails)}
