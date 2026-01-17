@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useSyncExternalStore, useCallback, useRef } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { HaiKind } from '@pai-forge/riichi-mahjong'
 import { useDrillStore } from '@/lib/drill/stores/useDrillStore'
 import { QuestionDisplay } from './QuestionDisplay'
@@ -9,20 +9,6 @@ import { AnswerForm } from './AnswerForm'
 import { ResultDisplay } from './ResultDisplay'
 import { generateQuestionFromQuery } from '@/lib/drill/utils/queryQuestionGenerator'
 import type { UserAnswer } from '@/lib/drill/types'
-
-interface DrillBoardProps {
-  initialParams?: {
-    tehai?: string
-    agari?: string
-    tsumo?: string
-    dora?: string
-    ura?: string
-    riichi?: string
-    ba?: string
-    ji?: string
-    mode?: string
-  }
-}
 
 // SSR安全なクライアント判定フック
 function useIsClient() {
@@ -33,8 +19,9 @@ function useIsClient() {
   )
 }
 
-export function DrillBoard({ initialParams }: DrillBoardProps) {
+export function DrillBoard() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const {
     currentQuestion,
     userAnswer,
@@ -55,12 +42,12 @@ export function DrillBoard({ initialParams }: DrillBoardProps) {
     if (initializedRef.current) return
     initializedRef.current = true
 
+    // パラメータ取得
+    const params = new URLSearchParams(searchParams.toString())
+    const hasQueryParams = params.has('tehai') || params.has('agari') || params.has('dora')
+
     // URLパラメータからの生成を試みる
-    if (initialParams && (initialParams.tehai || initialParams.agari || initialParams.dora)) {
-      const params = new URLSearchParams()
-      Object.entries(initialParams).forEach(([key, value]) => {
-        if (value) params.set(key, value)
-      })
+    if (hasQueryParams) {
       const queryResult = generateQuestionFromQuery(params)
 
       if (queryResult) {
@@ -75,7 +62,7 @@ export function DrillBoard({ initialParams }: DrillBoardProps) {
     } else {
       generateNewQuestion()
     }
-  }, [initialParams, generateNewQuestion])
+  }, [searchParams, generateNewQuestion])
 
   useEffect(() => {
     if (isClient && !currentQuestion) {
@@ -126,7 +113,7 @@ export function DrillBoard({ initialParams }: DrillBoardProps) {
     )
   }
 
-  const requireYaku = initialParams?.mode === 'with_yaku'
+  const requireYaku = searchParams.get('mode') === 'with_yaku'
 
   const handleSubmit = (answer: UserAnswer) => {
     submitAnswer(answer, requireYaku)

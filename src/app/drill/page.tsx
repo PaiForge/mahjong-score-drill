@@ -1,28 +1,10 @@
+import { Suspense } from 'react'
 import { DrillBoard } from './_components/DrillBoard'
 
-interface DrillPageProps {
-  searchParams: Promise<{
-    tehai?: string
-    agari?: string
-    tsumo?: string
-    dora?: string
-    ura?: string
-    riichi?: string
-    ba?: string
-    ji?: string
-    mode?: string
-  }>
-}
-
-export default async function DrillPage({ searchParams }: DrillPageProps) {
-  const params = await searchParams
-
-  // パラメータがあればパーマリンクモード or 設定あり
-  const hasQueryParams = !!(params.tehai || params.agari || params.dora || params.mode)
-
+export default function DrillPage() {
   return (
-    <DrillBoard
-      initialParams={hasQueryParams ? params : undefined}
-    />
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">読み込み中...</div>}>
+      <DrillBoard />
+    </Suspense>
   )
 }
