@@ -1,7 +1,7 @@
 'use client'
 
 import { Hai, Furo } from '@pai-forge/mahjong-react-ui'
-import { HaiKind, MentsuType } from '@pai-forge/riichi-mahjong'
+import { HaiKind, MentsuType, FuroType } from '@pai-forge/riichi-mahjong'
 import { RiichiStick } from '@/app/_components/RiichiStick'
 import type { DrillQuestion } from '@/lib/drill/types'
 import { getKazeName, getDoraFromIndicator } from '@/lib/drill/utils/haiNames'
@@ -50,7 +50,17 @@ export function QuestionDisplay({ question }: Props) {
           <div className="flex justify-end w-full mb-2 px-4">
             <div className="flex gap-2">
               {kantsuList.map((mentsu, index) => (
-                <Furo key={`kan-${index}`} mentsu={mentsu} furo={mentsu.furo} size={haiSize} />
+                <Furo
+                  key={`kan-${index}`}
+                  mentsu={mentsu}
+                  furo={mentsu.furo}
+                  size={haiSize}
+                  className={
+                    !mentsu.furo || mentsu.furo.type !== FuroType.Daiminkan
+                      ? 'ankan-furo'
+                      : ''
+                  }
+                />
               ))}
             </div>
           </div>

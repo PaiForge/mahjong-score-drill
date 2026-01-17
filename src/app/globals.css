@@ -11,3 +11,10 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
+
+/* Change Ankan tile back color from red to 'Camel' (Warm Yellow/Orange) */
+/* Using sepia to normalize tone then rotating to camel/gold */
+.ankan-furo> :nth-child(1),
+.ankan-furo> :nth-child(4) {
+  filter: hue-rotate(20deg) brightness(2.0) saturate(1.5);
+}
