@@ -43,44 +43,61 @@ export function SetupScreen() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-md w-full max-w-md p-8 text-center space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
+    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8 text-center space-y-10 border border-slate-100">
+        <div className="space-y-3">
+          <h1 className="!text-3xl !font-extrabold text-slate-800 tracking-tight">
             麻雀点数計算ドリル
           </h1>
-          <p className="text-gray-600">
-            ランダムに出題される点数計算問題を解いて、
-            <br />
-            計算力を鍛えましょう。
-          </p>
         </div>
 
-        <div className="space-y-4 w-full">
-          <label className="flex items-center justify-center p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
-            <input
-              type="checkbox"
-              checked={requireYaku}
-              onChange={(e) => setRequireYaku(e.target.checked)}
-              className="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-            />
-            <span className="text-gray-700 font-medium select-none ml-3">役も回答する</span>
-          </label>
+        <div className="space-y-6">
+          {/* Settings Area */}
+          <div className="flex justify-center">
+            <label className="group inline-flex items-center space-x-3 py-3 px-5 bg-slate-50 rounded-xl cursor-pointer hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200">
+              <div className="relative flex items-center">
+                <input
+                  type="checkbox"
+                  checked={requireYaku}
+                  onChange={(e) => setRequireYaku(e.target.checked)}
+                  className="peer w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 focus:ring-offset-0"
+                />
+              </div>
+              <span className="text-slate-700 font-semibold select-none group-hover:text-slate-900">
+                役も回答する
+              </span>
+            </label>
+          </div>
 
+          {/* Main Action */}
           <button
             onClick={handleStart}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg text-lg transition-colors shadow-sm"
+            // AnswerFormのボタンと同じスタイルを適用 (!py-3 !px-6 !bg-amber-500 rounded-lg etc)
+            className="w-full !py-3 !px-6 !bg-amber-500 !text-white !font-bold !rounded-lg hover:!bg-amber-600 transition-colors shadow-sm flex items-center justify-center gap-2"
           >
-            スタート
-          </button>
-
-          <button
-            onClick={() => router.push('/cheatsheet')}
-            className="w-full bg-white hover:bg-gray-50 text-gray-700 font-bold py-3 px-6 rounded-lg border border-gray-300 transition-colors shadow-sm"
-          >
-            点数早見表
+            <span>ドリルを開始</span>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
           </button>
         </div>
+
+        {/* Footer Links */}
+        <div className="pt-2 border-t border-slate-100">
+          <button
+            onClick={() => router.push('/cheatsheet')}
+            className="text-slate-500 hover:text-blue-600 font-medium text-sm py-2 px-4 rounded transition-colors inline-flex items-center gap-1"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            点数早見表を確認する
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-8 text-slate-400 text-xs">
+        © {new Date().getFullYear()} Mahjong Drill
       </div>
     </div>
   )
