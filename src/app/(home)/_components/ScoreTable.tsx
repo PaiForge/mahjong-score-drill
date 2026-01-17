@@ -188,7 +188,8 @@ export function ScoreTable() {
                                         if (
                                             (han === 1 && fu === 20) ||
                                             (winType === 'ron' && fu === 20) ||
-                                            (han === 1 && fu === 25)
+                                            (han === 1 && fu === 25) ||
+                                            (winType === 'tsumo' && han === 2 && fu === 25)
                                         ) {
                                             return (
                                                 <td key={han} className="border border-gray-300 text-gray-300 bg-gray-50/50 h-16">
