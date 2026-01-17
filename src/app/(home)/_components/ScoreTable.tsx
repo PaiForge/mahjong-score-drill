@@ -61,9 +61,21 @@ const HIGH_SCORES = [
 ]
 
 export function ScoreTable() {
-    const { activeTab, setActiveTab, viewMode, setViewMode, winType, setWinType } = useScoreTableStore()
+    const { activeTab, setActiveTab, viewMode, setViewMode, winType, setWinType, hiddenCells, toggleCellVisibility } = useScoreTableStore()
 
     const isKo = activeTab === 'ko'
+
+    const getCellClass = (isHidden: boolean) => {
+        const base = "border border-gray-300 p-2 relative h-12 align-middle cursor-pointer transition-all duration-200 select-none"
+        if (isHidden) {
+            return `${base} bg-gray-200 hover:bg-gray-200`
+        }
+        return `${base} hover:bg-gray-50`
+    }
+
+    const getContentClass = (isHidden: boolean) => {
+        return `transition-all duration-300 ${isHidden ? '!filter !blur-md !opacity-100' : ''}`
+    }
 
     return (
         <div className="w-full relative pb-20">
@@ -172,10 +184,17 @@ export function ScoreTable() {
                                             ? calculateKoScore(han, fu)
                                             : calculateOyaScore(han, fu)
 
+                                        const cellId = `${activeTab}-${winType}-${han}han-${fu}fu`
+                                        const isHidden = !!hiddenCells[cellId]
+
                                         if (score.isMangan) {
                                             return (
-                                                <td key={han} className="border border-gray-300 p-1 bg-blue-50/30">
-                                                    <div className="flex items-center justify-center h-full text-lg text-gray-600 py-2">
+                                                <td
+                                                    key={han}
+                                                    className={`border border-gray-300 p-1 cursor-pointer transition-all duration-300 select-none ${isHidden ? 'bg-gray-200' : 'bg-blue-50/30 hover:bg-blue-100/50'}`}
+                                                    onClick={() => toggleCellVisibility(cellId)}
+                                                >
+                                                    <div className={`flex items-center justify-center h-full text-lg text-gray-600 py-2 ${getContentClass(isHidden)}`}>
                                                         満貫
                                                     </div>
                                                 </td>
@@ -185,14 +204,18 @@ export function ScoreTable() {
                                         // Special case marker logic removed as requested
 
                                         return (
-                                            <td key={han} className="border border-gray-300 p-2 relative h-12 align-middle">
+                                            <td
+                                                key={han}
+                                                className={getCellClass(isHidden)}
+                                                onClick={() => toggleCellVisibility(cellId)}
+                                            >
                                                 {winType === 'ron' && (
-                                                    <div className="text-gray-800 text-lg">
+                                                    <div className={`text-gray-800 text-lg ${getContentClass(isHidden)}`}>
                                                         {score.ron}
                                                     </div>
                                                 )}
                                                 {winType === 'tsumo' && (
-                                                    <div className="text-gray-800 text-lg">
+                                                    <div className={`text-gray-800 text-lg ${getContentClass(isHidden)}`}>
                                                         {typeof score.tsumo === 'string'
                                                             ? score.tsumo.replace('オール', '')
                                                             : score.tsumo
@@ -219,28 +242,36 @@ export function ScoreTable() {
                             </tr>
                         </thead>
                         <tbody>
-                            {HIGH_SCORES.map((item, idx) => (
-                                <tr key={item.name} className={idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                                    <td className="bg-gray-200 border border-gray-300 font-bold text-lg text-gray-700 py-4">
-                                        {item.name}
-                                    </td>
-                                    <td className="border border-gray-300 font-medium text-gray-600">
-                                        {item.han}
-                                    </td>
-                                    <td className="border border-gray-300 p-2">
-                                        {winType === 'ron' && (
-                                            <div className="text-gray-800 text-lg">
-                                                {isKo ? item.ronKo : item.ronOya}
-                                            </div>
-                                        )}
-                                        {winType === 'tsumo' && (
-                                            <div className="text-gray-800 text-lg">
-                                                {isKo ? item.tsumoKo.replace('オール', '') : typeof item.tsumoOya === 'string' ? item.tsumoOya.replace('オール', '') : item.tsumoOya}
-                                            </div>
-                                        )}
-                                    </td>
-                                </tr>
-                            ))}
+                            {HIGH_SCORES.map((item, idx) => {
+                                const cellId = `${activeTab}-${winType}-${item.name}`
+                                const isHidden = !!hiddenCells[cellId]
+
+                                return (
+                                    <tr key={item.name} className={idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                                        <td className="bg-gray-200 border border-gray-300 font-bold text-lg text-gray-700 py-4">
+                                            {item.name}
+                                        </td>
+                                        <td className="border border-gray-300 font-medium text-gray-600">
+                                            {item.han}
+                                        </td>
+                                        <td
+                                            className={getCellClass(isHidden)}
+                                            onClick={() => toggleCellVisibility(cellId)}
+                                        >
+                                            {winType === 'ron' && (
+                                                <div className={`text-gray-800 text-lg ${getContentClass(isHidden)}`}>
+                                                    {isKo ? item.ronKo : item.ronOya}
+                                                </div>
+                                            )}
+                                            {winType === 'tsumo' && (
+                                                <div className={`text-gray-800 text-lg ${getContentClass(isHidden)}`}>
+                                                    {isKo ? item.tsumoKo.replace('オール', '') : typeof item.tsumoOya === 'string' ? item.tsumoOya.replace('オール', '') : item.tsumoOya}
+                                                </div>
+                                            )}
+                                        </td>
+                                    </tr>
+                                )
+                            })}
                         </tbody>
                     </table>
                 )}
