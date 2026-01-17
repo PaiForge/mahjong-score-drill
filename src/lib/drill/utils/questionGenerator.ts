@@ -268,7 +268,7 @@ export function generateQuestion(
       const jikazeCount = countHai(jikaze)
 
       if (bakazeCount >= 3) {
-        const name = `役牌 ${getYakuNameJa(getKeyForKazehai(bakaze))}`
+        const name = getYakuNameJa(getKeyForKazehai(bakaze))
         const existing = yakuDetails.find(d => d.name === name)
         if (existing) {
           existing.han += 1
@@ -278,7 +278,7 @@ export function generateQuestion(
       }
 
       if (jikazeCount >= 3) {
-        const name = `役牌 ${getYakuNameJa(getKeyForKazehai(jikaze))}`
+        const name = getYakuNameJa(getKeyForKazehai(jikaze))
         const existing = yakuDetails.find(d => d.name === name)
         if (existing) {
           existing.han += 1
