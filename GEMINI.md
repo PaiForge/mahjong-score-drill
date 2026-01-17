@@ -11,3 +11,4 @@
 
 - .agent/rules/general-rules.md
 - docs/architecture.md
+- docs/tech-debt.md
