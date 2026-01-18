@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import { useState, useEffect, ChangeEvent } from 'react'
 
 interface Props {
     options: string[]
@@ -18,11 +18,13 @@ export function MultiSelect({
     disabled = false,
     className = '',
 }: Props) {
-    const [isMobile, setIsMobile] = React.useState(false)
+    const [isMobile, setIsMobile] = useState(false)
 
-    React.useEffect(() => {
+    useEffect(() => {
         const ua = navigator.userAgent.toLowerCase()
-        const isMobileDevice = /iphone|ipad|ipod|android/.test(ua)
+        // Broad mobile detection
+        const isMobileDevice = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua)
+        console.log('[MultiSelect] UA Detection:', { ua, isMobileDevice })
         setIsMobile(isMobileDevice)
     }, [])
 
@@ -30,7 +32,7 @@ export function MultiSelect({
         onChange(value.filter((v) => v !== optionToRemove))
     }
 
-    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
         const selectedValues = Array.from(e.target.selectedOptions, (option) => option.value)
         onChange(selectedValues)
     }
