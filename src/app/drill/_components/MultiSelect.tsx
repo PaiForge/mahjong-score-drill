@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, ChangeEvent } from 'react'
+import { ChangeEvent } from 'react'
 
 interface Props {
     options: string[]
@@ -18,23 +18,8 @@ export function MultiSelect({
     disabled = false,
     className = '',
 }: Props) {
-    const [isMobile, setIsMobile] = useState(false)
-
-    useEffect(() => {
-        const ua = navigator.userAgent.toLowerCase()
-        // Broad mobile detection
-        const isMobileDevice = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua)
-        console.log('[MultiSelect] UA Detection:', { ua, isMobileDevice })
-        setIsMobile(isMobileDevice)
-    }, [])
-
     const handleRemove = (optionToRemove: string) => {
         onChange(value.filter((v) => v !== optionToRemove))
-    }
-
-    const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        const selectedValues = Array.from(e.target.selectedOptions, (option) => option.value)
-        onChange(selectedValues)
     }
 
     return (
@@ -68,67 +53,40 @@ export function MultiSelect({
             </div>
 
             {/* Selection Controls */}
-            {/* 
-                Use User Agent detection to switch interface:
-                - Mobile (Android/iOS): Native Select (better UX for touch)
-                - Desktop: Custom List (click-to-select, always visible)
-            */}
-            {isMobile ? (
-                // Mobile: Native Select
-                <div className="relative block">
-                    <select
-                        multiple
-                        value={value}
-                        onChange={handleSelectChange}
-                        disabled={disabled}
-                        className="w-full border border-gray-300 rounded-lg !px-2 ml-2 py-3 text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                    >
-                        <option value="" disabled style={{ display: 'none' }}>
-                            {placeholder}
-                        </option>
-                        {options.map((option) => (
-                            <option key={option} value={option}>
-                                {option}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            ) : (
-                // Desktop: Custom List
-                <div className={`w-full border border-gray-300 rounded-lg overflow-y-auto h-32 bg-white ${disabled ? 'bg-gray-100' : ''}`}>
-                    {options.map((option) => {
-                        const isSelected = value.includes(option)
-                        return (
-                            <div
-                                key={option}
-                                onClick={() => {
-                                    if (disabled) return
-                                    if (isSelected) {
-                                        handleRemove(option)
-                                    } else {
-                                        const newValues = [...value, option]
-                                        onChange(newValues)
-                                    }
-                                }}
-                                className={`px-3 py-2 cursor-pointer transition-colors text-sm border-b border-gray-100 last:border-0
-                                    ${isSelected
-                                        ? 'bg-amber-100 text-amber-900 font-medium'
-                                        : 'text-gray-700 hover:bg-gray-50'
-                                    }
-                                    ${disabled ? 'cursor-not-allowed opacity-60' : ''}
-                                `}
-                            >
-                                <div className="flex items-center justify-between">
-                                    <span>{option}</span>
-                                    {isSelected && (
-                                        <span className="text-amber-600 text-lg leading-none">✓</span>
-                                    )}
-                                </div>
+            {/* Custom List for All Devices - Responsive Styles */}
+            <div className={`w-full border border-gray-300 rounded-lg overflow-y-auto bg-white ${disabled ? 'bg-gray-100' : ''} h-60 md:h-32`}>
+                {options.map((option) => {
+                    const isSelected = value.includes(option)
+                    return (
+                        <div
+                            key={option}
+                            onClick={() => {
+                                if (disabled) return
+                                if (isSelected) {
+                                    handleRemove(option)
+                                } else {
+                                    const newValues = [...value, option]
+                                    onChange(newValues)
+                                }
+                            }}
+                            className={`px-3 cursor-pointer transition-colors text-sm border-b border-gray-100 last:border-0 py-3 md:py-2
+                                ${isSelected
+                                    ? 'bg-amber-100 text-amber-900 font-medium'
+                                    : 'text-gray-700 hover:bg-gray-50'
+                                }
+                                ${disabled ? 'cursor-not-allowed opacity-60' : ''}
+                            `}
+                        >
+                            <div className="flex items-center justify-between">
+                                <span>{option}</span>
+                                {isSelected && (
+                                    <span className="text-amber-600 text-lg leading-none">✓</span>
+                                )}
                             </div>
-                        )
-                    })}
-                </div>
-            )}
+                        </div>
+                    )
+                })}
+            </div>
         </div>
     )
 }
