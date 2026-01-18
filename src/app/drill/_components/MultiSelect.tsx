@@ -1,7 +1,5 @@
 'use client'
 
-import { useState, useRef, useEffect, useMemo } from 'react'
-
 interface Props {
     options: string[]
     value: string[]
@@ -19,123 +17,100 @@ export function MultiSelect({
     disabled = false,
     className = '',
 }: Props) {
-    const [isOpen, setIsOpen] = useState(false)
-    const [searchTerm, setSearchTerm] = useState('')
-    const containerRef = useRef<HTMLDivElement>(null)
-    const inputRef = useRef<HTMLInputElement>(null)
-
-    // 選択肢のフィルタリング
-    const filteredOptions = useMemo(() => {
-        return options.filter((option) =>
-            option.includes(searchTerm) && !value.includes(option)
-        )
-    }, [options, searchTerm, value])
-
-    // クリック外の検知
-    useEffect(() => {
-        function handleClickOutside(event: MouseEvent) {
-            if (
-                containerRef.current &&
-                !containerRef.current.contains(event.target as Node)
-            ) {
-                setIsOpen(false)
-                setSearchTerm('')
-            }
-        }
-        document.addEventListener('mousedown', handleClickOutside)
-        return () => document.removeEventListener('mousedown', handleClickOutside)
-    }, [])
-
-    const handleSelect = (option: string) => {
-        onChange([...value, option])
-        setSearchTerm('')
-        inputRef.current?.focus()
-    }
-
     const handleRemove = (optionToRemove: string) => {
         onChange(value.filter((v) => v !== optionToRemove))
     }
 
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === 'Backspace' && searchTerm === '' && value.length > 0) {
-            handleRemove(value[value.length - 1])
-        }
+    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedValues = Array.from(e.target.selectedOptions, (option) => option.value)
+        onChange(selectedValues)
     }
 
     return (
-        <div
-            ref={containerRef}
-            className={`relative w-full ${className}`}
-        >
+        <div className={`w-full ${className}`}>
+            {/* Chips Display */}
             <div
-                className={`min-h-[46px] w-full px-2 py-1.5 border border-gray-300 rounded-lg bg-white text-base focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-orange-500 flex flex-wrap gap-2 items-center cursor-text ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''
+                className={`min-h-[46px] w-full px-2 py-1.5 border border-gray-300 rounded-lg bg-white mb-2 flex flex-wrap gap-2 items-center ${disabled ? 'bg-gray-100' : ''
                     }`}
-                onClick={() => {
-                    if (!disabled) {
-                        setIsOpen(true)
-                        inputRef.current?.focus()
-                    }
-                }}
             >
-                {/* Chips */}
-                {value.map((v) => (
-                    <span
-                        key={v}
-                        className="inline-flex items-center px-2 py-1 bg-amber-100 text-amber-800 text-sm rounded-md"
-                    >
-                        {v}
-                        {!disabled && (
-                            <button
-                                type="button"
-                                onClick={(e) => {
-                                    e.stopPropagation()
-                                    handleRemove(v)
-                                }}
-                                className="ml-1 text-amber-600 hover:text-amber-900 focus:outline-none"
-                            >
-                                ×
-                            </button>
-                        )}
-                    </span>
-                ))}
-
-                {/* Input */}
-                <input
-                    ref={inputRef}
-                    type="text"
-                    value={searchTerm}
-                    onChange={(e) => {
-                        setSearchTerm(e.target.value)
-                        setIsOpen(true)
-                    }}
-                    onKeyDown={handleKeyDown}
-                    onFocus={() => setIsOpen(true)}
-                    disabled={disabled}
-                    placeholder={value.length === 0 ? placeholder : ''}
-                    className="flex-1 min-w-[60px] outline-none bg-transparent text-gray-900 placeholder:text-gray-400 disabled:cursor-not-allowed"
-                />
+                {value.length > 0 ? (
+                    value.map((v) => (
+                        <span
+                            key={v}
+                            className="inline-flex items-center px-2 py-1 bg-amber-100 text-amber-800 text-sm rounded-md"
+                        >
+                            {v}
+                            {!disabled && (
+                                <button
+                                    type="button"
+                                    onClick={() => handleRemove(v)}
+                                    className="ml-1 text-amber-600 hover:text-amber-900 focus:outline-none"
+                                >
+                                    ×
+                                </button>
+                            )}
+                        </span>
+                    ))
+                ) : (
+                    <span className="text-gray-400 text-sm px-2">{placeholder}</span>
+                )}
             </div>
 
-            {/* Dropdown */}
-            {isOpen && !disabled && (
-                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
-                    {filteredOptions.length > 0 ? (
-                        filteredOptions.map((option) => (
-                            <div
-                                key={option}
-                                className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-900"
-                                onClick={() => handleSelect(option)}
-                            >
-                                {option}
+            {/* Native Select for Mobile/Touch (Default) - Hidden if device supports hover (PC) */}
+            <div className="relative block [@media(hover:hover)]:!hidden">
+                <select
+                    multiple
+                    value={value}
+                    onChange={handleSelectChange}
+                    disabled={disabled}
+                    className="w-full border border-gray-300 rounded-lg p-2 h-12 text-base focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                >
+                    {options.map((option) => (
+                        <option
+                            key={option}
+                            value={option}
+                            className="py-1 px-2 cursor-pointer"
+                        >
+                            {option}
+                        </option>
+                    ))}
+                </select>
+            </div>
+
+            {/* Custom List for Desktop/Mouse - Visible ONLY if device supports hover */}
+            <div className={`hidden [@media(hover:hover)]:!block w-full border border-gray-300 rounded-lg overflow-y-auto h-32 bg-white ${disabled ? 'bg-gray-100' : ''}`}>
+                {options.map((option) => {
+                    const isSelected = value.includes(option)
+                    return (
+                        <div
+                            key={option}
+                            onClick={() => {
+                                if (disabled) return
+                                if (isSelected) {
+                                    handleRemove(option)
+                                } else {
+                                    const newValues = [...value, option]
+                                    onChange(newValues)
+                                }
+                            }}
+                            className={`px-3 py-2 cursor-pointer transition-colors text-sm border-b border-gray-100 last:border-0
+                                ${isSelected
+                                    ? 'bg-amber-100 text-amber-900 font-medium'
+                                    : 'text-gray-700 hover:bg-gray-50'
+                                }
+                                ${disabled ? 'cursor-not-allowed opacity-60' : ''}
+                            `}
+                        >
+                            <div className="flex items-center justify-between">
+                                <span>{option}</span>
+                                {isSelected && (
+                                    <span className="text-amber-600 text-lg leading-none">✓</span>
+                                )}
                             </div>
-                        ))
-                    ) : (
-                        <div className="px-4 py-2 text-gray-400 text-sm">
-                            一致する役がありません
                         </div>
-                    )}
-                </div>
-            )}
+                    )
+                })}
+            </div>
         </div>
     )
 }
