@@ -9,7 +9,7 @@ export function SetupScreen() {
   const router = useRouter()
   // Hydration mismatch avoidance: wait for client mount
   const [mounted, setMounted] = useState(false)
-  const { requireYaku, setRequireYaku, simplifyMangan, setSimplifyMangan, requireFuForMangan, setRequireFuForMangan, targetScoreRanges, setTargetScoreRanges } = useSettingsStore()
+  const { requireYaku, setRequireYaku, simplifyMangan, setSimplifyMangan, requireFuForMangan, setRequireFuForMangan, targetScoreRanges, setTargetScoreRanges, autoNext, setAutoNext } = useSettingsStore()
 
   useEffect(() => {
     setMounted(true)
@@ -25,6 +25,9 @@ export function SetupScreen() {
     }
     if (requireFuForMangan) {
       params.set('fu_mangan', '1')
+    }
+    if (autoNext) {
+      params.set('auto_next', '1')
     }
     // ranges=non,plus
     if (targetScoreRanges.length > 0 && targetScoreRanges.length < 2) {
@@ -130,6 +133,20 @@ export function SetupScreen() {
               </div>
               <span className="text-slate-700 font-semibold select-none group-hover:text-slate-900">
                 満貫以上も符を入力
+              </span>
+            </label>
+
+            <label className="group inline-flex items-center space-x-3 py-3 px-5 bg-slate-50 rounded-xl cursor-pointer hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200 w-full justify-center">
+              <div className="relative flex items-center">
+                <input
+                  type="checkbox"
+                  checked={autoNext}
+                  onChange={(e) => setAutoNext(e.target.checked)}
+                  className="peer w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 focus:ring-offset-0"
+                />
+              </div>
+              <span className="text-slate-700 font-semibold select-none group-hover:text-slate-900">
+                正解したらすぐに次の問題へ
               </span>
             </label>
 

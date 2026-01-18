@@ -139,14 +139,40 @@ export function DrillBoard() {
   const requireYaku = searchParams.get('mode') === 'with_yaku'
   const simplifyMangan = searchParams.get('simple') === '1'
   const requireFuForMangan = searchParams.get('fu_mangan') === '1'
+  const autoNext = searchParams.get('auto_next') === '1'
 
   const handleSubmit = (answer: UserAnswer) => {
     submitAnswer(answer, requireYaku, simplifyMangan, requireFuForMangan)
+
+    // 正解したらすぐに次の問題へ（autoNext有効時）
+    if (autoNext) {
+      const state = useDrillStore.getState()
+      if (state.judgementResult?.isCorrect) {
+        nextQuestion()
+
+        // URLパラメータを維持（nextQuestionだけだとパラメータ維持されるが、念の為）
+        // 実際にはnextQuestionはstoreのgenerateNewQuestionを呼ぶだけでURL変更しないので、
+        // ここでのhandleSubmit内のrouterへのreplaceは不要かもしれないが、
+        // 既存実装ではreplaceしているのでそれに倣う。
+        // ただし、nextQuestion呼んだ後だとstateが変わってるので、
+        // 下記のparam更新フローは「結果表示」のためのものだったかもしれない。
+        // 結果表示をスキップするなら、param更新だけして終わり？
+        // いや、既存コードは submitAnswer -> router.replace 重複している？
+        // 既存コード： submitAnswer したあと、 params を作って router.replace している。
+        // これは「結果画面」でもパラメータを維持するため。
+        // autoNextの場合は、すぐに次の問題になるので、次の問題のためのパラメータ維持が必要。
+        // しかし nextQuestion() は store の state を変えるだけで URL は変えない。
+        // なので、ここで router.replace するのは正しい。
+      }
+    }
+
     // URLパラメータを維持
     const params = new URLSearchParams()
     if (requireYaku) params.set('mode', 'with_yaku')
     if (simplifyMangan) params.set('simple', '1')
     if (requireFuForMangan) params.set('fu_mangan', '1')
+    if (autoNext) params.set('auto_next', '1')
+
 
     // 現在のパラメータからrangesを引き継ぐ
     const currentParams = new URLSearchParams(searchParams.toString())

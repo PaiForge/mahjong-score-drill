@@ -10,6 +10,8 @@ interface SettingsState {
     setRequireFuForMangan: (enabled: boolean) => void
     targetScoreRanges: ('non_mangan' | 'mangan_plus')[]
     setTargetScoreRanges: (ranges: ('non_mangan' | 'mangan_plus')[]) => void
+    autoNext: boolean
+    setAutoNext: (enabled: boolean) => void
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -23,6 +25,8 @@ export const useSettingsStore = create<SettingsState>()(
             setRequireFuForMangan: (requireFuForMangan) => set({ requireFuForMangan }),
             targetScoreRanges: ['non_mangan', 'mangan_plus'],
             setTargetScoreRanges: (targetScoreRanges) => set({ targetScoreRanges }),
+            autoNext: false,
+            setAutoNext: (autoNext) => set({ autoNext }),
         }),
         {
             name: 'mahjong-drill-settings',
