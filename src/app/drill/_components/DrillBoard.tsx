@@ -3,6 +3,7 @@
 import { useEffect, useState, useSyncExternalStore, useCallback, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { HaiKind } from '@pai-forge/riichi-mahjong'
+import { Toaster, toast } from 'react-hot-toast'
 import { useDrillStore } from '@/lib/drill/stores/useDrillStore'
 import { QuestionDisplay } from './QuestionDisplay'
 import { AnswerForm } from './AnswerForm'
@@ -148,6 +149,16 @@ export function DrillBoard() {
     if (autoNext) {
       const state = useDrillStore.getState()
       if (state.judgementResult?.isCorrect) {
+        toast.success('正解！', {
+          duration: 1500,
+          position: 'top-center',
+          icon: '✅',
+          style: {
+            background: '#E6FFFA',
+            color: '#2C7A7B',
+            fontWeight: 'bold',
+          },
+        })
         nextQuestion()
 
         // URLパラメータを維持（nextQuestionだけだとパラメータ維持されるが、念の為）
@@ -185,6 +196,7 @@ export function DrillBoard() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
+      <Toaster />
       <div className="max-w-2xl mx-auto px-1 sm:px-4">
         {/* ヘッダー */}
         {/* ヘッダー */}
