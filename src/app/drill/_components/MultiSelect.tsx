@@ -30,7 +30,7 @@ export function MultiSelect({
         <div className={`w-full ${className}`}>
             {/* Chips Display */}
             <div
-                className={`min-h-[46px] w-full px-2 py-1.5 border border-gray-300 rounded-lg bg-white mb-2 flex flex-wrap gap-2 items-center ${disabled ? 'bg-gray-100' : ''
+                className={`min-h-[46px] w-full px-1 py-1.5 border border-gray-300 rounded-lg bg-white mb-2 flex flex-wrap gap-2 items-center ${disabled ? 'bg-gray-100' : ''
                     }`}
             >
                 {value.length > 0 ? (
@@ -52,7 +52,7 @@ export function MultiSelect({
                         </span>
                     ))
                 ) : (
-                    <span className="text-gray-400 text-sm px-2">{placeholder}</span>
+                    <span className="text-gray-400 text-sm px-2">役が選択されていません</span>
                 )}
             </div>
 
@@ -65,12 +65,11 @@ export function MultiSelect({
                     disabled={disabled}
                     className="w-full border border-gray-300 rounded-lg p-2 h-12 text-base focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                 >
+                    <option value="" disabled style={{ display: 'none' }}>
+                        {placeholder}
+                    </option>
                     {options.map((option) => (
-                        <option
-                            key={option}
-                            value={option}
-                            className="py-1 px-2 cursor-pointer"
-                        >
+                        <option key={option} value={option}>
                             {option}
                         </option>
                     ))}

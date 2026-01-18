@@ -149,7 +149,7 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
           onChange={(e) => handleHanChange(e.target.value)}
           disabled={disabled}
           required
-          className={`w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-base focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100 ${han === null ? '!text-gray-400' : '!text-gray-900'}`}
+          className={`w-full !px-2 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100 ${han === null ? '!text-gray-400' : '!text-gray-900'}`}
         >
           {hanOptions.map((option) => (
             <option key={option.value} value={option.value}>
@@ -170,7 +170,7 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
             onChange={(e) => handleFuChange(e.target.value)}
             disabled={disabled}
             required
-            className={`w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-base focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100 ${fu === null ? '!text-gray-400' : '!text-gray-900'}`}
+            className={`w-full !px-2 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100 ${fu === null ? '!text-gray-400' : '!text-gray-900'}`}
           >
             {FU_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
@@ -202,7 +202,7 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
                 disabled={disabled}
                 required
                 placeholder="子から"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100"
+                className="w-full !px-3 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100"
               />
             </div>
             <span className="text-gray-500 font-medium">/</span>
@@ -214,7 +214,7 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
                 disabled={disabled}
                 required
                 placeholder="親から"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100"
+                className="w-full !px-3 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100"
               />
             </div>
           </div>
@@ -226,7 +226,7 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
             disabled={disabled}
             required
             placeholder={isOya && isTsumo ? '例: 4000（オール）' : '例: 7700'}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100"
+            className="w-full !px-3 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100"
           />
         )}
       </div>
