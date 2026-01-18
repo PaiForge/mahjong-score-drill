@@ -56,8 +56,8 @@ export function MultiSelect({
                 )}
             </div>
 
-            {/* Native Select for Mobile/Touch (Default) - Hidden if device supports hover (PC) */}
-            <div className="relative block [@media(hover:hover)]:!hidden">
+            {/* Native Select for Mobile/Touch (Default) - Hidden if device has fine pointer (PC) */}
+            <div className="relative block [@media(pointer:fine)]:!hidden">
                 <select
                     multiple
                     value={value}
@@ -76,8 +76,8 @@ export function MultiSelect({
                 </select>
             </div>
 
-            {/* Custom List for Desktop/Mouse - Visible ONLY if device supports hover */}
-            <div className={`hidden [@media(hover:hover)]:!block w-full border border-gray-300 rounded-lg overflow-y-auto h-32 bg-white ${disabled ? 'bg-gray-100' : ''}`}>
+            {/* Custom List for Desktop/Mouse - Visible ONLY if device has fine pointer */}
+            <div className={`hidden [@media(pointer:fine)]:!block w-full border border-gray-300 rounded-lg overflow-y-auto h-32 bg-white ${disabled ? 'bg-gray-100' : ''}`}>
                 {options.map((option) => {
                     const isSelected = value.includes(option)
                     return (
