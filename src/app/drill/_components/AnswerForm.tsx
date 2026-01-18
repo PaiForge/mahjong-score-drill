@@ -12,6 +12,7 @@ interface Props {
   requireYaku?: boolean
   simplifyMangan?: boolean
   requireFuForMangan?: boolean
+  onSkip?: () => void
 }
 
 const HAN_OPTIONS = [
@@ -60,7 +61,7 @@ const FU_OPTIONS = [
   { value: 110, label: '110符' },
 ]
 
-export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, requireYaku = false, simplifyMangan = false, requireFuForMangan = false }: Props) {
+export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, requireYaku = false, simplifyMangan = false, requireFuForMangan = false, onSkip }: Props) {
   const [han, setHan] = useState<number | null>(null)
   const [fu, setFu] = useState<number | null>(null)
   const [yakus, setYakus] = useState<string[]>([])
@@ -238,6 +239,19 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
       >
         回答する
       </button>
+
+      {/* スキップ */}
+      {onSkip && (
+        <div className="text-center mt-4">
+          <button
+            type="button"
+            onClick={onSkip}
+            className="text-gray-500 hover:text-gray-700 underline text-sm"
+          >
+            スキップ
+          </button>
+        </div>
+      )}
     </form>
   )
 }

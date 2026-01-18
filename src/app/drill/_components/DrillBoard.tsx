@@ -201,6 +201,7 @@ export function DrillBoard() {
               requireYaku={requireYaku}
               simplifyMangan={simplifyMangan}
               requireFuForMangan={requireFuForMangan}
+              onSkip={nextQuestion}
             />
           )}
         </div>
