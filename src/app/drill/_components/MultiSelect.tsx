@@ -63,7 +63,7 @@ export function MultiSelect({
                     value={value}
                     onChange={handleSelectChange}
                     disabled={disabled}
-                    className="w-full border border-gray-300 rounded-lg p-2 h-12 text-base focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    className="w-full border border-gray-300 rounded-lg !px-2 ml-2 py-3 text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                 >
                     <option value="" disabled style={{ display: 'none' }}>
                         {placeholder}
