@@ -63,13 +63,14 @@ export function DrillBoard() {
       }
     } else {
       // 範囲設定の読み込み
-      const rangesParam = params.getAll('ranges') // Next.js read of comma separated? No, standard URLSearchParams.
-      // SetupScreen uses params.append, so it might be ranges=non&ranges=plus or ranges=non,plus depending on implementation.
-      // SetupScreen implementation: params.append('ranges', 'non'), params.append('ranges', 'plus').
-      // So getAll is correct.
+      const rangesParam = params.getAll('ranges') // Next.js の仕様確認: 標準の URLSearchParams と同じ
+      // SetupScreen では params.append を使用しているため、実装によっては ranges=non&ranges=plus のようになるか、ranges=non,plus のようになる可能性がある
+      // SetupScreen の実装: params.append('ranges', 'non'), params.append('ranges', 'plus')
+      // なので getAll が正しい
+      // getAll は値の配列を返す
 
       const allowedRanges: ('non_mangan' | 'mangan_plus')[] = []
-      // getAll returns array of values.
+      // getAll は値の配列を返す
       const rangesValues = params.getAll('ranges')
 
       if (rangesValues.length > 0) {
@@ -168,7 +169,6 @@ export function DrillBoard() {
         // ただし、nextQuestion呼んだ後だとstateが変わってるので、
         // 下記のparam更新フローは「結果表示」のためのものだったかもしれない。
         // 結果表示をスキップするなら、param更新だけして終わり？
-        // いや、既存コードは submitAnswer -> router.replace 重複している？
         // 既存コード： submitAnswer したあと、 params を作って router.replace している。
         // これは「結果画面」でもパラメータを維持するため。
         // autoNextの場合は、すぐに次の問題になるので、次の問題のためのパラメータ維持が必要。

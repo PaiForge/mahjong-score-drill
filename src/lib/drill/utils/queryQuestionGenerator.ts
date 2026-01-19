@@ -12,7 +12,7 @@ import type { DrillQuestion, YakuDetail } from '@/lib/drill/types'
 import { recalculateScore } from './scoreCalculator'
 import { getDoraFromIndicator } from './haiNames'
 
-// Yaku Name Mapping (Duplicate from questionGenerator.ts - should refactor but fine for now)
+// 役名マッピング (questionGenerator.ts からの複製 - リファクタすべきだが一旦このままで)
 const YAKU_NAME_MAP: Record<string, string> = {
     'Tanyao': '断変九', 'Pinfu': '平和', 'Iipeikou': '一盃口', 'MenzenTsumo': '門前清自摸和', 'Riichi': '立直',
     'Yakuhai': '役牌', 'Haku': '役牌 白', 'Hatsu': '役牌 發', 'Chun': '役牌 中',
@@ -94,7 +94,7 @@ export function generateQuestionFromQuery(params: URLSearchParams): QueryResult 
             const agariTehai = parseMspz(agariStr)
             agariHai = agariTehai.closed[0] as HaiKindId
         } catch {
-            // fallback if it was somehow extended syntax (unlikely for single tile)
+            // 拡張構文だった場合のフォールバック（単一牌ではあまりないが）
             try {
                 const agariTehai = parseExtendedMspz(agariStr)
                 agariHai = agariTehai.closed[0] as HaiKindId

@@ -44,7 +44,7 @@ export function recalculateScore(
         basePoints = 2000
     } else {
         scoreLevel = 'Normal'
-        // basePoints is already calculated
+        // basePoints は既に計算済み
     }
 
     // 支払い計算 (100点単位切り上げ)

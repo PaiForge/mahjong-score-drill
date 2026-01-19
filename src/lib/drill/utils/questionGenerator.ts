@@ -212,7 +212,7 @@ export function generateQuestion(
   if (!tehaiResult) return null
 
   const { tehai, agariHai } = tehaiResult
-  // generateMentsuTehai returns structure, generateChiitoitsuTehai does not.
+  // generateMentsuTehai は構造を返すが、generateChiitoitsuTehai は返さない
   const structure = 'structure' in tehaiResult ? tehaiResult.structure : null
 
   // コンテキストを生成
@@ -253,7 +253,7 @@ export function generateQuestion(
       })
     })
 
-    // --- Yakuhai Robust Reconciliation ---
+    // --- Yakuhai Robust Reconciliation (役牌の堅牢な照合) ---
     // ベースの回答
     let finalAnswer = answer
 
@@ -337,7 +337,7 @@ export function generateQuestion(
     yakuDetails.push(...otherDetails)
     yakuDetails.push(...expectedYakuhaiDetails)
 
-    // --- End Robust Reconciliation ---
+    // --- End Robust Reconciliation (照合終了) ---
 
     // 役なしの場合は再生成
     if (finalAnswer.han === 0) return null
@@ -359,13 +359,13 @@ export function generateQuestion(
         })
       })
 
-      // Update finalAnswer accumulating Han
+      // 最終回答の翻数を累積更新
       finalAnswer = recalculateScore(finalAnswer, finalAnswer.han + 1 + uraDoraHan, {
         isTsumo,
         isOya: jikaze === HaiKind.Ton,
       })
 
-      // Add Riichi/Ura to details (Riichi first)
+      // 詳細にリーチ/裏ドラを追加 (リーチが先)
       yakuDetails.unshift({ name: '立直', han: 1 })
       if (uraDoraHan > 0) {
         yakuDetails.push({ name: '裏ドラ', han: uraDoraHan })
@@ -384,12 +384,12 @@ export function generateQuestion(
     })
 
     if (doraHan > 0) {
-      // Only add to result display if not already there (Library usually adds it as 'Dora' or 'Dorahai'?)
-      // `detectYaku` usually adds Dora to yakuResult.
-      // But wait, `detectYaku` documentation/behavior: usually it does.
-      // But if we are unsure, we can check.
-      // My previous code had `if (doraHan > 0) yakuDetails.push...`
-      // I'll keep it but check existence to be safe.
+      // 結果表示にまだなければ追加する (ライブラリは通常 'Dora' または 'Dorahai' として追加する?)
+      // `detectYaku` は通常ドラを yakuResult に追加する。
+      // ドキュメント/挙動を確認すると、通常は追加される。
+      // もし不確かなら、確認することができる。
+      // 以前のコードには `if (doraHan > 0) yakuDetails.push...` があった。
+      // 安全のため、存在確認をしてから追加する。
       const existing = yakuDetails.find(d => d.name === 'ドラ')
       if (!existing) {
         yakuDetails.push({ name: 'ドラ', han: doraHan })
