@@ -20,7 +20,7 @@ export function YakuSelect({ value, onChange, disabled }: Props) {
                 value={value}
                 onChange={onChange}
                 disabled={disabled}
-                placeholder="役を選択（複数選択可）"
+                placeholder="選択してください"
             />
 
         </div>
