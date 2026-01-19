@@ -3,6 +3,12 @@
 import { useState } from 'react'
 import type { UserAnswer } from '@/lib/drill/types'
 import { YakuSelect } from './YakuSelect'
+import {
+  RON_SCORES_KO,
+  RON_SCORES_OYA,
+  TSUMO_SCORES_KO_PART,
+  TSUMO_SCORES_OYA_PART,
+} from '@/lib/drill/scoreConstants'
 
 interface Props {
   onSubmit: (answer: UserAnswer) => void
@@ -84,6 +90,33 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
 
   const handleFuChange = (value: string) => {
     setFu(value === '' ? null : Number(value))
+  }
+
+  const filterScores = (scores: number[], type: 'ronKo' | 'ronOya' | 'tsumoKoKo' | 'tsumoKoOya' | 'tsumoOyaAll') => {
+    if (han === null) return scores
+    const isManganFixed = han >= 5
+    // 5翻以上は満貫確定なので満貫未満を除外
+    if (isManganFixed) {
+      switch (type) {
+        case 'ronKo': return scores.filter(s => s >= 8000)
+        case 'ronOya': return scores.filter(s => s >= 12000)
+        case 'tsumoKoKo': return scores.filter(s => s >= 2000)
+        case 'tsumoKoOya': return scores.filter(s => s >= 4000)
+        case 'tsumoOyaAll': return scores.filter(s => s >= 4000)
+      }
+    }
+    // 3翻以下は満貫未満確定（通常ルール）なので満貫以上 除外
+    // 4翻は満貫の可能性があるので全表示
+    if (han <= 3) {
+      switch (type) {
+        case 'ronKo': return scores.filter(s => s < 8000)
+        case 'ronOya': return scores.filter(s => s < 12000)
+        case 'tsumoKoKo': return scores.filter(s => s < 2000)
+        case 'tsumoKoOya': return scores.filter(s => s < 4000)
+        case 'tsumoOyaAll': return scores.filter(s => s < 4000)
+      }
+    }
+    return scores
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -195,39 +228,59 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
         {isKoTsumo ? (
           <div className="flex items-center gap-2">
             <div className="flex-1">
-              <input
-                type="number"
+              <select
                 value={scoreFromKo}
                 onChange={(e) => setScoreFromKo(e.target.value)}
                 disabled={disabled}
                 required
-                placeholder="子から"
-                className="w-full !px-3 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100"
-              />
+                className={`w-full !px-2 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100 ${scoreFromKo === '' ? '!text-gray-400' : '!text-gray-900'}`}
+              >
+                <option value="" disabled>子から</option>
+                {filterScores(TSUMO_SCORES_KO_PART, 'tsumoKoKo').map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
             </div>
             <span className="text-gray-500 font-medium">/</span>
             <div className="flex-1">
-              <input
-                type="number"
+              <select
                 value={scoreFromOya}
                 onChange={(e) => setScoreFromOya(e.target.value)}
                 disabled={disabled}
                 required
-                placeholder="親から"
-                className="w-full !px-3 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100"
-              />
+                className={`w-full !px-2 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100 ${scoreFromOya === '' ? '!text-gray-400' : '!text-gray-900'}`}
+              >
+                <option value="" disabled>親から</option>
+                {filterScores(TSUMO_SCORES_OYA_PART, 'tsumoKoOya').map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
             </div>
           </div>
         ) : (
-          <input
-            type="number"
+          <select
             value={score}
             onChange={(e) => setScore(e.target.value)}
             disabled={disabled}
             required
-            placeholder={isOya && isTsumo ? '例: 4000（オール）' : '例: 7700'}
-            className="w-full !px-3 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100"
-          />
+            className={`w-full !px-2 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100 ${score === '' ? '!text-gray-400' : '!text-gray-900'}`}
+          >
+            <option value="" disabled>選択してください</option>
+            {filterScores(
+              (isOya && isTsumo
+                ? TSUMO_SCORES_OYA_PART
+                : (isOya ? RON_SCORES_OYA : RON_SCORES_KO)
+              ),
+              (isOya && isTsumo
+                ? 'tsumoOyaAll'
+                : (isOya ? 'ronOya' : 'ronKo')
+              )
+            ).map((s) => (
+              <option key={s} value={s}>
+                {s}{isOya && isTsumo ? 'オール' : ''}
+              </option>
+            ))}
+          </select>
         )}
       </div>
 
@@ -241,17 +294,19 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
       </button>
 
       {/* スキップ */}
-      {onSkip && (
-        <div className="text-center mt-4">
-          <button
-            type="button"
-            onClick={onSkip}
-            className="text-gray-500 hover:text-gray-700 underline text-sm"
-          >
-            スキップ
-          </button>
-        </div>
-      )}
-    </form>
+      {
+        onSkip && (
+          <div className="text-center mt-4">
+            <button
+              type="button"
+              onClick={onSkip}
+              className="text-gray-500 hover:text-gray-700 underline text-sm"
+            >
+              スキップ
+            </button>
+          </div>
+        )
+      }
+    </form >
   )
 }

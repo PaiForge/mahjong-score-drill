@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { getPaymentTotal } from '@pai-forge/riichi-mahjong'
 import type { DrillQuestion, UserAnswer, JudgementResult } from '@/lib/drill/types'
 import { isMangan, getScoreLevelName } from '@/lib/drill/utils/judgement'
 
@@ -17,7 +16,6 @@ interface Props {
 
 export function ResultDisplay({ question, userAnswer, result, onNext, requireYaku = false, simplifyMangan = false, requireFuForMangan = false }: Props) {
   const { answer } = question
-  const correctScore = getPaymentTotal(answer.payment)
   const isManganOrAbove = isMangan(answer.scoreLevel)
   const scoreLevelName = getScoreLevelName(answer.scoreLevel)
   const [showFuDetails, setShowFuDetails] = useState(false)
@@ -29,10 +27,10 @@ export function ResultDisplay({ question, userAnswer, result, onNext, requireYak
       return `${payment.amount}点`
     }
     if (payment.type === 'koTsumo') {
-      return `${payment.amount[0]}/${payment.amount[1]} (計${correctScore}点)`
+      return `${payment.amount[0]}/${payment.amount[1]}`
     }
     if (payment.type === 'oyaTsumo') {
-      return `${payment.amount}オール (計${correctScore}点)`
+      return `${payment.amount}オール`
     }
     return ''
   }
