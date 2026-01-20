@@ -37,14 +37,14 @@ export type QueryResult =
  */
 export function generateQuestionFromQuery(params: URLSearchParams): QueryResult | null {
     try {
-        const tehaiStr = params.get('tehai')
-        const agariStr = params.get('agari')
-        const isTsumoStr = params.get('tsumo')
-        const doraStr = params.get('dora')
-        const uraDoraStr = params.get('ura')
-        const riichiStr = params.get('riichi')
-        const baStr = params.get('ba')
-        const jiStr = params.get('ji')
+        const tehaiStr = params.get('tehai')?.replace(/\s/g, '') || null
+        const agariStr = params.get('agari')?.replace(/\s/g, '') || null
+        const isTsumoStr = params.get('tsumo')?.trim() || null
+        const doraStr = params.get('dora')?.replace(/\s/g, '') || null
+        const uraDoraStr = params.get('ura')?.replace(/\s/g, '') || null
+        const riichiStr = params.get('riichi')?.trim() || null
+        const baStr = params.get('ba')?.replace(/\s/g, '') || null
+        const jiStr = params.get('ji')?.replace(/\s/g, '') || null
 
         if (!tehaiStr && !agariStr && !doraStr) return null // 何も指定がない場合はnull (ランダム生成へ)
         if (!tehaiStr || !agariStr) return { type: 'error', message: 'tehai, agari parameters are required.' }
