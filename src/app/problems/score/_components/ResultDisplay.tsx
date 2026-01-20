@@ -58,7 +58,7 @@ export function ResultDisplay({ question, userAnswer, result, onNext, requireYak
           }`}
       >
         <div className="text-base font-bold">
-          {result.isCorrect ? tProblems('result.correct') : tProblems('result.incorrect')}
+          {result.isCorrect ? tProblems('result.title.correct') : tProblems('result.title.incorrect')}
         </div>
       </div>
 
