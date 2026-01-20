@@ -6,14 +6,16 @@ import { RiichiStick } from '@/app/_components/RiichiStick'
 import type { DrillQuestion } from '@/lib/drill/types'
 import { getKazeName, getDoraFromIndicator } from '@/lib/drill/utils/haiNames'
 import { useResponsiveHaiSize } from '../_hooks/useResponsiveHaiSize'
+import { useTranslations } from 'next-intl'
 
 interface Props {
   question: DrillQuestion
 }
 
 export function QuestionDisplay({ question }: Props) {
+  const tProblems = useTranslations('problems')
   const { tehai, agariHai, isTsumo, jikaze, bakaze, doraMarkers } = question
-  const isOya = jikaze === HaiKind.Ton // 親は常に東家
+  const isOya = jikaze === HaiKind.Ton
   const haiSize = useResponsiveHaiSize()
 
   // 手牌から和了牌を1枚除外して13枚にする
@@ -34,13 +36,13 @@ export function QuestionDisplay({ question }: Props) {
         {/* 場風・自風 */}
         <div className="text-white text-sm mb-4 flex items-center justify-center gap-4">
           <div>
-            {getKazeName(bakaze)}場 {getKazeName(jikaze)}家
-            {isOya ? <span className="text-yellow-300 ml-2">(親)</span> : <span className="text-white ml-2">(子)</span>}
+            {getKazeName(bakaze)}{tProblems('question.round')} {getKazeName(jikaze)}{tProblems('question.wind')}
+            {isOya ? <span className="text-yellow-300 ml-2">{tProblems('question.dealer')}</span> : <span className="text-white ml-2">{tProblems('question.nonDealer')}</span>}
           </div>
           {question.isRiichi && (
             <div className="flex items-center gap-2">
               <RiichiStick width={80} className="scale-75 origin-left" />
-              <span className="text-red-400 font-bold text-xs">リーチ</span>
+              <span className="text-red-400 font-bold text-xs">{tProblems('question.riichi')}</span>
             </div>
           )}
         </div>
@@ -90,9 +92,9 @@ export function QuestionDisplay({ question }: Props) {
       <div className="grid grid-cols-2 gap-4 text-sm">
         {/* ツモ/ロン + 和了牌 */}
         <div className="bg-gray-100 rounded-lg p-3">
-          <div className="text-gray-500 text-xs mb-1">和了</div>
+          <div className="text-gray-500 text-xs mb-1">{tProblems('question.win')}</div>
           <div className="flex items-center gap-2">
-            <span className="font-bold text-xs">{isTsumo ? 'ツモ' : 'ロン'}</span>
+            <span className="font-bold text-xs">{isTsumo ? tProblems('question.tsumo') : tProblems('question.ron')}</span>
             <Hai hai={agariHai} size={haiSize} highlighted />
           </div>
         </div>
@@ -101,7 +103,7 @@ export function QuestionDisplay({ question }: Props) {
         {/* ドラ & 裏ドラ */}
         <div className="bg-gray-100 rounded-lg p-3 flex gap-4">
           <div>
-            <div className="text-gray-500 text-xs mb-1">ドラ</div>
+            <div className="text-gray-500 text-xs mb-1">{tProblems('question.dora')}</div>
             <div className="flex gap-1">
               {doraMarkers.map((marker, index) => (
                 <Hai key={index} hai={getDoraFromIndicator(marker)} size={haiSize} />
@@ -110,7 +112,7 @@ export function QuestionDisplay({ question }: Props) {
           </div>
           {question.isRiichi && question.uraDoraMarkers && (
             <div className="border-l border-gray-300 pl-4">
-              <div className="text-gray-500 text-xs mb-1">裏ドラ</div>
+              <div className="text-gray-500 text-xs mb-1">{tProblems('question.uraDora')}</div>
               <div className="flex gap-1">
                 {question.uraDoraMarkers.map((marker, index) => (
                   <Hai key={`ura-${index}`} hai={getDoraFromIndicator(marker)} size={haiSize} />

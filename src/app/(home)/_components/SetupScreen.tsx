@@ -4,8 +4,10 @@ import { useRouter } from 'next/navigation'
 import { useSettingsStore } from '@/lib/drill/stores/useSettingsStore'
 import { useDrillStore } from '@/lib/drill/stores/useDrillStore'
 import { useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 export function SetupScreen() {
+  const tHome = useTranslations('home')
   const router = useRouter()
   // Hydration mismatch avoidance: wait for client mount
   const [mounted, setMounted] = useState(false)
@@ -31,27 +33,28 @@ export function SetupScreen() {
     }
     // ranges=non,plus
     if (targetScoreRanges.length > 0 && targetScoreRanges.length < 2) {
-      // 全選択(デフォルト)の場合はパラメータ省略可だが、明示的に片方だけの場合は指定
       if (targetScoreRanges.includes('non_mangan')) params.append('ranges', 'non')
       if (targetScoreRanges.includes('mangan_plus')) params.append('ranges', 'plus')
-    } else if (targetScoreRanges.length === 0) {
-      // 何も選択されていない場合はデフォルト動作（全範囲）として扱うが、
-      // UI上で「選択してください」と出すバリデーションが必要かもしれない。
-      // 現状は全範囲として振る舞うことにする
     }
 
     // Reset current question to force re-initialization in DrillBoard
-    useDrillStore.getState().setQuestion(null as any) // nullを許容するように型を修正するか、anyで回避。DrillBoardはnullチェックしている。
-    // setQuestionの型定義はDrillQuestionでnull不可だが、初期状態はnullなので実際はnullが入るはず。
-    // useDrillStore.tsの定義を確認すると: setQuestion: (question: DrillQuestion) => void
-    // しかし初期値は currentQuestion: null
-    // 型安全にするなら GenerateNewQuestion() を呼ぶ手もあるが、パラメータがまだセットされていない。
-    // ここでは resetStats() ではなく、 currentQuestion を null にしたいため、
-    // useDrillStoreに reset() アクションを追加するのがベストだが、簡易的に any キャストで対応するか、
-    // あるいは DrillBoard 側で navigate 時に強制リセットする手もある。
-    // 今回は any キャストで null を入れる。
+    useDrillStore.getState().setQuestion(null as any)
 
     const queryString = params.toString()
+    // Preserve language param if exists
+    if (typeof window !== 'undefined') {
+      const currentUrlParams = new URLSearchParams(window.location.search)
+      const lang = currentUrlParams.get('lang')
+      if (lang) {
+        if (queryString) {
+          router.push(`/problems/score?${queryString}&lang=${lang}`)
+        } else {
+          router.push(`/problems/score?lang=${lang}`)
+        }
+        return
+      }
+    }
+
     router.push(queryString ? `/problems/score?${queryString}` : '/problems/score')
   }
 
@@ -63,18 +66,16 @@ export function SetupScreen() {
     }
   }
 
-  // Prevent hydration mismatch by rendering a placeholder or default until mounted
-  // For interaction elements like checkboxes, it's safer to wait or render consistent server state
   if (!mounted) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
         <div className="bg-white rounded-lg shadow-md w-full max-w-md p-8 text-center space-y-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              麻雀点数計算ドリル
+              ...
             </h1>
             <p className="text-gray-600">
-              読み込み中...
+              ...
             </p>
           </div>
         </div>
@@ -87,7 +88,7 @@ export function SetupScreen() {
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8 text-center space-y-10 border border-slate-100">
         <div className="space-y-3">
           <h1 className="!text-3xl !font-extrabold text-slate-800 tracking-tight">
-            麻雀点数計算ドリル
+            {tHome('title')}
           </h1>
         </div>
 
@@ -104,7 +105,7 @@ export function SetupScreen() {
                 />
               </div>
               <span className="text-slate-700 font-semibold select-none group-hover:text-slate-900">
-                役も回答する
+                {tHome('setup.settings.requireYaku')}
               </span>
             </label>
 
@@ -118,7 +119,7 @@ export function SetupScreen() {
                 />
               </div>
               <span className="text-slate-700 font-semibold select-none group-hover:text-slate-900">
-                5翻以降を簡略化
+                {tHome('setup.settings.simplifyMangan')}
               </span>
             </label>
 
@@ -132,7 +133,7 @@ export function SetupScreen() {
                 />
               </div>
               <span className="text-slate-700 font-semibold select-none group-hover:text-slate-900">
-                満貫以上も符を入力
+                {tHome('setup.settings.requireFu')}
               </span>
             </label>
 
@@ -146,12 +147,12 @@ export function SetupScreen() {
                 />
               </div>
               <span className="text-slate-700 font-semibold select-none group-hover:text-slate-900">
-                正解したらすぐに次の問題へ
+                {tHome('setup.settings.autoNext')}
               </span>
             </label>
 
             <div className="w-full pt-4 border-t border-slate-100 mt-2">
-              <div className="text-sm font-bold text-slate-500 mb-3 text-center">出題する点数</div>
+              <div className="text-sm font-bold text-slate-500 mb-3 text-center">{tHome('setup.settings.targetScore')}</div>
               <div className="flex justify-center !gap-6">
                 <label className="group inline-flex items-center !gap-3 py-2 px-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200">
                   <input
@@ -161,7 +162,7 @@ export function SetupScreen() {
                     className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 focus:ring-offset-0"
                   />
                   <span className="text-slate-700 text-sm font-semibold select-none">
-                    満貫未満
+                    {tHome('setup.settings.nonMangan')}
                   </span>
                 </label>
                 <label className="group inline-flex items-center !gap-3 py-2 px-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200">
@@ -172,7 +173,7 @@ export function SetupScreen() {
                     className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 focus:ring-offset-0"
                   />
                   <span className="text-slate-700 text-sm font-semibold select-none">
-                    満貫以上
+                    {tHome('setup.settings.manganPlus')}
                   </span>
                 </label>
               </div>
@@ -183,14 +184,13 @@ export function SetupScreen() {
           <button
             onClick={handleStart}
             disabled={targetScoreRanges.length === 0}
-            // AnswerFormのボタンと同じスタイルを適用 (!py-3 !px-6 !bg-amber-500 rounded-lg etc)
             className={`w-full !py-3 !px-6 !font-bold !rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2
               ${targetScoreRanges.length === 0
                 ? '!bg-slate-300 !text-slate-500 cursor-not-allowed'
                 : '!bg-amber-500 !text-white hover:!bg-amber-600'
               }`}
           >
-            <span>ドリルを開始</span>
+            <span>{tHome('setup.button')}</span>
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
@@ -206,7 +206,7 @@ export function SetupScreen() {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
             </svg>
-            点数早見表を確認する
+            {tHome('setup.links.cheatsheet')}
           </button>
         </div>
       </div>

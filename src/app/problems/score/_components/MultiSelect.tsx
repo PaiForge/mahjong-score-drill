@@ -1,22 +1,37 @@
 import { useState } from 'react'
 import { Modal } from '@/app/_components/Modal'
 
+export interface MultiSelectOption {
+    value: string
+    label: string
+}
+
 interface Props {
-    options: string[]
+    options: MultiSelectOption[]
     value: string[]
     onChange: (value: string[]) => void
     placeholder?: string
     disabled?: boolean
     className?: string
+    labels?: {
+        add: string
+        title: string
+        done: string
+    }
 }
 
 export function MultiSelect({
     options,
     value,
     onChange,
-    placeholder = '選択してください',
+    placeholder = 'Select',
     disabled = false,
     className = '',
+    labels = {
+        add: '役を追加',
+        title: '役を選択',
+        done: '完了'
+    }
 }: Props) {
     const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -24,12 +39,16 @@ export function MultiSelect({
         onChange(value.filter((v) => v !== optionToRemove))
     }
 
-    const toggleOption = (option: string) => {
-        if (value.includes(option)) {
-            handleRemove(option)
+    const toggleOption = (optionValue: string) => {
+        if (value.includes(optionValue)) {
+            handleRemove(optionValue)
         } else {
-            onChange([...value, option])
+            onChange([...value, optionValue])
         }
+    }
+
+    const getLabel = (val: string) => {
+        return options.find(opt => opt.value === val)?.label || val
     }
 
     return (
@@ -48,7 +67,7 @@ export function MultiSelect({
                                 onClick={(e) => e.stopPropagation()}
                                 className="inline-flex items-center px-2 py-1 bg-amber-100 text-amber-800 text-sm rounded-md"
                             >
-                                {v}
+                                {getLabel(v)}
                                 {!disabled && (
                                     <button
                                         type="button"
@@ -74,7 +93,7 @@ export function MultiSelect({
                             setIsModalOpen(true)
                         }}
                         className="ml-auto p-1 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors"
-                        title="役を追加"
+                        title={labels.add}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -87,14 +106,14 @@ export function MultiSelect({
             {/* Modal Selection */}
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <div className="flex flex-col h-[70vh] md:h-96">
-                    <h3 className="text-lg font-bold mb-4 text-gray-900">役を選択</h3>
+                    <h3 className="text-lg font-bold mb-4 text-gray-900">{labels.title}</h3>
                     <div className="flex-1 overflow-y-auto border border-gray-200 rounded-lg">
                         {options.map((option) => {
-                            const isSelected = value.includes(option)
+                            const isSelected = value.includes(option.value)
                             return (
                                 <div
-                                    key={option}
-                                    onClick={() => toggleOption(option)}
+                                    key={option.value}
+                                    onClick={() => toggleOption(option.value)}
                                     className={`px-4 py-3 cursor-pointer transition-colors text-sm border-b border-gray-100 last:border-0
                                         ${isSelected
                                             ? 'bg-amber-100 text-amber-900 font-medium'
@@ -103,7 +122,7 @@ export function MultiSelect({
                                     `}
                                 >
                                     <div className="flex items-center justify-between">
-                                        <span>{option}</span>
+                                        <span>{option.label}</span>
                                         {isSelected && (
                                             <span className="text-amber-600 text-lg leading-none">✓</span>
                                         )}
@@ -117,7 +136,7 @@ export function MultiSelect({
                             onClick={() => setIsModalOpen(false)}
                             className="px-6 py-2 bg-amber-500 text-white font-bold rounded-lg hover:bg-amber-600 transition-colors"
                         >
-                            完了
+                            {labels.done}
                         </button>
                     </div>
                 </div>

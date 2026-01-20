@@ -4,6 +4,11 @@
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
+
+  /* Standard Hai Sizes (Desktop defaults) */
+  --hai-width-sm: 26px;
+  --hai-height-sm: 39px;
+  /* Add other sizes if needed for completeness, but sm is key here */
 }
 
 body {
@@ -13,8 +18,28 @@ body {
 }
 
 /* Change Ankan tile back color from red to 'Camel' (Warm Yellow/Orange) */
-/* Using sepia to normalize tone then rotating to camel/gold */
 .ankan-furo> :nth-child(1),
 .ankan-furo> :nth-child(4) {
-  filter: hue-rotate(20deg) brightness(2.0) saturate(1.5);
+  filter: hue-rotate(20deg) brightness(2.0) saturate(1.5) !important;
+}
+
+/* Responsive Ankan Fix */
+/* Use CSS variables if available, otherwise fallback to max-content or similar */
+.ankan-furo>* {
+  /* Default to variable size */
+  width: var(--hai-width-sm) !important;
+  height: var(--hai-height-sm) !important;
+
+  /* Critical: Allow shrinking if container gets smaller (flex behavior) */
+  /* But ensure it doesn't exceed the intended size */
+  max-width: var(--hai-width-sm) !important;
+  max-height: var(--hai-height-sm) !important;
+
+  /* Allow flex shrink */
+  flex-shrink: 1 !important;
+  /* Prevent growing */
+  flex-grow: 0 !important;
+
+  /* Ensure images inside scale too */
+  object-fit: contain;
 }

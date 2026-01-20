@@ -10,19 +10,19 @@ import { AnswerForm } from './AnswerForm'
 import { ResultDisplay } from './ResultDisplay'
 import { generateQuestionFromQuery, generatePathAndQueryFromQuestion } from '@/lib/drill/utils/queryQuestionGenerator'
 import type { UserAnswer } from '@/lib/drill/types'
+import { useTranslations } from 'next-intl'
 
 // SSR安全なクライアント判定フック
 function useIsClient() {
-  return useSyncExternalStore(
-    () => () => { },
-    () => true,
-    () => false
-  )
+  const [isClient, setIsClient] = useState(false)
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+  return isClient
 }
 
-// Static Export対応: Dynamic Route ではなく Query Parameters を使用する
-// export function DrillBoard({ initialTehai }: DrillBoardProps) {
 export function DrillBoard() {
+  const tProblems = useTranslations('problems')
   const router = useRouter()
   const searchParams = useSearchParams()
   const {
@@ -48,14 +48,8 @@ export function DrillBoard() {
     // パラメータ取得
     const params = new URLSearchParams(searchParams.toString())
     // Static Export対応: propsからの初期化は行わず、常にクエリパラメータまたはランダム生成を使用
-    /*
-    if (initialTehai) {
-      params.set('tehai', initialTehai)
-    }
-    */
     const hasQueryParams = params.has('tehai') || params.has('agari') || params.has('dora')
 
-    // URLパラメータからの生成を試みる
     // URLパラメータからの生成を試みる
     if (hasQueryParams) {
       const queryResult = generateQuestionFromQuery(params)
@@ -71,14 +65,9 @@ export function DrillBoard() {
       }
     } else {
       // 範囲設定の読み込み
-      const rangesParam = params.getAll('ranges') // Next.js の仕様確認: 標準の URLSearchParams と同じ
-      // SetupScreen では params.append を使用しているため、実装によっては ranges=non&ranges=plus のようになるか、ranges=non,plus のようになる可能性がある
       // SetupScreen の実装: params.append('ranges', 'non'), params.append('ranges', 'plus')
       // なので getAll が正しい
-      // getAll は値の配列を返す
-
       const allowedRanges: ('non_mangan' | 'mangan_plus')[] = []
-      // getAll は値の配列を返す
       const rangesValues = params.getAll('ranges')
 
       if (rangesValues.length > 0) {
@@ -133,7 +122,7 @@ export function DrillBoard() {
   if (!isClient) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-gray-500">読み込み中...</div>
+        <div className="text-gray-500">{tProblems('loading')}</div>
       </div>
     )
   }
@@ -142,7 +131,7 @@ export function DrillBoard() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-red-50">
         <div className="bg-white p-6 rounded-lg shadow-md max-w-md w-full">
-          <h2 className="text-xl font-bold text-red-600 mb-4">エラー (無効なパラメータ)</h2>
+          <h2 className="text-xl font-bold text-red-600 mb-4">{tProblems('error.title')}</h2>
           <p className="text-gray-700 mb-6">{error}</p>
           <button
             onClick={() => {
@@ -153,7 +142,7 @@ export function DrillBoard() {
             }}
             className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
           >
-            ランダム問題へ戻る
+            {tProblems('error.backToRandom')}
           </button>
         </div>
       </div>
@@ -163,7 +152,7 @@ export function DrillBoard() {
   if (!currentQuestion) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-gray-500">問題を生成中...</div>
+        <div className="text-gray-500">{tProblems('generating')}</div>
       </div>
     )
   }
@@ -178,7 +167,7 @@ export function DrillBoard() {
     // 新しいURLへ遷移
     const newQuestion = useDrillStore.getState().currentQuestion
     if (newQuestion) {
-      // 現在のオプションパラメータを引き継ぐ (generatePathAndQueryFromQuestion は /problems/score?tehai=... を返す)
+      // 現在のオプションパラメータを引き継ぐ
       const newUrlBase = generatePathAndQueryFromQuestion(newQuestion)
       const urlObj = new URL(newUrlBase, 'http://dummy.com')
 
@@ -204,7 +193,7 @@ export function DrillBoard() {
     if (autoNext) {
       const state = useDrillStore.getState()
       if (state.judgementResult?.isCorrect) {
-        toast.success('正解！', {
+        toast.success(tProblems('board.correct'), {
           duration: 1500,
           position: 'top-center',
           icon: '✅',
@@ -214,7 +203,7 @@ export function DrillBoard() {
             fontWeight: 'bold',
           },
         })
-        toast.success('正解！', {
+        toast.success(tProblems('board.correct'), {
           duration: 1500,
           position: 'top-center',
           icon: '✅',
@@ -253,7 +242,6 @@ export function DrillBoard() {
       <Toaster />
       <div className="max-w-2xl mx-auto px-1 sm:px-4">
         {/* ヘッダー */}
-        {/* ヘッダー */}
         <div className="flex justify-between items-center mb-4 sm:mb-6 px-2 sm:px-0">
           <button
             onClick={handleBackToSetup}
@@ -262,7 +250,7 @@ export function DrillBoard() {
             <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
-            ホームに戻る
+            {tProblems('nav.home')}
           </button>
         </div>
 

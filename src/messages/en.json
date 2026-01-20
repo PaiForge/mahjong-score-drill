@@ -1,0 +1,167 @@
+{
+    "common": {
+        "title": "Mahjong Score Drill",
+        "description": "Practice your Mahjong scoring skills with random problems."
+    },
+    "home": {
+        "title": "Mahjong Score Drill",
+        "description": "Practice your Mahjong scoring skills with random problems.",
+        "loading": "Loading...",
+        "setup": {
+            "button": "Start Drill",
+            "settings": {
+                "requireYaku": "Answer Yaku",
+                "simplifyMangan": "Simplify Mangan+",
+                "requireFu": "Require Fu for Mangan+",
+                "autoNext": "Auto-next on Correct",
+                "targetScore": "Target Score Range",
+                "nonMangan": "Non-Mangan",
+                "manganPlus": "Mangan+"
+            },
+            "links": {
+                "cheatsheet": "View Score Cheatsheet"
+            }
+        }
+    },
+    "problems": {
+        "loading": "Loading...",
+        "generating": "Generating Question...",
+        "error": {
+            "title": "An error occurred",
+            "backToRandom": "Back to Random"
+        },
+        "nav": {
+            "home": "Back to Setup"
+        },
+        "question": {
+            "round": " Round",
+            "wind": " Seat",
+            "dealer": "Dealer",
+            "nonDealer": "Non-Dealer",
+            "riichi": "Riichi",
+            "tsumo": "Tsumo",
+            "ron": "Ron",
+            "win": "Win",
+            "dora": "Dora",
+            "uraDora": "Ura Dora"
+        },
+        "form": {
+            "labels": {
+                "han": "Han",
+                "fu": "Fu",
+                "yaku": "Yaku",
+                "score": "Score"
+            },
+            "placeholders": {
+                "han": "Select",
+                "fu": "Select",
+                "select": "Please Select",
+                "fromKo": "Non-Dlr",
+                "fromOya": "Dealer"
+            },
+            "messages": {
+                "fuNotRequired": "* Fu input not required for Mangan+"
+            },
+            "options": {
+                "han_suffix": " Han",
+                "fu_suffix": " Fu",
+                "mangan": "Mangan",
+                "haneman": "Haneman",
+                "baiman": "Baiman",
+                "sanbaiman": "Sanbaiman",
+                "yakuman": "Yakuman",
+                "double_yakuman": "Double Yakuman",
+                "triple_yakuman": "Triple Yakuman",
+                "all": " All"
+            },
+            "buttons": {
+                "answer": "Answer",
+                "skip": "Skip"
+            },
+            "multiSelect": {
+                "add": "Add Yaku",
+                "title": "Select Yaku",
+                "done": "Done"
+            }
+        },
+        "board": {
+            "correct": "Correct!"
+        },
+        "result": {
+            "title": {
+                "correct": "Correct!",
+                "incorrect": "Incorrect...",
+                "skipped": "Skipped"
+            },
+            "correctInfo": "Correct Answer",
+            "score": "Score",
+            "fuHan": "Fu / Han",
+            "yaku": "Yaku",
+            "next": "Next Question",
+            "headers": {
+                "answer": "Your Answer",
+                "correct": "Correct"
+            },
+            "details": {
+                "none": "None",
+                "total": "Total",
+                "roundUp": "Round Up"
+            },
+            "han": "Han",
+            "fu": "Fu"
+        },
+        "yaku": {
+            "riichi": "Riichi",
+            "ippatsu": "Ippatsu",
+            "menzen_tsumo": "Menzen Tsumo",
+            "tanyao": "Tanyao",
+            "pinfu": "Pinfu",
+            "iipeiko": "Iipeiko",
+            "haku": "White Dragon (Haku)",
+            "hatsu": "Green Dragon (Hatsu)",
+            "chun": "Red Dragon (Chun)",
+            "jikaze_ton": "Seat Wind East",
+            "jikaze_nan": "Seat Wind South",
+            "jikaze_sha": "Seat Wind West",
+            "jikaze_pei": "Seat Wind North",
+            "bakaze_ton": "Round Wind East",
+            "bakaze_nan": "Round Wind South",
+            "bakaze_sha": "Round Wind West",
+            "bakaze_pei": "Round Wind North",
+            "rinshan": "Rinshan Kaihou",
+            "chankan": "Chankan",
+            "haitei": "Haitei",
+            "houtei": "Houtei",
+            "sanshoku_doujun": "Sanshoku Doujun",
+            "itsu": "Itsu",
+            "chanta": "Chanta",
+            "chitoisu": "Chiitoitsu",
+            "toitoi": "Toitoi",
+            "sanankou": "Sanankou",
+            "honroto": "Honroutou",
+            "double_riichi": "Double Riichi",
+            "sanshoku_doukou": "Sanshoku Doukou",
+            "sankantsu": "Sankantsu",
+            "shosangen": "Shousangen",
+            "honitsu": "Honitsu",
+            "junchan": "Junchan",
+            "ryanpeiko": "Ryanpeiko",
+            "chinitsu": "Chinitsu",
+            "kokushi": "Kokushi Musou",
+            "suanko": "Suuankou",
+            "daisangen": "Daisangen",
+            "tsuiso": "Tsuuishou",
+            "shousushi": "Shousuushii",
+            "daisushi": "Daisuushii",
+            "ryuiso": "Ryuuiisou",
+            "chinroto": "Chinroutou",
+            "sukantsu": "Suukantsu",
+            "chuuren": "Chuuren Poutou",
+            "tenhou": "Tenhou",
+            "chihou": "Chihou",
+            "dora": "Dora",
+            "ura_dora": "Ura Dora",
+            "aka_dora": "Red Dora"
+        }
+    }
+}

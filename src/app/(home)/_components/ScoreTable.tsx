@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { useScoreTableStore } from '@/lib/drill/stores/useScoreTableStore'
+import { useTranslations } from 'next-intl'
 
 const HAN_COLS = [1, 2, 3, 4]
 const FU_ROWS = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110]
@@ -11,24 +12,10 @@ type ViewMode = 'normal' | 'high_score'
 
 // Calculate score for Ko (Child)
 const calculateKoScore = (han: number, fu: number) => {
-    // Special handling for 4 han 30 fu -> Mangan in many rules (Kiriage)
-    // Standard: 30fu 4han = 7700 or 7900 -> often treated as 8000 Mangan
-    // The user image shows 30fu 4han as 7700 with a note icon. 
-    // Let's stick to standard calculation but cap at mangan for display check.
-
     let base = fu * Math.pow(2, 2 + han)
-
-    // Strict check for Mangan
-    // Mangan is defined as 2000 points base (or limiting base to 2000)
-    // Usually anything >= 2000 base is mangan.
-    // 3han 70fu = 70 * 32 = 2240 -> Mangan
-    // 4han 40fu = 40 * 64 = 2560 -> Mangan
-    // 4han 30fu = 30 * 64 = 1920 -> Not Mangan strictly (7700), but often Kiriage.
-
     const isMangan = base >= 2000
-    if (isMangan) return { isMangan: true, ron: 8000, tsumo: '2000/4000' } // Placeholder for "Satisfies Mangan Logic"
+    if (isMangan) return { isMangan: true, ron: 8000, tsumo: '2000/4000' } // Placeholder
 
-    // If not mangan, calculate normally
     const ron = Math.ceil((base * 4) / 100) * 100
     const tsumoKo = Math.ceil((base * 1) / 100) * 100
     const tsumoOya = Math.ceil((base * 2) / 100) * 100
@@ -39,26 +26,27 @@ const calculateKoScore = (han: number, fu: number) => {
 // Calculate score for Oya (Parent)
 const calculateOyaScore = (han: number, fu: number) => {
     let base = fu * Math.pow(2, 2 + han)
-
-    // 3han 70fu = 2240 -> Mangan
     const isMangan = base >= 2000
     if (isMangan) return { isMangan: true, ron: 12000, tsumo: '4000オール' }
 
     const ron = Math.ceil((base * 6) / 100) * 100
     const tsumo = Math.ceil((base * 2) / 100) * 100
 
-    return { isMangan: false, ron, tsumo: `${tsumo}オール` } // "オール" will be handled in render
+    return { isMangan: false, ron, tsumo: `${tsumo}オール` }
 }
 
 const HIGH_SCORES = [
-    { name: '満貫', han: '5翻', ronKo: 8000, tsumoKo: '2000/4000', ronOya: 12000, tsumoOya: '4000オール' },
-    { name: '跳満', han: '6-7翻', ronKo: 12000, tsumoKo: '3000/6000', ronOya: 18000, tsumoOya: '6000オール' },
-    { name: '倍満', han: '8-10翻', ronKo: 16000, tsumoKo: '4000/8000', ronOya: 24000, tsumoOya: '8000オール' },
-    { name: '三倍満', han: '11-12翻', ronKo: 24000, tsumoKo: '6000/12000', ronOya: 36000, tsumoOya: '12000オール' },
-    { name: '役満', han: '13翻~', ronKo: 32000, tsumoKo: '8000/16000', ronOya: 48000, tsumoOya: '16000オール' },
+    { nameKey: 'mangan', han: '5', ronKo: 8000, tsumoKo: '2000/4000', ronOya: 12000, tsumoOya: '4000' },
+    { nameKey: 'haneman', han: '6-7', ronKo: 12000, tsumoKo: '3000/6000', ronOya: 18000, tsumoOya: '6000' },
+    { nameKey: 'baiman', han: '8-10', ronKo: 16000, tsumoKo: '4000/8000', ronOya: 24000, tsumoOya: '8000' },
+    { nameKey: 'sanbaiman', han: '11-12', ronKo: 24000, tsumoKo: '6000/12000', ronOya: 36000, tsumoOya: '12000' },
+    { nameKey: 'yakuman', han: '13~', ronKo: 32000, tsumoKo: '8000/16000', ronOya: 48000, tsumoOya: '16000' },
 ]
 
 export function ScoreTable() {
+    const tProblems = useTranslations('problems') // Use problems dict or common? maybe problems.form.options
+    // Actually create a new namespace for ScoreTable if needed, or reuse. 
+    // problems.form.options has mangan, haneman etc.
     const { activeTab, setActiveTab, viewMode, setViewMode, winType, setWinType, hiddenCells, toggleCellVisibility } = useScoreTableStore()
 
     const isKo = activeTab === 'ko'
@@ -87,7 +75,11 @@ export function ScoreTable() {
                 </div>
             )
         }
-        return text
+        return (
+            <div className="flex flex-col items-center leading-tight">
+                <span>{text} {tProblems('form.options.all')}</span>
+            </div>
+        )
     }
 
     return (
@@ -103,7 +95,7 @@ export function ScoreTable() {
                             : 'text-gray-700 hover:bg-blue-100'
                             }`}
                     >
-                        ロン
+                        {tProblems('question.ron')}
                     </button>
                     <button
                         onClick={() => setWinType('tsumo')}
@@ -112,7 +104,7 @@ export function ScoreTable() {
                             : 'text-gray-700 hover:bg-blue-100'
                             }`}
                     >
-                        ツモ
+                        {tProblems('question.tsumo')}
                     </button>
                 </div>
             </div>
@@ -126,7 +118,7 @@ export function ScoreTable() {
                         : '!bg-blue-100 !text-gray-700 !border-blue-600 hover:!bg-blue-200'
                         }`}
                 >
-                    子
+                    {tProblems('question.nonDealer')}
                 </button>
                 <button
                     onClick={() => setActiveTab('oya')}
@@ -135,7 +127,7 @@ export function ScoreTable() {
                         : '!bg-blue-100 !text-gray-700 !border-blue-600 hover:!bg-blue-200'
                         }`}
                 >
-                    親
+                    {tProblems('question.dealer')}
                 </button>
             </div>
 
@@ -149,7 +141,7 @@ export function ScoreTable() {
                             : 'text-gray-700 hover:bg-blue-100'
                             }`}
                     >
-                        符計算
+                        {tProblems('result.fuHan')}
                     </button>
                     <button
                         onClick={() => setViewMode('high_score')}
@@ -158,7 +150,7 @@ export function ScoreTable() {
                             : 'text-gray-700 hover:bg-blue-100'
                             }`}
                     >
-                        満貫以上
+                        {tProblems('form.options.mangan')} +
                     </button>
                 </div>
             </div>
@@ -173,7 +165,7 @@ export function ScoreTable() {
                                 <th className="bg-gray-100 border border-gray-300 w-14"></th>
                                 {HAN_COLS.map(han => (
                                     <th key={han} className="bg-gray-200 border border-gray-300 py-3 text-base text-gray-700 font-normal">
-                                        {han}翻
+                                        {han}{tProblems('form.options.han_suffix')}
                                     </th>
                                 ))}
                             </tr>
@@ -182,7 +174,7 @@ export function ScoreTable() {
                             {FU_ROWS.map((fu, idx) => (
                                 <tr key={fu} className={idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
                                     <td className="bg-gray-200 border border-gray-300 text-sm text-gray-700 py-1 font-normal">
-                                        {fu}符
+                                        {fu}{tProblems('form.options.fu_suffix')}
                                     </td>
                                     {HAN_COLS.map(han => {
                                         if (
@@ -213,7 +205,7 @@ export function ScoreTable() {
                                                     onClick={() => toggleCellVisibility(cellId)}
                                                 >
                                                     <div className={`flex items-center justify-center h-full text-sm text-gray-600 py-2 ${getContentClass(isHidden)}`}>
-                                                        満貫
+                                                        {tProblems('form.options.mangan')}
                                                     </div>
                                                 </td>
                                             )
@@ -247,25 +239,26 @@ export function ScoreTable() {
                     <table className="w-full text-center border-collapse border border-gray-300 bg-white shadow-sm rounded-lg overflow-hidden">
                         <thead>
                             <tr>
-                                <th className="bg-gray-200 border border-gray-300 py-3 text-gray-700 font-normal">役</th>
-                                <th className="bg-gray-200 border border-gray-300 py-3 text-gray-700 font-normal">翻数</th>
+                                <th className="bg-gray-200 border border-gray-300 py-3 text-gray-700 font-normal">{tProblems('form.labels.yaku')}</th>
+                                <th className="bg-gray-200 border border-gray-300 py-3 text-gray-700 font-normal">{tProblems('form.labels.han')}</th>
                                 <th className="bg-gray-200 border border-gray-300 py-3 text-gray-700 font-normal">
-                                    点数
+                                    {tProblems('result.score')}
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             {HIGH_SCORES.map((item, idx) => {
-                                const cellId = `${activeTab}-${winType}-${item.name}`
+                                const cellId = `${activeTab}-${winType}-${item.nameKey}`
                                 const isHidden = !!hiddenCells[cellId]
 
                                 return (
-                                    <tr key={item.name} className={idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                                    <tr key={item.nameKey} className={idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
                                         <td className="bg-gray-200 border border-gray-300 text-sm text-gray-700 py-4 font-normal">
-                                            {item.name}
+                                            {/* @ts-ignore dynamic key */}
+                                            {tProblems(`form.options.${item.nameKey}`)}
                                         </td>
                                         <td className="border border-gray-300 font-medium text-gray-600">
-                                            {item.han}
+                                            {item.han}{tProblems('form.options.han_suffix')}
                                         </td>
                                         <td
                                             className={getCellClass(isHidden)}

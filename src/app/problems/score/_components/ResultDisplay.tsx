@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import type { DrillQuestion, UserAnswer, JudgementResult } from '@/lib/drill/types'
 import { isMangan, getScoreLevelName } from '@/lib/drill/utils/judgement'
+import { useTranslations } from 'next-intl'
 
 interface Props {
   question: DrillQuestion
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export function ResultDisplay({ question, userAnswer, result, onNext, requireYaku = false, simplifyMangan = false, requireFuForMangan = false }: Props) {
+  const tProblems = useTranslations('problems')
   const { answer } = question
   const isManganOrAbove = isMangan(answer.scoreLevel)
   const scoreLevelName = getScoreLevelName(answer.scoreLevel)
@@ -24,30 +26,28 @@ export function ResultDisplay({ question, userAnswer, result, onNext, requireYak
   const getPaymentDescription = () => {
     const { payment } = answer
     if (payment.type === 'ron') {
-      return `${payment.amount}点`
+      return `${payment.amount}${tProblems('form.labels.score')}`
     }
     if (payment.type === 'koTsumo') {
       return `${payment.amount[0]}/${payment.amount[1]}`
     }
     if (payment.type === 'oyaTsumo') {
-      return `${payment.amount}オール`
+      return `${payment.amount}${tProblems('form.options.all')}`
     }
     return ''
   }
 
   const getHanDisplay = (han: number, scoreLevelName?: string) => {
     if (simplifyMangan && han >= 5) {
-      // 簡略化モードかつ5翻以上の場合はクラス名を表示
-      // ユーザー回答の場合はhanから推測する（5=満貫, 6=跳満, 8=倍満, 11=三倍満, 13=役満）
       if (scoreLevelName) return scoreLevelName
 
-      if (han >= 13) return '役満'
-      if (han >= 11) return '三倍満'
-      if (han >= 8) return '倍満'
-      if (han >= 6) return '跳満'
-      if (han >= 5) return '満貫'
+      if (han >= 13) return tProblems('form.options.yakuman')
+      if (han >= 11) return tProblems('form.options.sanbaiman')
+      if (han >= 8) return tProblems('form.options.baiman')
+      if (han >= 6) return tProblems('form.options.haneman')
+      if (han >= 5) return tProblems('form.options.mangan')
     }
-    return `${han}翻`
+    return `${han}${tProblems('form.options.han_suffix')}`
   }
 
   return (
@@ -58,7 +58,7 @@ export function ResultDisplay({ question, userAnswer, result, onNext, requireYak
           }`}
       >
         <div className="text-base font-bold">
-          {result.isCorrect ? '正解!' : '不正解...'}
+          {result.isCorrect ? tProblems('result.correct') : tProblems('result.incorrect')}
         </div>
       </div>
 
@@ -68,15 +68,15 @@ export function ResultDisplay({ question, userAnswer, result, onNext, requireYak
           <thead>
             <tr className="border-b">
               <th className="text-left text-gray-600 py-2 pr-4 font-medium"></th>
-              <th className="text-left text-gray-600 py-2 pr-4 font-medium">回答</th>
-              <th className="text-left text-gray-600 py-2 font-medium">正解</th>
+              <th className="text-left text-gray-600 py-2 pr-4 font-medium">{tProblems('result.headers.answer')}</th>
+              <th className="text-left text-gray-600 py-2 font-medium">{tProblems('result.headers.correct')}</th>
             </tr>
           </thead>
           <tbody>
             {/* 役 */}
             {requireYaku && (
               <tr>
-                <td className="text-gray-600 py-2 pr-4 whitespace-nowrap align-top">役</td>
+                <td className="text-gray-600 py-2 pr-4 whitespace-nowrap align-top">{tProblems('form.labels.yaku')}</td>
                 <td className="py-2 pr-4 align-top">
                   <div className="flex flex-wrap gap-1">
                     {userAnswer.yakus.length > 0 ? (
@@ -90,7 +90,7 @@ export function ResultDisplay({ question, userAnswer, result, onNext, requireYak
                         </span>
                       ))
                     ) : (
-                      <span className="text-gray-400 text-sm">（選択なし）</span>
+                      <span className="text-gray-400 text-sm">{tProblems('result.details.none')}</span>
                     )}
                     <span className={`ml-1 ${result.isYakuCorrect ? 'text-green-600' : 'text-red-600'}`}>
                       {result.isYakuCorrect ? '✓' : '✗'}
@@ -104,12 +104,12 @@ export function ResultDisplay({ question, userAnswer, result, onNext, requireYak
 
             {/* 翻 */}
             <tr>
-              <td className="text-gray-600 py-2 pr-4 whitespace-nowrap">翻数</td>
+              <td className="text-gray-600 py-2 pr-4 whitespace-nowrap">{tProblems('form.labels.han')}</td>
               <td className={`py-2 pr-4 ${result.isHanCorrect ? 'text-green-600' : 'text-red-600'}`}>
                 {getHanDisplay(userAnswer.han)} {result.isHanCorrect ? '✓' : '✗'}
               </td>
               <td className="text-gray-800 font-bold py-2">
-                {getHanDisplay(answer.han, scoreLevelName)}
+                {getHanDisplay(answer.han)}
                 {!simplifyMangan && scoreLevelName && ` (${scoreLevelName})`}
                 {question.yakuDetails && question.yakuDetails.length > 0 && (
                   <button
@@ -128,13 +128,13 @@ export function ResultDisplay({ question, userAnswer, result, onNext, requireYak
                     {question.yakuDetails.map((detail, idx) => (
                       <div key={idx} className="flex justify-between border-b border-gray-100 last:border-0 py-1">
                         <span>{detail.name}</span>
-                        <span>{detail.han}翻</span>
+                        <span>{detail.han}{tProblems('form.options.han_suffix')}</span>
                       </div>
                     ))}
                     <div className="flex justify-between font-bold mt-2 pt-1 border-t border-gray-200">
-                      <span>合計</span>
+                      <span>{tProblems('result.details.total')}</span>
                       <span>
-                        {question.yakuDetails.reduce((acc, curr) => acc + curr.han, 0)}翻
+                        {question.yakuDetails.reduce((acc, curr) => acc + curr.han, 0)}{tProblems('form.options.han_suffix')}
                       </span>
                     </div>
                   </div>
@@ -146,12 +146,12 @@ export function ResultDisplay({ question, userAnswer, result, onNext, requireYak
             {(!isManganOrAbove || requireFuForMangan) && (
               <>
                 <tr>
-                  <td className="text-gray-600 py-2 pr-4 whitespace-nowrap">符</td>
+                  <td className="text-gray-600 py-2 pr-4 whitespace-nowrap">{tProblems('form.labels.fu')}</td>
                   <td className={`py-2 pr-4 ${result.isFuCorrect ? 'text-green-600' : 'text-red-600'}`}>
-                    {userAnswer.fu ?? '-'}符 {result.isFuCorrect ? '✓' : '✗'}
+                    {userAnswer.fu ?? '-'}{tProblems('form.options.fu_suffix')} {result.isFuCorrect ? '✓' : '✗'}
                   </td>
                   <td className="text-gray-800 font-bold py-2">
-                    {answer.fu}符
+                    {answer.fu}{tProblems('form.options.fu_suffix')}
                     {question.fuDetails && (
                       <button
                         onClick={() => setShowFuDetails(!showFuDetails)}
@@ -169,18 +169,18 @@ export function ResultDisplay({ question, userAnswer, result, onNext, requireYak
                         {question.fuDetails.map((detail, idx) => (
                           <div key={idx} className="flex justify-between border-b border-gray-100 last:border-0 py-1">
                             <span>{detail.reason}</span>
-                            <span>{detail.fu}符</span>
+                            <span>{detail.fu}{tProblems('form.options.fu_suffix')}</span>
                           </div>
                         ))}
                         <div className="flex justify-between font-bold mt-2 pt-1 border-t border-gray-200">
-                          <span>合計</span>
+                          <span>{tProblems('result.details.total')}</span>
                           <span>
-                            {question.fuDetails.reduce((acc, curr) => acc + curr.fu, 0)}符
+                            {question.fuDetails.reduce((acc, curr) => acc + curr.fu, 0)}{tProblems('form.options.fu_suffix')}
                           </span>
                         </div>
                         {question.fuDetails.reduce((acc, curr) => acc + curr.fu, 0) !== answer.fu && (
                           <div className="text-right text-[10px] text-gray-400 mt-1">
-                            {question.fuDetails.reduce((acc, curr) => acc + curr.fu, 0)}符 → {answer.fu}符 (切り上げ)
+                            {question.fuDetails.reduce((acc, curr) => acc + curr.fu, 0)}{tProblems('form.options.fu_suffix')} → {answer.fu}{tProblems('form.options.fu_suffix')} ({tProblems('result.details.roundUp')})
                           </div>
                         )}
                       </div>
@@ -192,7 +192,7 @@ export function ResultDisplay({ question, userAnswer, result, onNext, requireYak
 
             {/* 点数 */}
             <tr>
-              <td className="text-gray-600 py-2 pr-4 whitespace-nowrap">点数</td>
+              <td className="text-gray-600 py-2 pr-4 whitespace-nowrap">{tProblems('form.labels.score')}</td>
               <td className={`py-2 pr-4 ${result.isScoreCorrect ? 'text-green-600' : 'text-red-600'}`}>
                 {userAnswer.scoreFromKo !== undefined
                   ? `${userAnswer.scoreFromKo}/${userAnswer.scoreFromOya}`
@@ -206,15 +206,12 @@ export function ResultDisplay({ question, userAnswer, result, onNext, requireYak
         </table>
       </div>
 
-
-
-
       {/* 次の問題ボタン */}
       <button
         onClick={onNext}
         className="w-full !py-3 !px-6 !bg-blue-600 !text-white font-bold rounded-lg hover:!bg-blue-700 transition-colors"
       >
-        次の問題へ
+        {tProblems('result.next')}
       </button>
     </div >
   )

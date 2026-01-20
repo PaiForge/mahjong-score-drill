@@ -1,12 +1,11 @@
-import type { Metadata } from 'next'
-import '@pai-forge/mahjong-react-ui/styles.css'
 import './globals.css'
+import { GlobalCheatsheet } from '@/app/_components/GlobalCheatsheet'
+import { I18nProvider } from '@/components/I18nProvider'
+import jaMessages from '@/messages/ja.json'
 
-import { GlobalCheatsheet } from './_components/GlobalCheatsheet'
-
-export const metadata: Metadata = {
-  title: '麻雀点数計算ドリル',
-  description: 'ランダムに出題される点数計算問題を解いて、計算力を鍛えましょう。',
+export const metadata = {
+  title: 'Mahjong Score Drill',
+  description: 'Practice your mahjong scoring',
 }
 
 export default function RootLayout({
@@ -17,8 +16,10 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body>
-        {children}
-        <GlobalCheatsheet />
+        <I18nProvider initialLocale="ja" initialMessages={jaMessages}>
+          {children}
+          <GlobalCheatsheet />
+        </I18nProvider>
       </body>
     </html>
   )
