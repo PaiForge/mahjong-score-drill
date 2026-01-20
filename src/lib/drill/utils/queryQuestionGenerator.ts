@@ -49,8 +49,18 @@ export function generateQuestionFromQuery(params: URLSearchParams): QueryResult 
         if (!tehaiStr && !agariStr && !doraStr) return null // 何も指定がない場合はnull (ランダム生成へ)
         if (!tehaiStr || !agariStr) return { type: 'error', message: 'tehai, agari parameters are required.' }
 
-        // 手牌のパース (Extended MSPZ)
-        const tehai = parseExtendedMspz(tehaiStr) as Tehai14
+        // 手牌のパース (Extended MSPZ, fallback to Standard MSPZ)
+        let tehai: Tehai14
+        try {
+            tehai = parseExtendedMspz(tehaiStr) as Tehai14
+        } catch {
+            try {
+                // 標準MSPZとして再試行 (Extended parserが標準記法に厳密で失敗する場合の救済)
+                tehai = parseMspz(tehaiStr) as Tehai14
+            } catch {
+                return { type: 'error', message: `Invalid Extended MSPZ string: ${tehaiStr}` }
+            }
+        }
 
         // バリデーション: 牌の枚数チェックなどは parseExtendedMspz 呼び出し元で catch していないため、
         // ここでエラーなら catch ブロックに行く。
@@ -202,6 +212,168 @@ export function generateQuestionFromQuery(params: URLSearchParams): QueryResult 
     }
 }
 
+/**
+ * DrillQuestion から URL (Path + Query) を生成
+ */
+export function generatePathAndQueryFromQuestion(question: DrillQuestion): string {
+    const params = new URLSearchParams()
+
+    // tehai
+    const tehaiStr = tehaiToMspz(question.tehai)
+    params.set('tehai', tehaiStr)
+
+    // agari
+    if (question.agariHai) {
+        // IDから文字列へ復元 (簡易的)
+        // MSPZライブラリにID->String変換があると良いが、ここでは簡易実装
+        // parseMspzの逆を行う必要がある。
+        // riichi-mahjong の HaiKindId は 0-33 などの数値、もしくはEnum。
+        // ここでは単純化して、別途マッピングが必要だが...
+        // 既存の queryQuestionGenerator には逆変換ロジックがない。
+        // HaiKindId -> String (MSPZ) の変換が必要。
+        // いったん、DrillQuestion生成時に文字列表現を持っていないため、復元は困難。
+        // つまり、DrillQuestion に originalParams を持たせるか、
+        // あるいはリバース変換を実装するか。
+        //
+        // 幸い、DrillQuestionを作っている場所（generateValidQuestion）では
+        // 牌のIDを使っており、MSPZ文字列は持っていない。
+        // 
+        // ここで HaiStrength などを文字に直す必要がある。
+        // さしあたり、hais.ts 等にあるマップを使うか、自前で書くか。
+
+        // agariHai は単一牌なので、数値から "1m", "2p" 等へ変換
+        params.set('agari', haiIdToMspz(question.agariHai))
+    }
+
+    // dora
+    if (question.doraMarkers.length > 0) {
+        const doraStr = question.doraMarkers.map(id => haiIdToMspz(id)).join('')
+        params.set('dora', doraStr)
+    }
+
+    // ura
+    if (question.uraDoraMarkers && question.uraDoraMarkers.length > 0) {
+        const uraStr = question.uraDoraMarkers.map(id => haiIdToMspz(id)).join('')
+        params.set('ura', uraStr)
+    }
+
+    // tsumo
+    if (question.isTsumo) params.set('tsumo', 'true')
+
+    // riichi
+    if (question.isRiichi) params.set('riichi', 'true')
+
+    // ba
+    params.set('ba', kazeIdToMspz(question.bakaze))
+
+    // ji
+    params.set('ji', kazeIdToMspz(question.jikaze))
+
+
+    // Tehai (Path)の生成
+    // 手牌の配列をMSPZ文字列に変換
+    // これが一番大変。副露を含めた文字列生成が必要。
+    return `/problems/score?${params.toString()}`
+}
+
+
+// --- Helpers for Reverse Conversion (ID -> MSPZ) ---
+
+function haiIdToMspz(id: HaiKindId): string {
+    // 0-8: 1-9m, 9-17: 1-9p, 18-26: 1-9s, 27-33: z
+    // HaiKind enumを確認すると:
+    // Man1=0 ... Man9=8
+    // Pin1=9 ... Pin9=17
+    // Sou1=18 ... Sou9=26
+    // Ton=27, Nan=28, Sha=29, Pei=30, Haku=31, Hatsu=32, Chun=33
+
+    if (id >= 0 && id <= 8) return `${id + 1}m`
+    if (id >= 9 && id <= 17) return `${id - 9 + 1}p`
+    if (id >= 18 && id <= 26) return `${id - 18 + 1}s`
+    if (id >= 27 && id <= 33) return `${id - 27 + 1}z`
+    return '1m' // fallback
+}
+
+function kazeIdToMspz(id: Kazehai): string {
+    if (id === HaiKind.Ton) return '1z'
+    if (id === HaiKind.Nan) return '2z'
+    if (id === HaiKind.Sha) return '3z'
+    if (id === HaiKind.Pei) return '4z'
+    return '1z'
+}
+
+function tehaiToMspz(tehai: Tehai14): string {
+    // 純手牌
+    // ソートして種類ごとにまとめる
+    // 例: 123m456p
+    // しかし、parseExtendedMspzを使うなら "123m456p" 形式でOK。
+    // 副露は [123m] とか (555z) とか。
+
+    let result = ''
+
+    // Closed tiles
+    // まず種類ごとに分類
+    const mans: number[] = []
+    const pins: number[] = []
+    const sous: number[] = []
+    const zis: number[] = []
+
+    const sortAndPush = (id: HaiKindId) => {
+        if (id >= 0 && id <= 8) mans.push(id + 1)
+        else if (id >= 9 && id <= 17) pins.push(id - 9 + 1)
+        else if (id >= 18 && id <= 26) sous.push(id - 18 + 1)
+        else if (id >= 27 && id <= 33) zis.push(id - 27 + 1)
+    }
+
+    tehai.closed.forEach(sortAndPush)
+
+    // Sort
+    mans.sort((a, b) => a - b); pins.sort((a, b) => a - b); sous.sort((a, b) => a - b); zis.sort((a, b) => a - b);
+
+    if (mans.length) result += mans.join('') + 'm'
+    if (pins.length) result += pins.join('') + 'p'
+    if (sous.length) result += sous.join('') + 's'
+    if (zis.length) result += zis.join('') + 'z'
+
+    // Exposed (Meld)
+    tehai.exposed.forEach(meld => {
+        // meld.hais は ID配列
+        // meld.type は 'Shuntsu' | 'Koutsu' | 'Kantsu'
+        // Extended MSPZ:
+        // Shuntsu/Koutsu -> [...]
+        // Kantsu -> (...)
+
+        let meldStr = ''
+        const mMans: number[] = []
+        const mPins: number[] = []
+        const mSous: number[] = []
+        const mZis: number[] = []
+
+        const mSortAndPush = (id: HaiKindId) => {
+            if (id >= 0 && id <= 8) mMans.push(id + 1)
+            else if (id >= 9 && id <= 17) mPins.push(id - 9 + 1)
+            else if (id >= 18 && id <= 26) mSous.push(id - 18 + 1)
+            else if (id >= 27 && id <= 33) mZis.push(id - 27 + 1)
+        }
+
+        meld.hais.forEach(mSortAndPush)
+        mMans.sort((a, b) => a - b); mPins.sort((a, b) => a - b); mSous.sort((a, b) => a - b); mZis.sort((a, b) => a - b);
+
+        if (mMans.length) meldStr += mMans.join('') + 'm'
+        if (mPins.length) meldStr += mPins.join('') + 'p'
+        if (mSous.length) meldStr += mSous.join('') + 's'
+        if (mZis.length) meldStr += mZis.join('') + 'z'
+
+        if (meld.type === 'Kantsu') {
+            result += `(${meldStr})`
+        } else {
+            result += `[${meldStr}]`
+        }
+    })
+
+    return result
+}
+
 // ヘルパー: 牌文字列(MSPZ)をIDリストに変換
 function parseHais(str: string | null): HaiKindId[] {
     if (!str) return []
@@ -236,3 +408,4 @@ function parseKazehai(str: string | null): Kazehai | undefined {
     }
     return undefined
 }
+

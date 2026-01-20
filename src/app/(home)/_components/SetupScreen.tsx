@@ -52,7 +52,7 @@ export function SetupScreen() {
     // 今回は any キャストで null を入れる。
 
     const queryString = params.toString()
-    router.push(queryString ? `/drill?${queryString}` : '/drill')
+    router.push(queryString ? `/problems/score?${queryString}` : '/problems/score')
   }
 
   const handleToggleRange = (range: 'non_mangan' | 'mangan_plus') => {

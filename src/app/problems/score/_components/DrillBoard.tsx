@@ -8,7 +8,7 @@ import { useDrillStore } from '@/lib/drill/stores/useDrillStore'
 import { QuestionDisplay } from './QuestionDisplay'
 import { AnswerForm } from './AnswerForm'
 import { ResultDisplay } from './ResultDisplay'
-import { generateQuestionFromQuery } from '@/lib/drill/utils/queryQuestionGenerator'
+import { generateQuestionFromQuery, generatePathAndQueryFromQuestion } from '@/lib/drill/utils/queryQuestionGenerator'
 import type { UserAnswer } from '@/lib/drill/types'
 
 // SSR安全なクライアント判定フック
@@ -20,6 +20,8 @@ function useIsClient() {
   )
 }
 
+// Static Export対応: Dynamic Route ではなく Query Parameters を使用する
+// export function DrillBoard({ initialTehai }: DrillBoardProps) {
 export function DrillBoard() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -45,6 +47,12 @@ export function DrillBoard() {
 
     // パラメータ取得
     const params = new URLSearchParams(searchParams.toString())
+    // Static Export対応: propsからの初期化は行わず、常にクエリパラメータまたはランダム生成を使用
+    /*
+    if (initialTehai) {
+      params.set('tehai', initialTehai)
+    }
+    */
     const hasQueryParams = params.has('tehai') || params.has('agari') || params.has('dora')
 
     // URLパラメータからの生成を試みる
@@ -86,8 +94,30 @@ export function DrillBoard() {
       })
 
       generateNewQuestion()
+
+      // ランダム生成後、即座にクエリパラメータ付きURLへ遷移
+      const newQuestion = useDrillStore.getState().currentQuestion
+      if (newQuestion) {
+        // generatePathAndQueryFromQuestion は /problems/score?tehai=... を返す
+        const newUrlBase = generatePathAndQueryFromQuestion(newQuestion)
+        const urlObj = new URL(newUrlBase, 'http://dummy.com')
+
+        // オプション定義 (rangesなど) は維持したいが、generateNewQuestionでstoreに入っているので
+        // 次回のレンダリングで正しいはずだが、URLには残しておきたい
+        const currentParams = new URLSearchParams(searchParams.toString())
+        const ranges = currentParams.getAll('ranges')
+        ranges.forEach(r => urlObj.searchParams.append('ranges', r))
+
+        // modeなども維持
+        if (searchParams.has('mode')) urlObj.searchParams.set('mode', searchParams.get('mode')!)
+        if (searchParams.has('simple')) urlObj.searchParams.set('simple', searchParams.get('simple')!)
+        if (searchParams.has('fu_mangan')) urlObj.searchParams.set('fu_mangan', searchParams.get('fu_mangan')!)
+        if (searchParams.has('auto_next')) urlObj.searchParams.set('auto_next', searchParams.get('auto_next')!)
+
+        router.replace(urlObj.pathname + urlObj.search)
+      }
     }
-  }, [searchParams, generateNewQuestion])
+  }, [searchParams, generateNewQuestion, router])
 
   useEffect(() => {
     if (isClient && !currentQuestion) {
@@ -117,7 +147,7 @@ export function DrillBoard() {
           <button
             onClick={() => {
               // クエリパラメータを削除してリロード（ランダム生成へ）
-              router.replace('/drill')
+              router.replace('/problems/score')
               setError(null)
               generateNewQuestion()
             }}
@@ -143,6 +173,30 @@ export function DrillBoard() {
   const requireFuForMangan = searchParams.get('fu_mangan') === '1'
   const autoNext = searchParams.get('auto_next') === '1'
 
+  const handleNext = () => {
+    nextQuestion()
+    // 新しいURLへ遷移
+    const newQuestion = useDrillStore.getState().currentQuestion
+    if (newQuestion) {
+      // 現在のオプションパラメータを引き継ぐ (generatePathAndQueryFromQuestion は /problems/score?tehai=... を返す)
+      const newUrlBase = generatePathAndQueryFromQuestion(newQuestion)
+      const urlObj = new URL(newUrlBase, 'http://dummy.com')
+
+      if (requireYaku) urlObj.searchParams.set('mode', 'with_yaku')
+      if (simplifyMangan) urlObj.searchParams.set('simple', '1')
+      if (requireFuForMangan) urlObj.searchParams.set('fu_mangan', '1')
+      if (autoNext) urlObj.searchParams.set('auto_next', '1')
+
+      // ranges
+      const currentParams = new URLSearchParams(searchParams.toString())
+      const ranges = currentParams.getAll('ranges')
+      ranges.forEach(r => urlObj.searchParams.append('ranges', r))
+
+      // パスパラメータではなくクエリパラメータのみを使用するため、pathnameは固定でQueryStringを付与
+      router.push(urlObj.pathname + urlObj.search)
+    }
+  }
+
   const handleSubmit = (answer: UserAnswer) => {
     submitAnswer(answer, requireYaku, simplifyMangan, requireFuForMangan)
 
@@ -160,20 +214,20 @@ export function DrillBoard() {
             fontWeight: 'bold',
           },
         })
-        nextQuestion()
+        toast.success('正解！', {
+          duration: 1500,
+          position: 'top-center',
+          icon: '✅',
+          style: {
+            background: '#E6FFFA',
+            color: '#2C7A7B',
+            fontWeight: 'bold',
+          },
+        })
+        handleNext()
 
         // URLパラメータを維持（nextQuestionだけだとパラメータ維持されるが、念の為）
-        // 実際にはnextQuestionはstoreのgenerateNewQuestionを呼ぶだけでURL変更しないので、
-        // ここでのhandleSubmit内のrouterへのreplaceは不要かもしれないが、
-        // 既存実装ではreplaceしているのでそれに倣う。
-        // ただし、nextQuestion呼んだ後だとstateが変わってるので、
-        // 下記のparam更新フローは「結果表示」のためのものだったかもしれない。
-        // 結果表示をスキップするなら、param更新だけして終わり？
-        // 既存コード： submitAnswer したあと、 params を作って router.replace している。
-        // これは「結果画面」でもパラメータを維持するため。
-        // autoNextの場合は、すぐに次の問題になるので、次の問題のためのパラメータ維持が必要。
-        // しかし nextQuestion() は store の state を変えるだけで URL は変えない。
-        // なので、ここで router.replace するのは正しい。
+        // handleNext() 内で遷移するのでここは不要
       }
     }
 
@@ -191,7 +245,7 @@ export function DrillBoard() {
     ranges.forEach(r => params.append('ranges', r))
 
     const queryString = params.toString()
-    router.replace(queryString ? `/drill?${queryString}` : '/drill')
+    router.replace(queryString ? `/problems/score?${queryString}` : '/problems/score')
   }
 
   return (
@@ -224,7 +278,7 @@ export function DrillBoard() {
               question={currentQuestion}
               userAnswer={userAnswer}
               result={judgementResult}
-              onNext={nextQuestion}
+              onNext={handleNext}
               requireYaku={requireYaku}
               simplifyMangan={simplifyMangan}
               requireFuForMangan={requireFuForMangan}
@@ -239,7 +293,7 @@ export function DrillBoard() {
               requireYaku={requireYaku}
               simplifyMangan={simplifyMangan}
               requireFuForMangan={requireFuForMangan}
-              onSkip={nextQuestion}
+              onSkip={handleNext}
             />
           )}
         </div>
