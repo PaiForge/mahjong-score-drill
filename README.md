@@ -21,18 +21,18 @@
 ### 前提条件 (Prerequisites)
 
 - Node.js 24.x 以上
-- npm（Node.js に同梱）
+- pnpm (Corepack または npm 経由でインストール)
 
 ### インストール (Installation)
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### 開発サーバーの起動 (Development)
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 ブラウザで `http://localhost:3000` を開いて確認してください。
@@ -40,7 +40,7 @@ npm run dev
 ### ビルド (Build)
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 ## プロジェクト構成 (Project Structure)
