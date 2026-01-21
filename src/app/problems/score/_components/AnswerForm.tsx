@@ -10,6 +10,7 @@ import {
   TSUMO_SCORES_OYA_PART,
 } from '@/lib/drill/scoreConstants'
 import { useTranslations } from 'next-intl'
+import { cn } from '@/lib/utils'
 
 interface Props {
   onSubmit: (answer: UserAnswer) => void
@@ -195,7 +196,10 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
           onChange={(e) => handleHanChange(e.target.value)}
           disabled={disabled}
           required
-          className={`w-full !px-2 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100 ${han === null ? '!text-gray-400' : '!text-gray-900'}`}
+          className={cn(
+            "w-full px-2 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100",
+            han === null ? "text-gray-400" : "text-gray-900"
+          )}
         >
           {hanOptions.map((option) => (
             <option key={option.value} value={option.value}>
@@ -216,7 +220,10 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
             onChange={(e) => handleFuChange(e.target.value)}
             disabled={disabled}
             required
-            className={`w-full !px-2 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100 ${fu === null ? '!text-gray-400' : '!text-gray-900'}`}
+            className={cn(
+              "w-full px-2 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100",
+              fu === null ? "text-gray-400" : "text-gray-900"
+            )}
           >
             {fuOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -249,7 +256,10 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
                 onChange={(e) => setScoreFromKo(e.target.value)}
                 disabled={disabled}
                 required
-                className={`w-full !px-2 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100 ${scoreFromKo === '' ? '!text-gray-400' : '!text-gray-900'}`}
+                className={cn(
+                  "w-full px-2 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100",
+                  scoreFromKo === '' ? "text-gray-400" : "text-gray-900"
+                )}
               >
                 <option value="" disabled>{tProblems('form.placeholders.fromKo')}</option>
                 {filterScores(TSUMO_SCORES_KO_PART, 'tsumoKoKo').map((s) => (
@@ -264,7 +274,10 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
                 onChange={(e) => setScoreFromOya(e.target.value)}
                 disabled={disabled}
                 required
-                className={`w-full !px-2 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100 ${scoreFromOya === '' ? '!text-gray-400' : '!text-gray-900'}`}
+                className={cn(
+                  "w-full px-2 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100",
+                  scoreFromOya === '' ? "text-gray-400" : "text-gray-900"
+                )}
               >
                 <option value="" disabled>{tProblems('form.placeholders.fromOya')}</option>
                 {filterScores(TSUMO_SCORES_OYA_PART, 'tsumoKoOya').map((s) => (
@@ -279,7 +292,10 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
             onChange={(e) => setScore(e.target.value)}
             disabled={disabled}
             required
-            className={`w-full !px-2 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100 ${score === '' ? '!text-gray-400' : '!text-gray-900'}`}
+            className={cn(
+              "w-full px-2 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100",
+              score === '' ? "text-gray-400" : "text-gray-900"
+            )}
           >
             <option value="" disabled>{tProblems('form.placeholders.select')}</option>
             {filterScores(
@@ -304,7 +320,7 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
       <button
         type="submit"
         disabled={disabled}
-        className="w-full !py-3 !px-6 !bg-amber-500 !text-white font-bold rounded-lg hover:!bg-amber-600 transition-colors disabled:!bg-gray-400 disabled:!text-gray-200 disabled:cursor-not-allowed"
+        className="w-full py-3 px-6 bg-amber-500 text-white font-bold rounded-lg hover:bg-amber-600 transition-colors disabled:bg-gray-400 disabled:text-gray-200 disabled:cursor-not-allowed"
       >
         {tProblems('form.buttons.answer')}
       </button>

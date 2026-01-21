@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { useScoreTableStore } from '@/lib/drill/stores/useScoreTableStore'
 import { useTranslations } from 'next-intl'
+import { cn } from '@/lib/utils'
 
 const HAN_COLS = [1, 2, 3, 4]
 const FU_ROWS = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110]
@@ -63,19 +64,21 @@ export function ScoreTableControls({ size = 'normal' }: { size?: 'normal' | 'sma
             <div className={containerClass}>
                 <button
                     onClick={() => { setWinType('ron'); setHighlightedCellId(null); }}
-                    className={`${btnBaseClass} ${btnPadding} ${btnMinWidth} ${winType === 'ron'
-                        ? '!bg-blue-600 !text-white'
-                        : 'text-gray-700 hover:bg-blue-100'
-                        }`}
+                    className={cn(btnBaseClass, btnPadding, btnMinWidth,
+                        winType === 'ron'
+                            ? 'bg-blue-600 text-white'
+                            : 'text-gray-700 hover:bg-blue-100'
+                    )}
                 >
                     {tProblems('question.ron')}
                 </button>
                 <button
                     onClick={() => { setWinType('tsumo'); setHighlightedCellId(null); }}
-                    className={`${btnBaseClass} ${btnPadding} ${btnMinWidth} ${winType === 'tsumo'
-                        ? '!bg-blue-600 !text-white'
-                        : 'text-gray-700 hover:bg-blue-100'
-                        }`}
+                    className={cn(btnBaseClass, btnPadding, btnMinWidth,
+                        winType === 'tsumo'
+                            ? 'bg-blue-600 text-white'
+                            : 'text-gray-700 hover:bg-blue-100'
+                    )}
                 >
                     {tProblems('question.tsumo')}
                 </button>
@@ -85,19 +88,21 @@ export function ScoreTableControls({ size = 'normal' }: { size?: 'normal' | 'sma
             <div className={containerClass}>
                 <button
                     onClick={() => { setActiveTab('ko'); setHighlightedCellId(null); }}
-                    className={`${btnBaseClass} ${tabBtnPadding} ${tabBtnMinWidth} ${activeTab === 'ko'
-                        ? '!bg-blue-600 !text-white'
-                        : 'text-gray-700 hover:bg-blue-100'
-                        }`}
+                    className={cn(btnBaseClass, tabBtnPadding, tabBtnMinWidth,
+                        activeTab === 'ko'
+                            ? 'bg-blue-600 text-white'
+                            : 'text-gray-700 hover:bg-blue-100'
+                    )}
                 >
                     {tProblems('question.nonDealer')}
                 </button>
                 <button
                     onClick={() => { setActiveTab('oya'); setHighlightedCellId(null); }}
-                    className={`${btnBaseClass} ${tabBtnPadding} ${tabBtnMinWidth} ${activeTab === 'oya'
-                        ? '!bg-blue-600 !text-white'
-                        : 'text-gray-700 hover:bg-blue-100'
-                        }`}
+                    className={cn(btnBaseClass, tabBtnPadding, tabBtnMinWidth,
+                        activeTab === 'oya'
+                            ? 'bg-blue-600 text-white'
+                            : 'text-gray-700 hover:bg-blue-100'
+                    )}
                 >
                     {tProblems('question.dealer')}
                 </button>
@@ -107,19 +112,21 @@ export function ScoreTableControls({ size = 'normal' }: { size?: 'normal' | 'sma
             <div className={containerClass}>
                 <button
                     onClick={() => { setViewMode('normal'); setHighlightedCellId(null); }}
-                    className={`${btnBaseClass} ${tabBtnPadding} ${viewBtnMinWidth} ${viewMode === 'normal'
-                        ? '!bg-blue-600 !text-white'
-                        : 'text-gray-700 hover:bg-blue-100'
-                        }`}
+                    className={cn(btnBaseClass, tabBtnPadding, viewBtnMinWidth,
+                        viewMode === 'normal'
+                            ? 'bg-blue-600 text-white'
+                            : 'text-gray-700 hover:bg-blue-100'
+                    )}
                 >
                     {tProblems('result.fuHan')}
                 </button>
                 <button
                     onClick={() => { setViewMode('high_score'); setHighlightedCellId(null); }}
-                    className={`${btnBaseClass} ${tabBtnPadding} ${viewBtnMinWidth} ${viewMode === 'high_score'
-                        ? '!bg-blue-600 !text-white'
-                        : 'text-gray-700 hover:bg-blue-100'
-                        }`}
+                    className={cn(btnBaseClass, tabBtnPadding, viewBtnMinWidth,
+                        viewMode === 'high_score'
+                            ? 'bg-blue-600 text-white'
+                            : 'text-gray-700 hover:bg-blue-100'
+                    )}
                 >
                     {tProblems('form.options.mangan')} +
                 </button>
@@ -146,7 +153,7 @@ export function ScoreTableGrid() {
     }
 
     const getContentClass = (isHidden: boolean) => {
-        return `transition-all duration-300 ${isHidden ? '!filter !blur-md !opacity-100' : ''}`
+        return cn("transition-all duration-300", isHidden ? "filter blur-md opacity-100" : "")
     }
 
     const renderTsumoScore = (score: string | number) => {

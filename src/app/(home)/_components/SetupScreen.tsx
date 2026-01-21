@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useSettingsStore } from '@/lib/drill/stores/useSettingsStore'
+import { cn } from '@/lib/utils'
 import { useDrillStore } from '@/lib/drill/stores/useDrillStore'
 import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
@@ -87,7 +88,7 @@ export function SetupScreen() {
     <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8 text-center space-y-10 border border-slate-100">
         <div className="space-y-3">
-          <h1 className="!text-3xl !font-extrabold text-slate-800 tracking-tight">
+          <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">
             {tHome('title')}
           </h1>
         </div>
@@ -153,8 +154,8 @@ export function SetupScreen() {
 
             <div className="w-full pt-4 border-t border-slate-100 mt-2">
               <div className="text-sm font-bold text-slate-500 mb-3 text-center">{tHome('setup.settings.targetScore')}</div>
-              <div className="flex justify-center !gap-6">
-                <label className="group inline-flex items-center !gap-3 py-2 px-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200">
+              <div className="flex justify-center gap-6">
+                <label className="group inline-flex items-center gap-3 py-2 px-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200">
                   <input
                     type="checkbox"
                     checked={targetScoreRanges.includes('non_mangan')}
@@ -165,7 +166,7 @@ export function SetupScreen() {
                     {tHome('setup.settings.nonMangan')}
                   </span>
                 </label>
-                <label className="group inline-flex items-center !gap-3 py-2 px-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200">
+                <label className="group inline-flex items-center gap-3 py-2 px-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200">
                   <input
                     type="checkbox"
                     checked={targetScoreRanges.includes('mangan_plus')}
@@ -184,11 +185,12 @@ export function SetupScreen() {
           <button
             onClick={handleStart}
             disabled={targetScoreRanges.length === 0}
-            className={`w-full !py-3 !px-6 !font-bold !rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2
-              ${targetScoreRanges.length === 0
-                ? '!bg-slate-300 !text-slate-500 cursor-not-allowed'
-                : '!bg-amber-500 !text-white hover:!bg-amber-600'
-              }`}
+            className={cn(
+              "w-full py-3 px-6 font-bold rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2",
+              targetScoreRanges.length === 0
+                ? "bg-slate-300 text-slate-500 cursor-not-allowed"
+                : "bg-amber-500 text-white hover:bg-amber-600"
+            )}
           >
             <span>{tHome('setup.button')}</span>
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
