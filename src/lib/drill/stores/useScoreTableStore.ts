@@ -9,6 +9,7 @@ interface ScoreTableState {
     viewMode: ViewMode
     winType: WinType
     hiddenCells: Record<string, boolean>
+    highlightedCellId: string | null
 }
 
 interface ScoreTableActions {
@@ -18,6 +19,7 @@ interface ScoreTableActions {
     toggleViewMode: () => void
     setWinType: (type: WinType) => void
     toggleCellVisibility: (id: string) => void
+    setHighlightedCellId: (id: string | null) => void
 }
 
 export const useScoreTableStore = create<ScoreTableState & ScoreTableActions>((set) => ({
@@ -25,16 +27,18 @@ export const useScoreTableStore = create<ScoreTableState & ScoreTableActions>((s
     viewMode: 'normal',
     winType: 'ron',
     hiddenCells: {},
+    highlightedCellId: null,
 
-    setActiveTab: (role) => set({ activeTab: role }),
-    toggleRole: () => set((state) => ({ activeTab: state.activeTab === 'ko' ? 'oya' : 'ko' })),
+    setActiveTab: (role) => set({ activeTab: role, highlightedCellId: null }),
+    toggleRole: () => set((state) => ({ activeTab: state.activeTab === 'ko' ? 'oya' : 'ko', highlightedCellId: null })),
     setViewMode: (mode) => set({ viewMode: mode }),
     toggleViewMode: () => set((state) => ({ viewMode: state.viewMode === 'normal' ? 'high_score' : 'normal' })),
-    setWinType: (type) => set({ winType: type }),
+    setWinType: (type) => set({ winType: type, highlightedCellId: null }),
     toggleCellVisibility: (id) => set((state) => ({
         hiddenCells: {
             ...state.hiddenCells,
             [id]: !state.hiddenCells[id]
         }
     })),
+    setHighlightedCellId: (id) => set({ highlightedCellId: id }),
 }))

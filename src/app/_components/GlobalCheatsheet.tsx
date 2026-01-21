@@ -1,13 +1,64 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { HaiKind } from '@pai-forge/riichi-mahjong'
 import { Modal } from './Modal'
-import { ScoreTable } from '../(home)/_components/ScoreTable'
+import { ScoreTableControls, ScoreTableGrid } from '../(home)/_components/ScoreTable'
+import { useDrillStore } from '@/lib/drill/stores/useDrillStore'
+import { useScoreTableStore } from '@/lib/drill/stores/useScoreTableStore'
 import { useTranslations } from 'next-intl'
 
 export function GlobalCheatsheet() {
     const tHome = useTranslations('home')
     const [isOpen, setIsOpen] = useState(false)
+    const { isAnswered, currentQuestion } = useDrillStore()
+    const { setActiveTab, setWinType, setViewMode, setHighlightedCellId } = useScoreTableStore()
+    const hasSynced = useRef(false)
+
+    useEffect(() => {
+        if (isOpen) {
+            if (isAnswered && currentQuestion && !hasSynced.current) {
+                // Sync Role (Parent/Child)
+                const role = currentQuestion.jikaze === HaiKind.Ton ? 'oya' : 'ko'
+                setActiveTab(role)
+
+                // Sync Win Type (Ron/Tsumo)
+                const winType = currentQuestion.isTsumo ? 'tsumo' : 'ron'
+                setWinType(winType)
+
+                // Sync View Mode and Highlight
+                const { han, fu, scoreLevel } = currentQuestion.answer
+
+                let targetMode: 'normal' | 'high_score' = 'normal'
+                let targetCellId = ''
+
+                if (han >= 5) {
+                    targetMode = 'high_score'
+                    // Map scoreLevel to High Score keys
+                    // HIGH_SCORES keys: mangan, haneman, baiman, sanbaiman, yakuman
+                    let key = (scoreLevel as string).toLowerCase()
+
+                    // Normalize keys
+                    if (key.includes('yakuman')) {
+                        key = 'yakuman'
+                    }
+
+                    targetCellId = `${role}-${winType}-${key}`
+                } else {
+                    targetMode = 'normal'
+                    // For normal grid, ID format: role-winType-han-fu
+                    targetCellId = `${role}-${winType}-${han}han-${fu}fu`
+                }
+
+                setViewMode(targetMode)
+                setHighlightedCellId(targetCellId)
+
+                hasSynced.current = true
+            }
+        } else {
+            hasSynced.current = false
+        }
+    }, [isOpen, isAnswered, currentQuestion, setActiveTab, setWinType, setViewMode, setHighlightedCellId])
 
     return (
         <>
@@ -38,10 +89,14 @@ export function GlobalCheatsheet() {
 
             {/* Modal with ScoreTable */}
             <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-                <div className="text-center mb-6">
-                    <h2 className="text-2xl font-bold text-gray-800">{tHome('setup.links.cheatsheet')}</h2>
+                <div className="flex flex-col h-[80vh] md:h-auto md:max-h-[85vh]">
+                    <div className="mb-4 pt-12">
+                        <ScoreTableControls size="small" />
+                    </div>
+                    <div className="flex-1 overflow-y-auto border border-gray-200 rounded-lg">
+                        <ScoreTableGrid />
+                    </div>
                 </div>
-                <ScoreTable />
             </Modal>
         </>
     )

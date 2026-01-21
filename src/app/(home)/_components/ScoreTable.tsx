@@ -43,20 +43,106 @@ const HIGH_SCORES = [
     { nameKey: 'yakuman', han: '13~', ronKo: 32000, tsumoKo: '8000/16000', ronOya: 48000, tsumoOya: '16000' },
 ]
 
-export function ScoreTable() {
-    const tProblems = useTranslations('problems') // Use problems dict or common? maybe problems.form.options
-    // Actually create a new namespace for ScoreTable if needed, or reuse. 
-    // problems.form.options has mangan, haneman etc.
-    const { activeTab, setActiveTab, viewMode, setViewMode, winType, setWinType, hiddenCells, toggleCellVisibility } = useScoreTableStore()
+export function ScoreTableControls({ size = 'normal' }: { size?: 'normal' | 'small' }) {
+    const tProblems = useTranslations('problems')
+    const { activeTab, setActiveTab, viewMode, setViewMode, winType, setWinType, setHighlightedCellId } = useScoreTableStore()
+
+    const btnBaseClass = "rounded-md font-bold transition-all shadow-sm"
+    const containerClass = "bg-blue-50 p-1 rounded-lg flex shadow-inner border border-blue-100"
+
+    const isSmall = size === 'small'
+    const btnPadding = isSmall ? 'px-3 py-1 text-xs' : 'px-4 py-1.5 text-sm'
+    const tabBtnPadding = isSmall ? 'px-4 py-1.5 text-xs' : 'px-6 py-2 text-sm'
+    const btnMinWidth = isSmall ? 'min-w-[60px]' : 'min-w-[80px]'
+    const tabBtnMinWidth = isSmall ? 'min-w-[80px]' : 'min-w-[100px]'
+    const viewBtnMinWidth = isSmall ? 'min-w-[100px]' : 'min-w-[120px]'
+
+    return (
+        <div className={`flex flex-wrap ${isSmall ? 'gap-2' : 'gap-4'} items-center justify-end`}>
+            {/* Win Type Switcher */}
+            <div className={containerClass}>
+                <button
+                    onClick={() => { setWinType('ron'); setHighlightedCellId(null); }}
+                    className={`${btnBaseClass} ${btnPadding} ${btnMinWidth} ${winType === 'ron'
+                        ? '!bg-blue-600 !text-white'
+                        : 'text-gray-700 hover:bg-blue-100'
+                        }`}
+                >
+                    {tProblems('question.ron')}
+                </button>
+                <button
+                    onClick={() => { setWinType('tsumo'); setHighlightedCellId(null); }}
+                    className={`${btnBaseClass} ${btnPadding} ${btnMinWidth} ${winType === 'tsumo'
+                        ? '!bg-blue-600 !text-white'
+                        : 'text-gray-700 hover:bg-blue-100'
+                        }`}
+                >
+                    {tProblems('question.tsumo')}
+                </button>
+            </div>
+
+            {/* Main Tabs (Role) */}
+            <div className={containerClass}>
+                <button
+                    onClick={() => { setActiveTab('ko'); setHighlightedCellId(null); }}
+                    className={`${btnBaseClass} ${tabBtnPadding} ${tabBtnMinWidth} ${activeTab === 'ko'
+                        ? '!bg-blue-600 !text-white'
+                        : 'text-gray-700 hover:bg-blue-100'
+                        }`}
+                >
+                    {tProblems('question.nonDealer')}
+                </button>
+                <button
+                    onClick={() => { setActiveTab('oya'); setHighlightedCellId(null); }}
+                    className={`${btnBaseClass} ${tabBtnPadding} ${tabBtnMinWidth} ${activeTab === 'oya'
+                        ? '!bg-blue-600 !text-white'
+                        : 'text-gray-700 hover:bg-blue-100'
+                        }`}
+                >
+                    {tProblems('question.dealer')}
+                </button>
+            </div>
+
+            {/* View Mode Switcher */}
+            <div className={containerClass}>
+                <button
+                    onClick={() => { setViewMode('normal'); setHighlightedCellId(null); }}
+                    className={`${btnBaseClass} ${tabBtnPadding} ${viewBtnMinWidth} ${viewMode === 'normal'
+                        ? '!bg-blue-600 !text-white'
+                        : 'text-gray-700 hover:bg-blue-100'
+                        }`}
+                >
+                    {tProblems('result.fuHan')}
+                </button>
+                <button
+                    onClick={() => { setViewMode('high_score'); setHighlightedCellId(null); }}
+                    className={`${btnBaseClass} ${tabBtnPadding} ${viewBtnMinWidth} ${viewMode === 'high_score'
+                        ? '!bg-blue-600 !text-white'
+                        : 'text-gray-700 hover:bg-blue-100'
+                        }`}
+                >
+                    {tProblems('form.options.mangan')} +
+                </button>
+            </div>
+        </div>
+    )
+}
+
+export function ScoreTableGrid() {
+    const tProblems = useTranslations('problems')
+    const { activeTab, viewMode, winType, hiddenCells, toggleCellVisibility, highlightedCellId } = useScoreTableStore()
 
     const isKo = activeTab === 'ko'
 
-    const getCellClass = (isHidden: boolean) => {
-        const base = "border border-gray-300 p-2 relative h-16 align-middle cursor-pointer transition-all duration-200 select-none"
+    const getCellClass = (isHidden: boolean, isHighlighted: boolean) => {
+        const base = "border border-gray-300 p-2 relative h-16 align-middle cursor-pointer select-none"
+        if (isHighlighted) {
+            return `${base} bg-yellow-100 ring-2 ring-yellow-400 ring-inset z-10`
+        }
         if (isHidden) {
             return `${base} bg-gray-200 hover:bg-gray-200`
         }
-        return `${base} hover:bg-gray-50`
+        return `${base} bg-transparent hover:bg-gray-50`
     }
 
     const getContentClass = (isHidden: boolean) => {
@@ -83,80 +169,7 @@ export function ScoreTable() {
     }
 
     return (
-        <div className="w-full relative pb-20">
-            {/* Header Area */}
-            <div className="flex items-center justify-end mb-4">
-                {/* Win Type Switcher */}
-                <div className="bg-blue-50 p-1 rounded-lg flex shadow-inner border border-blue-100">
-                    <button
-                        onClick={() => setWinType('ron')}
-                        className={`px-4 py-1.5 rounded-md font-bold text-sm transition-all min-w-[80px] ${winType === 'ron'
-                            ? '!bg-blue-600 !text-white shadow-sm'
-                            : 'text-gray-700 hover:bg-blue-100'
-                            }`}
-                    >
-                        {tProblems('question.ron')}
-                    </button>
-                    <button
-                        onClick={() => setWinType('tsumo')}
-                        className={`px-4 py-1.5 rounded-md font-bold text-sm transition-all min-w-[80px] ${winType === 'tsumo'
-                            ? '!bg-blue-600 !text-white shadow-sm'
-                            : 'text-gray-700 hover:bg-blue-100'
-                            }`}
-                    >
-                        {tProblems('question.tsumo')}
-                    </button>
-                </div>
-            </div>
-
-            {/* Main Tabs */}
-            <div className="flex justify-end mb-4">
-                <button
-                    onClick={() => setActiveTab('ko')}
-                    className={`w-28 py-3 font-bold text-lg rounded-l-lg shadow-md transition-all border-y border-l ${activeTab === 'ko'
-                        ? '!bg-blue-600 !text-white !border-blue-600'
-                        : '!bg-blue-100 !text-gray-700 !border-blue-600 hover:!bg-blue-200'
-                        }`}
-                >
-                    {tProblems('question.nonDealer')}
-                </button>
-                <button
-                    onClick={() => setActiveTab('oya')}
-                    className={`w-28 py-3 font-bold text-lg rounded-r-lg shadow-md transition-all border-y border-r ${activeTab === 'oya'
-                        ? '!bg-blue-600 !text-white !border-blue-600'
-                        : '!bg-blue-100 !text-gray-700 !border-blue-600 hover:!bg-blue-200'
-                        }`}
-                >
-                    {tProblems('question.dealer')}
-                </button>
-            </div>
-
-            {/* View Mode Switcher (Segmented Control) */}
-            <div className="flex justify-end mb-6">
-                <div className="bg-blue-50 p-1 rounded-lg flex shadow-inner border border-blue-100">
-                    <button
-                        onClick={() => setViewMode('normal')}
-                        className={`px-6 py-2 rounded-md font-bold text-sm transition-all min-w-[120px] ${viewMode === 'normal'
-                            ? '!bg-blue-600 !text-white shadow-sm'
-                            : 'text-gray-700 hover:bg-blue-100'
-                            }`}
-                    >
-                        {tProblems('result.fuHan')}
-                    </button>
-                    <button
-                        onClick={() => setViewMode('high_score')}
-                        className={`px-6 py-2 rounded-md font-bold text-sm transition-all min-w-[120px] ${viewMode === 'high_score'
-                            ? '!bg-blue-600 !text-white shadow-sm'
-                            : 'text-gray-700 hover:bg-blue-100'
-                            }`}
-                    >
-                        {tProblems('form.options.mangan')} +
-                    </button>
-                </div>
-            </div>
-
-
-            {/* Table Content */}
+        <div className="w-full relative">
             <div className="overflow-x-auto w-full">
                 {viewMode === 'normal' ? (
                     <table className="w-full text-center border-collapse border border-gray-300 bg-white shadow-sm rounded-lg overflow-hidden">
@@ -196,12 +209,13 @@ export function ScoreTable() {
 
                                         const cellId = `${activeTab}-${winType}-${han}han-${fu}fu`
                                         const isHidden = !!hiddenCells[cellId]
+                                        const isHighlighted = highlightedCellId === cellId
 
                                         if (score.isMangan) {
                                             return (
                                                 <td
                                                     key={han}
-                                                    className={`border border-gray-300 p-1 cursor-pointer transition-all duration-300 select-none ${isHidden ? 'bg-gray-200' : 'bg-blue-50/30 hover:bg-blue-100/50'}`}
+                                                    className={`border border-gray-300 p-1 cursor-pointer transition-all duration-300 select-none relative ${isHighlighted ? 'bg-yellow-100 ring-2 ring-yellow-400 ring-inset z-10' : (isHidden ? 'bg-gray-200' : 'bg-blue-50/30 hover:bg-blue-100/50')}`}
                                                     onClick={() => toggleCellVisibility(cellId)}
                                                 >
                                                     <div className={`flex items-center justify-center h-full text-sm text-gray-600 py-2 ${getContentClass(isHidden)}`}>
@@ -214,7 +228,7 @@ export function ScoreTable() {
                                         return (
                                             <td
                                                 key={han}
-                                                className={getCellClass(isHidden)}
+                                                className={getCellClass(isHidden, isHighlighted)}
                                                 onClick={() => toggleCellVisibility(cellId)}
                                             >
                                                 {winType === 'ron' && (
@@ -250,6 +264,7 @@ export function ScoreTable() {
                             {HIGH_SCORES.map((item, idx) => {
                                 const cellId = `${activeTab}-${winType}-${item.nameKey}`
                                 const isHidden = !!hiddenCells[cellId]
+                                const isHighlighted = highlightedCellId === cellId
 
                                 return (
                                     <tr key={item.nameKey} className={idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
@@ -261,7 +276,7 @@ export function ScoreTable() {
                                             {item.han}{tProblems('form.options.han_suffix')}
                                         </td>
                                         <td
-                                            className={getCellClass(isHidden)}
+                                            className={getCellClass(isHidden, isHighlighted)}
                                             onClick={() => toggleCellVisibility(cellId)}
                                         >
                                             {winType === 'ron' && (
@@ -282,6 +297,17 @@ export function ScoreTable() {
                     </table>
                 )}
             </div>
+        </div>
+    )
+}
+
+export function ScoreTable() {
+    return (
+        <div className="w-full relative pb-20">
+            <div className="mb-4">
+                <ScoreTableControls />
+            </div>
+            <ScoreTableGrid />
         </div>
     )
 }
