@@ -1,14 +1,14 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import type { UserAnswer } from '@/lib/drill/types'
+import type { UserAnswer } from '@/lib/problem/types'
 import { YakuSelect } from './YakuSelect'
 import {
   RON_SCORES_KO,
   RON_SCORES_OYA,
   TSUMO_SCORES_KO_PART,
   TSUMO_SCORES_OYA_PART,
-} from '@/lib/drill/scoreConstants'
+} from '@/lib/score/constants'
 import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 

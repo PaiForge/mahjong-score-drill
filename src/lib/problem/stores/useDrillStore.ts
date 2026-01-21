@@ -1,7 +1,7 @@
 import { create } from 'zustand'
-import type { DrillQuestion, UserAnswer, JudgementResult, QuestionGeneratorOptions } from '@/lib/drill/types'
-import { generateValidQuestion } from '@/lib/drill/utils/questionGenerator'
-import { judgeAnswer } from '@/lib/drill/utils/judgement'
+import type { DrillQuestion, UserAnswer, JudgementResult, QuestionGeneratorOptions } from '../types'
+import { generateValidQuestion } from '../generator'
+import { judgeAnswer } from '../judgement'
 
 interface DrillState {
   /** 現在の問題 */

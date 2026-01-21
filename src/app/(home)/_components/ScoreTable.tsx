@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useScoreTableStore } from '@/lib/drill/stores/useScoreTableStore'
+import { useScoreTableStore } from '@/lib/problem/stores/useScoreTableStore'
 import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 

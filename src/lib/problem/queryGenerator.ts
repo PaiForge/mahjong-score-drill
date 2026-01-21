@@ -8,9 +8,9 @@ import {
     type Kazehai,
     type Tehai14,
 } from '@pai-forge/riichi-mahjong'
-import type { DrillQuestion, YakuDetail } from '@/lib/drill/types'
-import { recalculateScore } from './scoreCalculator'
-import { getDoraFromIndicator } from './haiNames'
+import type { DrillQuestion, YakuDetail } from './types'
+import { recalculateScore } from '@/lib/score/calculator'
+import { getDoraFromIndicator } from '@/lib/core/haiNames'
 
 // 役名マッピング (questionGenerator.ts からの複製 - リファクタすべきだが一旦このままで)
 const YAKU_NAME_MAP: Record<string, string> = {

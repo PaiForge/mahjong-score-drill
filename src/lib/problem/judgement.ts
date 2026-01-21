@@ -1,5 +1,5 @@
-import type { DrillQuestion, UserAnswer, JudgementResult } from '@/lib/drill/types'
-import { IGNORE_YAKU_FOR_JUDGEMENT } from '@/lib/drill/constants'
+import type { DrillQuestion, UserAnswer, JudgementResult } from './types'
+import { IGNORE_YAKU_FOR_JUDGEMENT } from '@/lib/core/constants'
 
 // ScoreLevel定数（ライブラリのメインエクスポートにないためローカル定義）
 const ScoreLevel = {

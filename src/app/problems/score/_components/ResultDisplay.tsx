@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import type { DrillQuestion, UserAnswer, JudgementResult } from '@/lib/drill/types'
-import { isMangan, getScoreLevelName } from '@/lib/drill/utils/judgement'
+import type { DrillQuestion, UserAnswer, JudgementResult } from '@/lib/problem/types'
+import { isMangan, getScoreLevelName } from '@/lib/problem/judgement'
 import { useTranslations } from 'next-intl'
 
 interface Props {

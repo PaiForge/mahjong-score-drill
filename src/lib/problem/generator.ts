@@ -19,12 +19,12 @@ import {
   calculateChiitoiFuDetails,
   type HandStructure,
   type MentsuShape,
-} from './fuCalculator'
-import { recalculateScore } from './scoreCalculator'
-import { getDoraFromIndicator, getKeyForKazehai } from './haiNames'
-import type { DrillQuestion, QuestionGeneratorOptions, YakuDetail } from '@/lib/drill/types'
+} from '@/lib/score/fuCalculator'
+import { recalculateScore } from '@/lib/score/calculator'
+import { getDoraFromIndicator, getKeyForKazehai } from '@/lib/core/haiNames'
+import type { DrillQuestion, QuestionGeneratorOptions, YakuDetail } from './types'
 
-import { YAKU_NAME_MAP } from '@/lib/drill/constants'
+import { YAKU_NAME_MAP } from '@/lib/core/constants'
 
 function getYakuNameJa(name: string): string {
   return YAKU_NAME_MAP[name] || name

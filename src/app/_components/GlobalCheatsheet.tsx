@@ -4,8 +4,8 @@ import { useState, useEffect, useRef } from 'react'
 import { HaiKind } from '@pai-forge/riichi-mahjong'
 import { Modal } from './Modal'
 import { ScoreTableControls, ScoreTableGrid } from '../(home)/_components/ScoreTable'
-import { useDrillStore } from '@/lib/drill/stores/useDrillStore'
-import { useScoreTableStore } from '@/lib/drill/stores/useScoreTableStore'
+import { useDrillStore } from '@/lib/problem/stores/useDrillStore'
+import { useScoreTableStore } from '@/lib/problem/stores/useScoreTableStore'
 import { useTranslations } from 'next-intl'
 
 export function GlobalCheatsheet() {

@@ -5,7 +5,7 @@ import {
     type HaiKindId,
     type Kazehai,
 } from '@pai-forge/riichi-mahjong'
-import type { FuDetail } from '@/lib/drill/types'
+import type { FuDetail } from '@/lib/problem/types'
 
 export type MentsuShape = {
     type: typeof MentsuType.Shuntsu | typeof MentsuType.Koutsu | typeof MentsuType.Kantsu

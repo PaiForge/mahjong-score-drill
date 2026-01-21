@@ -1,9 +1,9 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useSettingsStore } from '@/lib/drill/stores/useSettingsStore'
+import { useSettingsStore } from '@/lib/problem/stores/useSettingsStore'
 import { cn } from '@/lib/utils'
-import { useDrillStore } from '@/lib/drill/stores/useDrillStore'
+import { useDrillStore } from '@/lib/problem/stores/useDrillStore'
 import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 

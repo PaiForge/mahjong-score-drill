@@ -1,4 +1,4 @@
-import { YAKU_OPTIONS } from '@/lib/drill/constants'
+import { YAKU_OPTIONS } from '@/lib/core/constants'
 import { MultiSelect } from './MultiSelect'
 import { useTranslations } from 'next-intl'
 

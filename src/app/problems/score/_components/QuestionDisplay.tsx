@@ -3,8 +3,8 @@
 import { Hai, Furo } from '@pai-forge/mahjong-react-ui'
 import { HaiKind, MentsuType, FuroType } from '@pai-forge/riichi-mahjong'
 import { RiichiStick } from '@/app/_components/RiichiStick'
-import type { DrillQuestion } from '@/lib/drill/types'
-import { getKazeName, getDoraFromIndicator } from '@/lib/drill/utils/haiNames'
+import type { DrillQuestion } from '@/lib/problem/types'
+import { getKazeName, getDoraFromIndicator } from '@/lib/core/haiNames'
 import { useResponsiveHaiSize } from '../_hooks/useResponsiveHaiSize'
 import { useTranslations } from 'next-intl'
 
