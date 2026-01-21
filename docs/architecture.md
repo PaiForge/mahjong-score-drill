@@ -59,18 +59,6 @@ src/
 
 ---
 
-## Server Component / Client Component
-
-| ファイル | 種別 | 理由 |
-|---------|------|------|
-| `layout.tsx` | Server | 静的なHTML構造 |
-| `drill/page.tsx` | Server | searchParams処理のみ |
-| `(home)/page.tsx` | Server | Client Componentをラップ |
-| `_components/*.tsx` | Client | `'use client'` - インタラクティブUI |
-
-**原則**: `'use client'` ディレクティブを持つファイルは Client Component。それ以外は Server Component。
-
----
 
 ## 設定ファイル
 
@@ -88,10 +76,3 @@ turbopack: {
 
 ---
 
-## URL設計
-
-| パス | 説明 |
-|------|------|
-| `/` | ホーム画面（開始ボタン） |
-| `/drill` | ドリル画面（ランダム問題） |
-| `/drill?tehai=...&agari=...` | パーマリンク（指定問題） |

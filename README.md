@@ -1,73 +1,57 @@
-# React + TypeScript + Vite
+# Mahjong Score Drill
 
-このテンプレートは、Vite で React を動作させるための最小限のセットアップを提供します（HMR といくつかの ESLint ルールを含みます）。
+リーチ麻雀の点数計算を練習するためのWebアプリケーションです。
 
-現在、2つの公式プラグインが利用可能です：
+## 技術スタック (Tech Stack)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) は Fast Refresh に [Babel](https://babeljs.io/) を使用します（[rolldown-vite](https://vite.dev/guide/rolldown) で使用する場合は [oxc](https://oxc.rs) を使用）。
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) は Fast Refresh に [SWC](https://swc.rs/) を使用します。
+このプロジェクトは以下の最新技術スタックで構築されています：
 
-## React Compiler
+- **Framework**: [Next.js 16 (App Router)](https://nextjs.org/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/) 5.9+
+- **UI Architecture**:
+  - [React 19](https://react.dev/)
+  - [Tailwind CSS v4](https://tailwindcss.com/)
+- **State Management**: [Zustand](https://github.com/pmndrs/zustand)
+- **Mahjong Libraries**:
+  - [`@pai-forge/mahjong-react-ui`](https://github.com/PaiForge/mahjong-react-ui) - 用于显示麻雀牌和和牌的轻量级 UI 库
+  - [`@pai-forge/riichi-mahjong`](https://github.com/PaiForge/riichi-mahjong) - リーチ麻雀のルール・計算ロジック
 
-このテンプレートでは、開発およびビルドのパフォーマンスへの影響を考慮し、React Compiler は有効になっていません。追加するには、[こちらのドキュメント](https://react.dev/learn/react-compiler/installation)を参照してください。
+## 開発環境のセットアップ (Getting Started)
 
-## ESLint 設定の拡張
+### 前提条件 (Prerequisites)
 
-本番アプリケーションを開発している場合は、型認識（type-aware）リントルールを有効にするように設定を更新することを推奨します：
+- Node.js 24.x 以上
+- npm（Node.js に同梱）
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // その他の設定...
+### インストール (Installation)
 
-      // tseslint.configs.recommended を削除し、以下に置き換えます
-      tseslint.configs.recommendedTypeChecked,
-      // または、より厳格なルールを使用する場合
-      tseslint.configs.strictTypeChecked,
-      // オプションで、スタイルに関するルールを追加する場合
-      tseslint.configs.stylisticTypeChecked,
-
-      // その他の設定...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // その他のオプション...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-また、React 固有のリントルール用として [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) と [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) をインストールすることもできます：
+### 開発サーバーの起動 (Development)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+npm run dev
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // その他の設定...
-      // React のリントルールを有効化
-      reactX.configs['recommended-typescript'],
-      // React DOM のリントルールを有効化
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // その他のオプション...
-    },
-  },
-])
+ブラウザで `http://localhost:3000` を開いて確認してください。
+
+### ビルド (Build)
+
+```bash
+npm run build
+```
+
+## プロジェクト構成 (Project Structure)
+
+詳細なアーキテクチャについては [docs/architecture.md](docs/architecture.md) を参照してください。
+
+```
+src/
+├── app/                          # Next.js App Router
+│   ├── (home)/                   # ホーム画面
+│   ├── drill/                    # ドリル画面
+│   └── _components/              # 共通コンポーネント
+└── lib/                          # 共有ロジック (麻雀計算、ユーティリティ等)
 ```
