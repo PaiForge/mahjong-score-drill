@@ -21,9 +21,10 @@ interface Props {
   simplifyMangan?: boolean
   requireFuForMangan?: boolean
   onSkip?: () => void
+  onExit?: () => void
 }
 
-export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, requireYaku = false, simplifyMangan = false, requireFuForMangan = false, onSkip }: Props) {
+export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, requireYaku = false, simplifyMangan = false, requireFuForMangan = false, onSkip, onExit }: Props) {
   const tProblems = useTranslations('problems')
   const [han, setHan] = useState<number | null>(null)
   const [fu, setFu] = useState<number | null>(null)
@@ -326,19 +327,30 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
       </button>
 
       {/* スキップ */}
-      {
-        onSkip && (
-          <div className="text-center mt-4">
-            <button
-              type="button"
-              onClick={onSkip}
-              className="text-gray-500 hover:text-gray-700 underline text-sm"
-            >
-              {tProblems('form.buttons.skip')}
-            </button>
-          </div>
-        )
-      }
+      {onSkip && (
+        <div className="text-center mt-4">
+          <button
+            type="button"
+            onClick={onSkip}
+            className="text-gray-500 hover:text-gray-700 underline text-sm"
+          >
+            {tProblems('form.buttons.skip')}
+          </button>
+        </div>
+      )}
+
+      {/* 終了する */}
+      {onExit && (
+        <div className="text-center mt-2">
+          <button
+            type="button"
+            onClick={onExit}
+            className="text-gray-400 hover:text-gray-600 underline text-sm"
+          >
+            {tProblems('form.buttons.exit')}
+          </button>
+        </div>
+      )}
     </form >
   )
 }

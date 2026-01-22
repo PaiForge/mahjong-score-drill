@@ -10,12 +10,13 @@ interface Props {
   userAnswer: UserAnswer
   result: JudgementResult
   onNext: () => void
+  onExit?: () => void
   requireYaku?: boolean
   simplifyMangan?: boolean
   requireFuForMangan?: boolean
 }
 
-export function ResultDisplay({ question, userAnswer, result, onNext, requireYaku = false, simplifyMangan = false, requireFuForMangan = false }: Props) {
+export function ResultDisplay({ question, userAnswer, result, onNext, onExit, requireYaku = false, simplifyMangan = false, requireFuForMangan = false }: Props) {
   const tProblems = useTranslations('problems')
   const { answer } = question
   const isManganOrAbove = isMangan(answer.scoreLevel)
@@ -213,6 +214,19 @@ export function ResultDisplay({ question, userAnswer, result, onNext, requireYak
       >
         {tProblems('result.next')}
       </button>
+
+      {/* 終了する */}
+      {onExit && (
+        <div className="text-center mt-4">
+          <button
+            type="button"
+            onClick={onExit}
+            className="text-gray-400 hover:text-gray-600 underline text-sm"
+          >
+            {tProblems('form.buttons.exit')}
+          </button>
+        </div>
+      )}
     </div >
   )
 }

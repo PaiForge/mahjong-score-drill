@@ -2,7 +2,7 @@
 
 ## 技術スタック
 
-- **フレームワーク**: Next.js 15 (App Router, Turbopack)
+- **フレームワーク**: Next.js 16 (App Router, Turbopack)
 - **言語**: TypeScript 5.x
 - **UI**: React 19, Tailwind CSS v4
 - **状態管理**: Zustand

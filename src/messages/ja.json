@@ -76,7 +76,8 @@
             },
             "buttons": {
                 "answer": "回答する",
-                "skip": "スキップ"
+                "skip": "スキップ",
+                "exit": "終了する"
             },
             "multiSelect": {
                 "add": "役を追加",

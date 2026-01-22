@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { usePathname } from 'next/navigation'
 import { HaiKind } from '@pai-forge/riichi-mahjong'
 import { Modal } from './Modal'
 import { ScoreTableControls, ScoreTableGrid } from '../(home)/_components/ScoreTable'
@@ -9,6 +10,7 @@ import { useScoreTableStore } from '@/lib/problem/stores/useScoreTableStore'
 import { useTranslations } from 'next-intl'
 
 export function GlobalCheatsheet() {
+    const pathname = usePathname()
     const tHome = useTranslations('home')
     const [isOpen, setIsOpen] = useState(false)
     const { isAnswered, currentQuestion } = useDrillStore()
@@ -59,6 +61,11 @@ export function GlobalCheatsheet() {
             hasSynced.current = false
         }
     }, [isOpen, isAnswered, currentQuestion, setActiveTab, setWinType, setViewMode, setHighlightedCellId])
+
+    // 問題ページでのみ表示
+    if (pathname !== '/problems/score') {
+        return null
+    }
 
     return (
         <>
