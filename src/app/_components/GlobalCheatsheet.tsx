@@ -62,8 +62,8 @@ export function GlobalCheatsheet() {
         }
     }, [isOpen, isAnswered, currentQuestion, setActiveTab, setWinType, setViewMode, setHighlightedCellId])
 
-    // 設定画面では非表示
-    if (pathname === '/problems/score') {
+    // 設定画面とチートシートページでは非表示
+    if (pathname === '/problems/score' || pathname === '/cheatsheet') {
         return null
     }
 

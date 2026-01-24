@@ -31,6 +31,12 @@ const navigationSections: NavigationSection[] = [
         items: [
             { id: 'introduction', href: '/articles/introduction', label: 'はじめに' },
         ]
+    },
+    {
+        title: '資料',
+        items: [
+            { id: 'cheatsheet', href: '/cheatsheet', label: '点数早見表' },
+        ]
     }
 ]
 
