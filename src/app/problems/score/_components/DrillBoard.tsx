@@ -136,7 +136,7 @@ export function DrillBoard() {
           <button
             onClick={() => {
               // クエリパラメータを削除してリロード（ランダム生成へ）
-              router.replace('/problems/score')
+              router.replace('/problems/score/play')
               setError(null)
               generateNewQuestion()
             }}
@@ -234,7 +234,7 @@ export function DrillBoard() {
     ranges.forEach(r => params.append('ranges', r))
 
     const queryString = params.toString()
-    router.replace(queryString ? `/problems/score?${queryString}` : '/problems/score')
+    router.replace(queryString ? `/problems/score/play?${queryString}` : '/problems/score/play')
   }
 
   return (

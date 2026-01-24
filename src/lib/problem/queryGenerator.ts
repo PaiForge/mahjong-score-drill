@@ -273,7 +273,7 @@ export function generatePathAndQueryFromQuestion(question: DrillQuestion): strin
     // Tehai (Path)の生成
     // 手牌の配列をMSPZ文字列に変換
     // これが一番大変。副露を含めた文字列生成が必要。
-    return `/problems/score?${params.toString()}`
+    return `/problems/score/play?${params.toString()}`
 }
 
 
