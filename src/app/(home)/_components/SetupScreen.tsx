@@ -236,6 +236,19 @@ export function SetupScreen() {
               </svg>
             </button>
           </div>
+
+          {/* Machi Fu Drill Action */}
+          <div className="pt-2 border-t border-slate-100 w-full">
+            <button
+              onClick={() => router.push('/problems/machi-fu')}
+              className="w-full py-3 px-6 font-bold rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 bg-pink-500 text-white hover:bg-pink-600"
+            >
+              <span>符計算ドリル（待ち）</span>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Footer Links */}
