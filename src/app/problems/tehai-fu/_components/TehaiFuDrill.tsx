@@ -10,12 +10,15 @@ import Link from 'next/link'
 import { QuestionDisplay } from '@/app/problems/score/_components/QuestionDisplay'
 import type { DrillQuestion } from '@/lib/problem/types'
 
+import { useResponsiveHaiSize } from '@/app/problems/score/_hooks/useResponsiveHaiSize'
+
 const FU_OPTIONS = [0, 2, 4, 8, 16, 32] as const
 
 export function TehaiFuDrill() {
     const [question, setQuestion] = useState<TehaiFuQuestion | null>(null)
     const [answers, setAnswers] = useState<(string | null)[]>([])
     const [isSubmitted, setIsSubmitted] = useState(false)
+    const haiSize = useResponsiveHaiSize()
 
     // Hydration fix
     const [mounted, setMounted] = useState(false)
@@ -69,18 +72,18 @@ export function TehaiFuDrill() {
             if (item.isOpen) {
                 // Open Kan
                 return item.originalMentsu ? (
-                    <div className="transform scale-125 origin-left">
-                        <Furo mentsu={item.originalMentsu} furo={item.originalMentsu.furo} />
+                    <div>
+                        <Furo mentsu={item.originalMentsu} furo={item.originalMentsu.furo} size={haiSize} />
                     </div>
                 ) : null
             } else {
                 // Ankan rendering
                 return (
-                    <div className="flex gap-1 transform scale-125 origin-left items-center">
-                        <div className="w-8 h-12 bg-slate-800 rounded border border-slate-600" />
-                        <Hai hai={item.tiles[1]} />
-                        <Hai hai={item.tiles[2]} />
-                        <div className="w-8 h-12 bg-slate-800 rounded border border-slate-600" />
+                    <div className="flex gap-1 items-center">
+                        <div className={cn("bg-slate-800 rounded border border-slate-600", haiSize === 'xs' ? "w-6 h-9" : "w-8 h-12")} />
+                        <Hai hai={item.tiles[1]} size={haiSize} />
+                        <Hai hai={item.tiles[2]} size={haiSize} />
+                        <div className={cn("bg-slate-800 rounded border border-slate-600", haiSize === 'xs' ? "w-6 h-9" : "w-8 h-12")} />
                     </div>
                 )
             }
@@ -88,16 +91,16 @@ export function TehaiFuDrill() {
 
         if (item.isOpen && item.originalMentsu) {
             return (
-                <div className="transform scale-125 origin-left">
-                    <Furo mentsu={item.originalMentsu} furo={item.originalMentsu.furo} />
+                <div>
+                    <Furo mentsu={item.originalMentsu} furo={item.originalMentsu.furo} size={haiSize} />
                 </div>
             )
         }
 
         // Closed Hand / Pair
         return (
-            <div className="flex gap-0.5 transform scale-125 origin-left">
-                {item.tiles.map((t, i) => <Hai key={i} hai={t} />)}
+            <div className="flex gap-0.5">
+                {item.tiles.map((t, i) => <Hai key={i} hai={t} size={haiSize} />)}
             </div>
         )
     }
@@ -164,7 +167,7 @@ export function TehaiFuDrill() {
                                 {/* Explanation */}
                                 {isSubmitted && !isCorrect && (
                                     <div className="text-sm text-red-600 font-medium bg-red-50 p-2 rounded">
-                                        正解: {item.fu}符 ({item.explanation})
+                                        {item.fu}符 ({item.explanation})
                                     </div>
                                 )}
                                 {isSubmitted && isCorrect && (
