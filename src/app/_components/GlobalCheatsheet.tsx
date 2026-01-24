@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { HaiKind } from '@pai-forge/riichi-mahjong'
 import { Modal } from './Modal'
-import { ScoreTableControls, ScoreTableGrid } from '../(home)/_components/ScoreTable'
+import { ScoreTableControls, ScoreTableGrid } from '../(main)/(home)/_components/ScoreTable'
 import { useDrillStore } from '@/lib/problem/stores/useDrillStore'
 import { useScoreTableStore } from '@/lib/problem/stores/useScoreTableStore'
 import { useTranslations } from 'next-intl'
@@ -62,8 +62,8 @@ export function GlobalCheatsheet() {
         }
     }, [isOpen, isAnswered, currentQuestion, setActiveTab, setWinType, setViewMode, setHighlightedCellId])
 
-    // 問題ページでのみ表示
-    if (pathname !== '/problems/score') {
+    // 設定画面では非表示
+    if (pathname === '/problems/score') {
         return null
     }
 
