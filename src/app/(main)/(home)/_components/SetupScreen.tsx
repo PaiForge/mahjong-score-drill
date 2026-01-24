@@ -7,7 +7,7 @@ import { useDrillStore } from '@/lib/problem/stores/useDrillStore'
 import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
-export function SetupScreen({ className }: { className?: string }) {
+export function SetupScreen({ className, hideDrillLinks = false }: { className?: string, hideDrillLinks?: boolean }) {
   const tHome = useTranslations('home')
   const router = useRouter()
   // Hydration mismatch avoidance: wait for client mount
@@ -195,72 +195,76 @@ export function SetupScreen({ className }: { className?: string }) {
           </svg>
         </button>
 
-        {/* Head Fu Drill Action */}
-        <div className="pt-2 border-t border-slate-100 w-full">
+        {/* Other Drills - Conditionally Hidden */}
+        {!hideDrillLinks && (
+          <>
+            {/* Head Fu Drill Action */}
+            <div className="pt-2 border-t border-slate-100 w-full">
+              <button
+                onClick={() => router.push('/problems/jantou-fu')}
+                className="w-full py-3 px-6 font-bold rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 bg-emerald-500 text-white hover:bg-emerald-600"
+              >
+                <span>符計算ドリル（雀頭）</span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Mentsu Fu Drill Action */}
+            <div className="pt-2 border-t border-slate-100 w-full">
+              <button
+                onClick={() => router.push('/problems/mentsu-fu')}
+                className="w-full py-3 px-6 font-bold rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 bg-indigo-500 text-white hover:bg-indigo-600"
+              >
+                <span>符計算ドリル（面子）</span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Tehai Fu Drill Action */}
+            <div className="pt-2 border-t border-slate-100 w-full">
+              <button
+                onClick={() => router.push('/problems/tehai-fu')}
+                className="w-full py-3 px-6 font-bold rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 bg-purple-500 text-white hover:bg-purple-600"
+              >
+                <span>符計算ドリル（手牌）</span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Machi Fu Drill Action */}
+            <div className="pt-2 border-t border-slate-100 w-full">
+              <button
+                onClick={() => router.push('/problems/machi-fu')}
+                className="w-full py-3 px-6 font-bold rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 bg-pink-500 text-white hover:bg-pink-600"
+              >
+                <span>符計算ドリル（待ち）</span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
+            </div>
+          </>
+        )}
+
+        {/* Footer Links */}
+        <div className="pt-2 border-t border-slate-100">
           <button
-            onClick={() => router.push('/problems/jantou-fu')}
-            className="w-full py-3 px-6 font-bold rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 bg-emerald-500 text-white hover:bg-emerald-600"
+            onClick={() => router.push('/cheatsheet')}
+            className="text-slate-500 hover:text-blue-600 font-medium text-sm py-2 px-4 rounded transition-colors inline-flex items-center gap-1"
           >
-            <span>符計算ドリル（雀頭）</span>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
             </svg>
+            {tHome('setup.links.cheatsheet')}
           </button>
         </div>
-
-        {/* Mentsu Fu Drill Action */}
-        <div className="pt-2 border-t border-slate-100 w-full">
-          <button
-            onClick={() => router.push('/problems/mentsu-fu')}
-            className="w-full py-3 px-6 font-bold rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 bg-indigo-500 text-white hover:bg-indigo-600"
-          >
-            <span>符計算ドリル（面子）</span>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Tehai Fu Drill Action */}
-        <div className="pt-2 border-t border-slate-100 w-full">
-          <button
-            onClick={() => router.push('/problems/tehai-fu')}
-            className="w-full py-3 px-6 font-bold rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 bg-purple-500 text-white hover:bg-purple-600"
-          >
-            <span>符計算ドリル（手牌）</span>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Machi Fu Drill Action */}
-        <div className="pt-2 border-t border-slate-100 w-full">
-          <button
-            onClick={() => router.push('/problems/machi-fu')}
-            className="w-full py-3 px-6 font-bold rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 bg-pink-500 text-white hover:bg-pink-600"
-          >
-            <span>符計算ドリル（待ち）</span>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      {/* Footer Links */}
-      <div className="pt-2 border-t border-slate-100">
-        <button
-          onClick={() => router.push('/cheatsheet')}
-          className="text-slate-500 hover:text-blue-600 font-medium text-sm py-2 px-4 rounded transition-colors inline-flex items-center gap-1"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-          </svg>
-          {tHome('setup.links.cheatsheet')}
-        </button>
       </div>
     </div>
-
   )
 }

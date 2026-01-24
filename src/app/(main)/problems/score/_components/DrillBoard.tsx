@@ -115,7 +115,7 @@ export function DrillBoard() {
   }, [isClient, currentQuestion, initializeQuestion])
 
   const handleBackToSetup = () => {
-    router.push('/')
+    router.push('/problems/score')
   }
 
   // サーバーサイドレンダリング時はローディング表示
