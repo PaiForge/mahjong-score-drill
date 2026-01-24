@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { HaiKind } from '@pai-forge/riichi-mahjong'
 import { Toaster, toast } from 'react-hot-toast'
 import { useDrillStore } from '@/lib/problem/stores/useDrillStore'
+import { useScoreTableStore } from '@/lib/problem/stores/useScoreTableStore'
 import { QuestionDisplay } from './QuestionDisplay'
 import { AnswerForm } from './AnswerForm'
 import { ResultDisplay } from './ResultDisplay'
@@ -35,6 +36,8 @@ export function DrillBoard() {
     submitAnswer,
     nextQuestion,
   } = useDrillStore()
+
+  const { setHighlightedCellId } = useScoreTableStore()
 
   const [error, setError] = useState<string | null>(null)
   const isClient = useIsClient()
@@ -163,6 +166,7 @@ export function DrillBoard() {
   const autoNext = searchParams.get('auto_next') === '1'
 
   const handleNext = () => {
+    setHighlightedCellId(null)
     nextQuestion()
     // 新しいURLへ遷移
     const newQuestion = useDrillStore.getState().currentQuestion
@@ -193,16 +197,6 @@ export function DrillBoard() {
     if (autoNext) {
       const state = useDrillStore.getState()
       if (state.judgementResult?.isCorrect) {
-        toast.success(tProblems('board.correct'), {
-          duration: 1500,
-          position: 'top-center',
-          icon: '✅',
-          style: {
-            background: '#E6FFFA',
-            color: '#2C7A7B',
-            fontWeight: 'bold',
-          },
-        })
         toast.success(tProblems('board.correct'), {
           duration: 1500,
           position: 'top-center',
