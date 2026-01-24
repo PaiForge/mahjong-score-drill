@@ -210,6 +210,19 @@ export function SetupScreen() {
               </svg>
             </button>
           </div>
+
+          {/* Mentsu Fu Drill Action */}
+          <div className="pt-2 border-t border-slate-100 w-full">
+            <button
+              onClick={() => router.push('/problems/mentsu-fu')}
+              className="w-full py-3 px-6 font-bold rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 bg-indigo-500 text-white hover:bg-indigo-600"
+            >
+              <span>符計算ドリル（面子）</span>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Footer Links */}
