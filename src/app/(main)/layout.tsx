@@ -1,4 +1,4 @@
-import { GlobalCheatsheet } from '@/app/_components/GlobalCheatsheet'
+
 import { Header } from '@/app/_components/Header'
 import { Sidebar } from '@/app/_components/Sidebar'
 
@@ -16,7 +16,6 @@ export default function MainLayout({
                     {children}
                 </main>
             </div>
-            <GlobalCheatsheet />
         </>
     )
 }
