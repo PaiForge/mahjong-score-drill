@@ -1,7 +1,7 @@
 'use client'
 
-import { SetupScreen } from './_components/SetupScreen'
+import { LandingPage } from './_components/LandingPage'
 
 export default function HomePage() {
-  return <SetupScreen />
+  return <LandingPage />
 }

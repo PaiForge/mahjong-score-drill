@@ -1,12 +1,11 @@
 'use client'
 
-import { Suspense } from 'react'
-import { DrillBoard } from './_components/DrillBoard'
+import { SetupScreen } from '@/app/(home)/_components/SetupScreen'
 
-export default function DrillPage() {
-  return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
-      <DrillBoard />
-    </Suspense>
-  )
+export default function ScoreSetupPage() {
+    return (
+        <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
+            <SetupScreen />
+        </div>
+    )
 }

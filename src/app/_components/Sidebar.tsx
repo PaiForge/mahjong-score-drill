@@ -19,6 +19,7 @@ const navigationSections: NavigationSection[] = [
     {
         title: 'ドリル',
         items: [
+            { id: 'score', href: '/problems/score', label: '点数計算ドリル' },
             { id: 'jantou-fu', href: '/problems/jantou-fu', label: '雀頭の符計算' },
             { id: 'mentsu-fu', href: '/problems/mentsu-fu', label: '面子の符計算' },
             { id: 'tehai-fu', href: '/problems/tehai-fu', label: '手牌の符計算' },
