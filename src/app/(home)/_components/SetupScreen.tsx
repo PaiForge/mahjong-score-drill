@@ -201,7 +201,7 @@ export function SetupScreen() {
           {/* Head Fu Drill Action */}
           <div className="pt-2 border-t border-slate-100 w-full">
             <button
-              onClick={() => router.push('/problems/fu')}
+              onClick={() => router.push('/problems/jantou-fu')}
               className="w-full py-3 px-6 font-bold rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 bg-emerald-500 text-white hover:bg-emerald-600"
             >
               <span>符計算ドリル（雀頭）</span>

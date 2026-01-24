@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react'
 import { Hai } from '@pai-forge/mahjong-react-ui'
 import { getKazeName } from '@/lib/core/haiNames'
-import { generateHeadFuQuestion } from '@/lib/problem/fu/generator'
-import type { HeadFuQuestion } from '@/lib/problem/fu/types'
+import { generateHeadFuQuestion } from '@/lib/problem/jantou-fu/generator'
+import type { HeadFuQuestion } from '@/lib/problem/jantou-fu/types'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 
