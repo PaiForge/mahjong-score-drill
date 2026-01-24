@@ -197,6 +197,19 @@ export function SetupScreen() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
           </button>
+
+          {/* Head Fu Drill Action */}
+          <div className="pt-2 border-t border-slate-100 w-full">
+            <button
+              onClick={() => router.push('/problems/fu')}
+              className="w-full py-3 px-6 font-bold rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 bg-emerald-500 text-white hover:bg-emerald-600"
+            >
+              <span>符計算ドリル（雀頭）</span>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Footer Links */}
