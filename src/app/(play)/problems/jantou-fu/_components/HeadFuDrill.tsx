@@ -6,9 +6,11 @@ import { getKazeName } from '@/lib/core/haiNames'
 import { generateHeadFuQuestion } from '@/lib/problem/jantou-fu/generator'
 import type { HeadFuQuestion } from '@/lib/problem/jantou-fu/types'
 import { cn } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 export function HeadFuDrill() {
+    const router = useRouter()
     const [question, setQuestion] = useState<HeadFuQuestion | null>(null)
     const [selectedChoiceIndex, setSelectedChoiceIndex] = useState<number | null>(null)
     const [isAnswered, setIsAnswered] = useState(false)
@@ -35,19 +37,13 @@ export function HeadFuDrill() {
     if (!mounted || !question) return null
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col items-center p-4">
-            <div className="w-full max-w-lg space-y-8">
-                {/* Header */}
-                <div className="flex justify-between items-center">
-                    <Link href="/" className="text-slate-500 hover:text-slate-700 font-bold transition-colors">
-                        ← Home
-                    </Link>
-                    <h1 className="text-xl font-bold text-slate-800">符計算ドリル（雀頭）</h1>
-                    <div className="w-16" /> {/* Spacer */}
-                </div>
+        <div className="min-h-screen bg-slate-50 flex flex-col items-center py-8 px-4">
+            <div className="w-full max-w-lg space-y-6">
 
                 {/* Context Card */}
-                <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 text-center space-y-6">
+                <div className="bg-white rounded-lg shadow-md p-6 text-center space-y-6">
+                    <div className="text-xl font-bold text-slate-800 mb-4">符計算ドリル（雀頭）</div>
+
                     <div className="grid grid-cols-2 gap-4 divide-x divide-slate-100">
                         <div className="flex flex-col items-center gap-2">
                             <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">場風</span>
@@ -86,7 +82,7 @@ export function HeadFuDrill() {
                                 onClick={() => handleSelect(idx)}
                                 disabled={isAnswered}
                                 className={cn(
-                                    "relative h-40 rounded-xl border-2 flex flex-col items-center justify-center transition-all p-4 gap-3",
+                                    "relative h-40 rounded-xl border-2 flex flex-col items-center justify-center transition-all p-4 gap-3 shadow-sm",
                                     borderClass,
                                     !isAnswered && "hover:shadow-md hover:-translate-y-1 active:translate-y-0 active:scale-95 cursor-pointer"
                                 )}
@@ -112,11 +108,34 @@ export function HeadFuDrill() {
                 {isAnswered && (
                     <button
                         onClick={nextQuestion}
-                        className="w-full py-4 bg-blue-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl hover:bg-blue-700 transition-all active:translate-y-0.5 animate-in slide-in-from-bottom-4 duration-300"
+                        className="w-full py-3 px-6 bg-blue-600 text-white font-bold rounded-lg shadow-md hover:shadow-lg hover:bg-blue-700 transition-all active:translate-y-0.5 animate-in slide-in-from-bottom-4 duration-300"
                     >
                         次の問題へ
                     </button>
                 )}
+
+                {/* Navigation Links */}
+                <div className="space-y-2 pt-2">
+                    {!isAnswered && (
+                        <div className="text-center">
+                            <button
+                                onClick={nextQuestion}
+                                className="text-gray-500 hover:text-gray-700 underline text-sm"
+                            >
+                                スキップ
+                            </button>
+                        </div>
+                    )}
+                    <div className="text-center">
+                        <button
+                            onClick={() => router.push('/problems')}
+                            className="text-gray-400 hover:text-gray-600 underline text-sm"
+                        >
+                            終了する
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </div>
     )

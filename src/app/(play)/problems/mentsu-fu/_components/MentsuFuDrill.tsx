@@ -6,11 +6,13 @@ import { MentsuType } from '@pai-forge/riichi-mahjong'
 import { generateMentsuFuQuestion } from '@/lib/problem/mentsu-fu/generator'
 import type { MentsuFuQuestion } from '@/lib/problem/mentsu-fu/types'
 import { cn } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 const FU_OPTIONS = [0, 2, 4, 8, 16, 32] as const
 
 export function MentsuFuDrill() {
+    const router = useRouter()
     const [question, setQuestion] = useState<MentsuFuQuestion | null>(null)
     const [selectedFu, setSelectedFu] = useState<number | null>(null)
     const [isAnswered, setIsAnswered] = useState(false)
@@ -40,29 +42,6 @@ export function MentsuFuDrill() {
     const renderMentsu = () => {
         const { mentsu } = question
 
-        // If it's a closed Shuntsu/Koutsu/Kantsu (no furo), render as independent tiles or Furo component?
-        // Furo component is good for open melds. For closed melds, standard tile layout is better, but Furo component can handle closed Kakan? No.
-        // Let's use standard tile layout for closed (no furo), and Furo component for open (with furo).
-        // WAIT. Generator returns CompletedMentsu which has 'furo' property if open.
-        // If furo exists, use Furo.
-        // If no furo (closed), just map tiles. 
-        // EXCEPT: Closed Quad (Ankan) is technically a "Furo" type in Riichi logic usually, but here our generator returns Kantsu without Furo property for Ankan?
-        // Let's check generator. Ah, createKantsu returns no furo for Ankan?
-        // "return kantsu" line 125.
-        // Check types.ts... "furo?: Furo".
-        // So if furo is undefined, it is closed. 
-        // BUT Ankan needs to be displayed as closed quad. 
-        // Usually standard `Hai` list for Ankan is confusing (4 tiles). Ankan should probably use `Furo` component logic or specific display (Back-Face-Face-Back).
-        // Let's look at generator again.
-        // createKantsu: if (!isOpen) returns without furo.
-        // In `QuestionDisplay.tsx`, we saw Kantsu handling.
-        // `kantsuList = tehai.exposed.filter...`
-        // Ankan IS exposed in the `tehai.exposed` array in standard `riichi-mahjong` usually? 
-        // Let's check `tehai` type in `riichi-mahjong`. `exposed` is `CompletedMentsu[]`.
-        // Ankan is stored in `exposed` with `type: Kantsu`, but the `furo` field might be missing or specific.
-        // Actually, `Furo` component from `mahjong-react-ui` handles Ankan if we pass it correctly?
-        // Let's assume for Mentsu Drill, we just render what we have.
-
         if (mentsu.furo) {
             // Open Meld
             return (
@@ -72,7 +51,6 @@ export function MentsuFuDrill() {
             )
         } else {
             // Closed.
-            // If Kantsu (Ankan), we should render it like Ankan (Back, Tile, Tile, Back).
             if (mentsu.type === MentsuType.Kantsu) {
                 return (
                     <div className="flex gap-1 transform scale-150">
@@ -92,21 +70,22 @@ export function MentsuFuDrill() {
         }
     }
 
+    const handleEnd = () => {
+        router.push('/problems')
+    }
+
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col items-center p-4">
-            <div className="w-full max-w-lg space-y-8">
-                {/* Header */}
-                <div className="flex justify-between items-center">
-                    <Link href="/" className="text-slate-500 hover:text-slate-700 font-bold transition-colors">
-                        ← Home
-                    </Link>
-                    <h1 className="text-xl font-bold text-slate-800">符計算ドリル（面子）</h1>
-                    <div className="w-16" /> {/* Spacer */}
-                </div>
+        <div className="min-h-screen bg-slate-50 flex flex-col items-center py-8 px-4">
+            <div className="w-full max-w-lg space-y-6">
 
                 {/* Question Area */}
-                <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12 flex flex-col items-center gap-8 min-h-[200px] justify-center">
-                    {renderMentsu()}
+                <div className="bg-white rounded-lg shadow-md border border-slate-200 p-8 flex flex-col items-center gap-8 min-h-[200px] justify-center relative">
+                    <div className="absolute top-4 left-0 right-0 text-center text-lg font-bold text-slate-800">
+                        符計算ドリル（面子）
+                    </div>
+                    <div className="mt-8">
+                        {renderMentsu()}
+                    </div>
                     <p className="text-slate-500 font-medium">この面子の符は？</p>
                 </div>
 
@@ -160,6 +139,29 @@ export function MentsuFuDrill() {
                         </button>
                     </div>
                 )}
+
+                {/* Navigation Links */}
+                <div className="space-y-2 pt-2">
+                    {!isAnswered && (
+                        <div className="text-center">
+                            <button
+                                onClick={nextQuestion}
+                                className="text-gray-500 hover:text-gray-700 underline text-sm"
+                            >
+                                スキップ
+                            </button>
+                        </div>
+                    )}
+                    <div className="text-center">
+                        <button
+                            onClick={handleEnd}
+                            className="text-gray-400 hover:text-gray-600 underline text-sm"
+                        >
+                            終了する
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </div>
     )

@@ -1,0 +1,85 @@
+import Link from 'next/link'
+
+import { cn } from '@/lib/utils'
+
+// Drill data sorted by difficulty/requested order
+const DRILLS = [
+    {
+        id: 'jantou-fu',
+        title: '符計算ドリル（雀頭）',
+        description: '役牌や連風牌の雀頭につく符を答えよう',
+        href: '/problems/jantou-fu',
+        color: 'bg-blue-50 hover:bg-blue-100 border-blue-200',
+        icon: '🀅'
+    },
+    {
+        id: 'machi-fu',
+        title: '符計算ドリル（待ち）',
+        description: 'ペンチャン・カンチャン・単騎などの待ちの符を答えよう',
+        href: '/problems/machi-fu',
+        color: 'bg-indigo-50 hover:bg-indigo-100 border-indigo-200',
+        icon: '🀈'
+    },
+    {
+        id: 'mentsu-fu',
+        title: '符計算ドリル（面子）',
+        description: '明刻・暗刻・明槓・暗槓の符を答えよう',
+        href: '/problems/mentsu-fu',
+        color: 'bg-green-50 hover:bg-green-100 border-green-200',
+        icon: '🀙'
+    },
+    {
+        id: 'tehai-fu',
+        title: '符計算ドリル（手牌）',
+        description: '手牌全体の構成要素から符を計算しよう',
+        href: '/problems/tehai-fu',
+        color: 'bg-orange-50 hover:bg-orange-100 border-orange-200',
+        icon: '🀐'
+    },
+    {
+        id: 'score',
+        title: '点数計算ドリル',
+        description: '翻数と符から点数を計算する総合ドリル',
+        href: '/problems/score',
+        color: 'bg-red-50 hover:bg-red-100 border-red-200',
+        icon: '🀀'
+    }
+]
+
+export default function ProblemsPage() {
+    return (
+        <div className="container mx-auto py-8 px-4 max-w-4xl">
+            <h1 className="text-3xl font-bold text-slate-800 mb-2">ドリル一覧</h1>
+            <p className="text-slate-500 mb-8">
+                基礎から応用まで、段階的に符計算・点数計算をマスターしましょう。
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {DRILLS.map((drill) => (
+                    <Link key={drill.id} href={drill.href} className="block group">
+                        <div className={cn(
+                            "h-full rounded-xl border-2 p-6 transition-all duration-200",
+                            drill.color,
+                            "group-hover:shadow-md group-hover:-translate-y-1"
+                        )}>
+                            <div className="flex items-start justify-between mb-4">
+                                <div className="text-4xl bg-white w-16 h-16 rounded-full flex items-center justify-center shadow-sm border border-slate-100">
+                                    {drill.icon}
+                                </div>
+                                <div className="bg-white/50 px-3 py-1 rounded-full text-xs font-bold text-slate-500 uppercase tracking-widest border border-slate-100/50">
+                                    Drill
+                                </div>
+                            </div>
+                            <h2 className="text-xl font-bold text-slate-800 mb-2 group-hover:text-blue-700 transition-colors">
+                                {drill.title}
+                            </h2>
+                            <p className="text-slate-600 font-medium">
+                                {drill.description}
+                            </p>
+                        </div>
+                    </Link>
+                ))}
+            </div>
+        </div>
+    )
+}

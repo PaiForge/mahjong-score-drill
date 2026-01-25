@@ -6,6 +6,7 @@ import { MentsuType } from '@pai-forge/riichi-mahjong'
 import { generateTehaiFuQuestion } from '@/lib/problem/tehai-fu/generator'
 import type { TehaiFuQuestion, TehaiFuItem } from '@/lib/problem/tehai-fu/types'
 import { cn } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { QuestionDisplay } from '@/app/(main)/problems/score/_components/QuestionDisplay'
 import type { DrillQuestion } from '@/lib/problem/types'
@@ -15,6 +16,7 @@ import { useResponsiveHaiSize } from '@/app/(main)/problems/score/_hooks/useResp
 const FU_OPTIONS = [0, 2, 4, 8, 16, 32] as const
 
 export function TehaiFuDrill() {
+    const router = useRouter()
     const [question, setQuestion] = useState<TehaiFuQuestion | null>(null)
     const [answers, setAnswers] = useState<(string | null)[]>([])
     const [isSubmitted, setIsSubmitted] = useState(false)
@@ -108,14 +110,8 @@ export function TehaiFuDrill() {
     return (
         <div className="min-h-screen bg-slate-50 flex flex-col items-center p-4 pb-20">
             <div className="w-full max-w-3xl space-y-6">
-                {/* Header */}
-                <div className="flex justify-between items-center">
-                    <Link href="/" className="text-slate-500 hover:text-slate-700 font-bold transition-colors">
-                        ← Home
-                    </Link>
-                    <h1 className="text-xl font-bold text-slate-800">符計算ドリル（手牌）</h1>
-                    <div className="w-16" />
-                </div>
+                {/* Title */}
+                <div className="text-xl font-bold text-slate-800 text-center mb-0">符計算ドリル（手牌）</div>
 
                 {/* Hand Display (Reusing Score Drill Display) */}
                 <QuestionDisplay question={drillQuestion} />
@@ -181,26 +177,48 @@ export function TehaiFuDrill() {
                 </div>
 
                 {/* Actions */}
-                <div className="sticky bottom-4 z-10 w-full max-w-3xl mx-auto">
+                <div className="sticky bottom-4 z-10 w-full max-w-3xl mx-auto space-y-4 p-4 rounded-xl bg-white/90 backdrop-blur-sm shadow-2xl border border-slate-100">
                     {!isSubmitted ? (
-                        <button
-                            onClick={checkAnswers}
-                            disabled={!allAnswered}
-                            className={cn(
-                                "w-full py-4 text-white font-bold rounded-xl shadow-lg transition-all text-lg",
-                                allAnswered ? "bg-blue-600 hover:bg-blue-700 hover:shadow-xl hover:-translate-y-0.5" : "bg-slate-300 cursor-not-allowed"
-                            )}
-                        >
-                            答え合わせ
-                        </button>
+                        <div className="space-y-4">
+                            <button
+                                onClick={checkAnswers}
+                                disabled={!allAnswered}
+                                className={cn(
+                                    "w-full py-4 text-white font-bold rounded-xl shadow-lg transition-all text-lg",
+                                    allAnswered ? "bg-blue-600 hover:bg-blue-700 hover:shadow-xl hover:-translate-y-0.5" : "bg-slate-300 cursor-not-allowed"
+                                )}
+                            >
+                                答え合わせ
+                            </button>
+                            {/* Navigation Links (Pre-submit) */}
+                            <div className="text-center">
+                                <button
+                                    onClick={nextQuestion}
+                                    className="text-gray-500 hover:text-gray-700 underline text-sm"
+                                >
+                                    スキップ
+                                </button>
+                            </div>
+                        </div>
+
                     ) : (
-                        <button
-                            onClick={nextQuestion}
-                            className="w-full py-4 bg-indigo-600 text-white font-bold rounded-xl shadow-lg hover:bg-indigo-700 hover:shadow-xl hover:-translate-y-0.5 transition-all text-lg animate-in slide-in-from-bottom-2"
-                        >
-                            次の問題へ
-                        </button>
+                        <div className="space-y-4">
+                            <button
+                                onClick={nextQuestion}
+                                className="w-full py-4 bg-indigo-600 text-white font-bold rounded-xl shadow-lg hover:bg-indigo-700 hover:shadow-xl hover:-translate-y-0.5 transition-all text-lg animate-in slide-in-from-bottom-2"
+                            >
+                                次の問題へ
+                            </button>
+                        </div>
                     )}
+                    <div className="text-center">
+                        <button
+                            onClick={() => router.push('/problems')}
+                            className="text-gray-400 hover:text-gray-600 underline text-sm"
+                        >
+                            終了する
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

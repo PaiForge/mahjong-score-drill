@@ -5,11 +5,13 @@ import { Hai } from '@pai-forge/mahjong-react-ui'
 import { generateMachiFuQuestion } from '@/lib/problem/machi-fu/generator'
 import type { MachiFuQuestion } from '@/lib/problem/machi-fu/types'
 import { cn } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 const FU_OPTIONS = [0, 2] as const
 
 export function MachiFuDrill() {
+    const router = useRouter()
     const [question, setQuestion] = useState<MachiFuQuestion | null>(null)
     const [selectedFu, setSelectedFu] = useState<number | null>(null)
     const [isAnswered, setIsAnswered] = useState(false)
@@ -35,21 +37,21 @@ export function MachiFuDrill() {
 
     if (!mounted || !question) return null
 
+    const handleEnd = () => {
+        router.push('/problems')
+    }
+
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col items-center p-4">
-            <div className="w-full max-w-lg space-y-8">
-                {/* Header */}
-                <div className="flex justify-between items-center">
-                    <Link href="/" className="text-slate-500 hover:text-slate-700 font-bold transition-colors">
-                        ← Home
-                    </Link>
-                    <h1 className="text-xl font-bold text-slate-800">符計算ドリル（待ち）</h1>
-                    <div className="w-16" />
-                </div>
+        <div className="min-h-screen bg-slate-50 flex flex-col items-center py-8 px-4">
+            <div className="w-full max-w-lg space-y-6">
 
                 {/* Question Area */}
-                <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12 flex flex-col items-center gap-8 min-h-[200px] justify-center">
-                    <div className="flex flex-col items-center gap-4">
+                <div className="bg-white rounded-lg shadow-md border border-slate-200 p-8 flex flex-col items-center gap-8 min-h-[200px] justify-center relative">
+                    <div className="absolute top-4 left-0 right-0 text-center text-lg font-bold text-slate-800">
+                        符計算ドリル（待ち）
+                    </div>
+
+                    <div className="flex flex-col items-center gap-4 mt-6">
                         <div className="flex flex-col gap-2 items-center">
                             <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">待ち形</span>
                             <div className="flex gap-0.5 transform scale-125 origin-center">
@@ -120,6 +122,29 @@ export function MachiFuDrill() {
                         </button>
                     </div>
                 )}
+
+                {/* Navigation Links */}
+                <div className="space-y-2 pt-2">
+                    {!isAnswered && (
+                        <div className="text-center">
+                            <button
+                                onClick={nextQuestion}
+                                className="text-gray-500 hover:text-gray-700 underline text-sm"
+                            >
+                                スキップ
+                            </button>
+                        </div>
+                    )}
+                    <div className="text-center">
+                        <button
+                            onClick={handleEnd}
+                            className="text-gray-400 hover:text-gray-600 underline text-sm"
+                        >
+                            終了する
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </div>
     )
