@@ -9,6 +9,8 @@ import { cn } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
+import { PageTitle } from '@/app/_components/PageTitle'
+
 export function HeadFuDrill() {
     const router = useRouter()
     const [question, setQuestion] = useState<HeadFuQuestion | null>(null)
@@ -40,10 +42,10 @@ export function HeadFuDrill() {
         <div className="min-h-screen bg-slate-50 flex flex-col items-center py-8 px-4">
             <div className="w-full max-w-lg space-y-6">
 
-                {/* Context Card */}
-                <div className="bg-white rounded-lg shadow-md p-6 text-center space-y-6">
-                    <div className="text-xl font-bold text-slate-800 mb-4">符計算ドリル（雀頭）</div>
+                <PageTitle>符計算ドリル（雀頭）</PageTitle>
 
+                {/* Question Area */}
+                <div className="bg-white rounded-lg shadow-md border border-slate-200 p-8 flex flex-col items-center gap-8 min-h-[200px] justify-center relative">
                     <div className="grid grid-cols-2 gap-4 divide-x divide-slate-100">
                         <div className="flex flex-col items-center gap-2">
                             <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">場風</span>

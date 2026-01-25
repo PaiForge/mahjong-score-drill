@@ -46,10 +46,12 @@ const DRILLS = [
     }
 ]
 
+import { PageTitle } from '@/app/_components/PageTitle'
+
 export default function ProblemsPage() {
     return (
         <div className="container mx-auto py-8 px-4 max-w-4xl">
-            <h1 className="text-3xl font-bold text-slate-800 mb-2">ドリル一覧</h1>
+            <PageTitle>ドリル一覧</PageTitle>
             <p className="text-slate-500 mb-8">
                 基礎から応用まで、段階的に符計算・点数計算をマスターしましょう。
             </p>

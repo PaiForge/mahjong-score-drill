@@ -1,5 +1,7 @@
 'use client'
 
+import { PageTitle } from '@/app/_components/PageTitle'
+
 import { useState, useEffect } from 'react'
 import { Hai, Furo } from '@pai-forge/mahjong-react-ui'
 import { MentsuType } from '@pai-forge/riichi-mahjong'
@@ -111,7 +113,7 @@ export function TehaiFuDrill() {
         <div className="min-h-screen bg-slate-50 flex flex-col items-center p-4 pb-20">
             <div className="w-full max-w-3xl space-y-6">
                 {/* Title */}
-                <div className="text-xl font-bold text-slate-800 text-center mb-0">符計算ドリル（手牌）</div>
+                <PageTitle className="mb-0">符計算ドリル（手牌）</PageTitle>
 
                 {/* Hand Display (Reusing Score Drill Display) */}
                 <QuestionDisplay question={drillQuestion} />

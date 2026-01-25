@@ -10,6 +10,8 @@ import Link from 'next/link'
 
 const FU_OPTIONS = [0, 2] as const
 
+import { PageTitle } from '@/app/_components/PageTitle'
+
 export function MachiFuDrill() {
     const router = useRouter()
     const [question, setQuestion] = useState<MachiFuQuestion | null>(null)
@@ -45,11 +47,10 @@ export function MachiFuDrill() {
         <div className="min-h-screen bg-slate-50 flex flex-col items-center py-8 px-4">
             <div className="w-full max-w-lg space-y-6">
 
+                <PageTitle>符計算ドリル（待ち）</PageTitle>
+
                 {/* Question Area */}
                 <div className="bg-white rounded-lg shadow-md border border-slate-200 p-8 flex flex-col items-center gap-8 min-h-[200px] justify-center relative">
-                    <div className="absolute top-4 left-0 right-0 text-center text-lg font-bold text-slate-800">
-                        符計算ドリル（待ち）
-                    </div>
 
                     <div className="flex flex-col items-center gap-4 mt-6">
                         <div className="flex flex-col gap-2 items-center">

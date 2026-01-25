@@ -28,6 +28,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
 }
 
+import { PageTitle } from "@/app/_components/PageTitle";
+
+// ...
+
 export default async function ArticlePage({ params }: PageProps) {
     const { slug } = await params;
     const article = await getArticleBySlug(slug);
@@ -36,11 +40,19 @@ export default async function ArticlePage({ params }: PageProps) {
         notFound();
     }
 
-    // Remove the H1 title from the content since we might handle it separately or let markdown render it
-    // For now, let's just render the raw markdown including h1
+    // Extract title
+    const titleMatch = article.content.match(/^#\s+(.+)$/m);
+    const title = titleMatch ? titleMatch[1] : slug;
+
+    // Remove the H1 from content if it exists
+    const content = titleMatch
+        ? article.content.replace(/^#\s+.+$/m, '').trim()
+        : article.content;
+
     return (
         <div className="container mx-auto px-4 py-8 max-w-3xl">
-            <ArticleMarkdown content={article.content} />
+            <PageTitle>{title}</PageTitle>
+            <ArticleMarkdown content={content} />
         </div>
     );
 }
