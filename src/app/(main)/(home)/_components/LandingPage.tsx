@@ -3,13 +3,8 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { SetupScreen } from './SetupScreen'
 
 export function LandingPage() {
-    const scrollToDrills = () => {
-        document.getElementById('drills')?.scrollIntoView({ behavior: 'smooth' })
-    }
-
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900">
             {/* Hero Section */}
@@ -24,27 +19,24 @@ export function LandingPage() {
                             <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
                                 麻雀点数計算
                             </span>
-                            <br className="sm:hidden" />
-                            を、
                             <br />
-                            もっと身近に。
+                            完全攻略
                         </h1>
                         <p className="text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
-                            雀頭・面子・手牌・待ち… <br className="sm:hidden" />要素ごとの特化ドリルと<br />
-                            実戦的な総合問題で、<br className="sm:hidden" />計算力を確実にマスターしよう。
+                            点数計算を大体は理解している人は早速問題を解いてみましょう。
                         </p>
                     </div>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <button
-                            onClick={scrollToDrills}
+                        <Link
+                            href="/problems/score"
                             className="bg-blue-600 text-white font-bold text-lg px-8 py-4 rounded-full shadow-lg hover:bg-blue-700 hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2"
                         >
-                            <span>ドリルを始める</span>
+                            <span>やってみる</span>
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                             </svg>
-                        </button>
+                        </Link>
                         <Link
                             href="/articles/introduction"
                             className="px-8 py-4 text-slate-600 font-bold hover:text-slate-900 hover:bg-slate-100 rounded-full transition-colors"
@@ -95,23 +87,6 @@ export function LandingPage() {
                         <p className="text-slate-600 leading-relaxed">
                             移動中や隙間時間にも。スマートフォンで見やすく、操作しやすいデザインを追求しています。
                         </p>
-                    </div>
-                </div>
-            </section>
-
-            {/* Drills Section */}
-            <section id="drills" className="py-24 px-4 bg-slate-50">
-                <div className="max-w-4xl mx-auto space-y-16">
-                    <div className="text-center space-y-4">
-                        <h2 className="text-3xl font-bold text-slate-800">トレーニングを開始</h2>
-                        <p className="text-slate-600">
-                            まずは基礎ドリルで慣らし、仕上げに総合問題に挑戦しましょう。
-                        </p>
-                    </div>
-
-                    <div className="flex justify-center">
-                        {/* Embed the original SetupScreen which serves as the drill hub */}
-                        <SetupScreen className="max-w-lg shadow-2xl border-t-8 border-t-blue-500" />
                     </div>
                 </div>
             </section>
