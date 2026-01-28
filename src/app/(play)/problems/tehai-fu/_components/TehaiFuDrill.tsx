@@ -82,14 +82,16 @@ export function TehaiFuDrill() {
                 ) : null
             } else {
                 // Ankan rendering
-                return (
-                    <div className="flex gap-1 items-center">
-                        <div className={cn("bg-slate-800 rounded border border-slate-600", haiSize === 'xs' ? "w-6 h-9" : "w-8 h-12")} />
-                        <Hai hai={item.tiles[1]} size={haiSize} />
-                        <Hai hai={item.tiles[2]} size={haiSize} />
-                        <div className={cn("bg-slate-800 rounded border border-slate-600", haiSize === 'xs' ? "w-6 h-9" : "w-8 h-12")} />
+                return item.originalMentsu ? (
+                    <div>
+                        <Furo
+                            mentsu={item.originalMentsu}
+                            furo={item.originalMentsu.furo}
+                            size={haiSize}
+                            className="ankan-furo"
+                        />
                     </div>
-                )
+                ) : null
             }
         }
 

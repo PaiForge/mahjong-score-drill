@@ -1,5 +1,6 @@
 import {
     HaiKind,
+    MentsuType,
     type HaiKindId,
     type Tehai14,
     type Kazehai,
@@ -131,7 +132,10 @@ export function generateTehaiFuQuestion(): TehaiFuQuestion | null {
         if (item.type === 'Pair') {
             closed.push(...item.tiles)
         } else {
-            if (item.isOpen && item.originalMentsu) {
+            // Fix: Ankan (Closed Kantsu) should be treated as exposed for checking/rendering consistency
+            // (It is technically "closed" but often handled in exposed list for format reasons in some contexts,
+            // OR we just need to ensure it's distinct. Explicitly putting it in exposed with type Kantsu usually triggers Ankan rendering)
+            if ((item.isOpen || item.type === MentsuType.Kantsu) && item.originalMentsu) {
                 exposed.push(item.originalMentsu)
             } else {
                 closed.push(...item.tiles)
