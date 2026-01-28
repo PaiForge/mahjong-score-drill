@@ -97,4 +97,8 @@ export interface QuestionGeneratorOptions {
   includeChiitoi?: boolean
   /** 出題する点数範囲 */
   allowedRanges?: ('non_mangan' | 'mangan_plus')[]
+  /** 親（東家）を含めるかどうか */
+  includeParent?: boolean
+  /** 子（散家）を含めるかどうか */
+  includeChild?: boolean
 }

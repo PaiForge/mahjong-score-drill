@@ -12,7 +12,15 @@ export function SetupScreen({ className, hideDrillLinks = false }: { className?:
   const router = useRouter()
   // Hydration mismatch avoidance: wait for client mount
   const [mounted, setMounted] = useState(false)
-  const { requireYaku, setRequireYaku, simplifyMangan, setSimplifyMangan, requireFuForMangan, setRequireFuForMangan, targetScoreRanges, setTargetScoreRanges, autoNext, setAutoNext } = useSettingsStore()
+  const {
+    requireYaku, setRequireYaku,
+    simplifyMangan, setSimplifyMangan,
+    requireFuForMangan, setRequireFuForMangan,
+    targetScoreRanges, setTargetScoreRanges,
+    autoNext, setAutoNext,
+    includeParent, setIncludeParent,
+    includeChild, setIncludeChild
+  } = useSettingsStore()
 
   useEffect(() => {
     setMounted(true)
@@ -37,6 +45,10 @@ export function SetupScreen({ className, hideDrillLinks = false }: { className?:
       if (targetScoreRanges.includes('non_mangan')) params.append('ranges', 'non')
       if (targetScoreRanges.includes('mangan_plus')) params.append('ranges', 'plus')
     }
+
+    // roles=oya,ko
+    if (includeParent) params.append('roles', 'oya')
+    if (includeChild) params.append('roles', 'ko')
 
     // Reset current question to force re-initialization in DrillBoard
     useDrillStore.getState().setQuestion(null as any)
@@ -150,6 +162,34 @@ export function SetupScreen({ className, hideDrillLinks = false }: { className?:
           </label>
 
           <div className="w-full pt-4 border-t border-slate-100 mt-2">
+            <div className="text-sm font-bold text-slate-500 mb-3 text-center">出題モード</div>
+            <div className="flex justify-center gap-6">
+              <label className="group inline-flex items-center gap-3 py-2 px-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200">
+                <input
+                  type="checkbox"
+                  checked={includeParent}
+                  onChange={(e) => setIncludeParent(e.target.checked)}
+                  className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 focus:ring-offset-0"
+                />
+                <span className="text-slate-700 text-sm font-semibold select-none">
+                  親（東家）
+                </span>
+              </label>
+              <label className="group inline-flex items-center gap-3 py-2 px-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200">
+                <input
+                  type="checkbox"
+                  checked={includeChild}
+                  onChange={(e) => setIncludeChild(e.target.checked)}
+                  className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 focus:ring-offset-0"
+                />
+                <span className="text-slate-700 text-sm font-semibold select-none">
+                  子（散家）
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <div className="w-full pt-4 border-t border-slate-100 mt-2">
             <div className="text-sm font-bold text-slate-500 mb-3 text-center">{tHome('setup.settings.targetScore')}</div>
             <div className="flex justify-center gap-6">
               <label className="group inline-flex items-center gap-3 py-2 px-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200">
@@ -181,10 +221,10 @@ export function SetupScreen({ className, hideDrillLinks = false }: { className?:
         {/* Main Action */}
         <button
           onClick={handleStart}
-          disabled={targetScoreRanges.length === 0}
+          disabled={targetScoreRanges.length === 0 || (!includeParent && !includeChild)}
           className={cn(
             "w-full py-3 px-6 font-bold rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2",
-            targetScoreRanges.length === 0
+            targetScoreRanges.length === 0 || (!includeParent && !includeChild)
               ? "bg-slate-300 text-slate-500 cursor-not-allowed"
               : "bg-amber-500 text-white hover:bg-amber-600"
           )}

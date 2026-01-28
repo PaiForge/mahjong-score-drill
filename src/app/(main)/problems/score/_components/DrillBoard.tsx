@@ -81,8 +81,19 @@ export function DrillBoard() {
         allowedRanges.push('non_mangan', 'mangan_plus')
       }
 
+      // roles=oya,ko
+      let includeParent = true
+      let includeChild = true
+      const rolesValues = params.getAll('roles')
+      if (rolesValues.length > 0) {
+        includeParent = rolesValues.includes('oya')
+        includeChild = rolesValues.includes('ko')
+      }
+
       useDrillStore.getState().setOptions({
-        allowedRanges
+        allowedRanges,
+        includeParent,
+        includeChild
       })
 
       generateNewQuestion()
@@ -99,6 +110,9 @@ export function DrillBoard() {
         const currentParams = new URLSearchParams(searchParams.toString())
         const ranges = currentParams.getAll('ranges')
         ranges.forEach(r => urlObj.searchParams.append('ranges', r))
+
+        const roles = currentParams.getAll('roles')
+        roles.forEach(r => urlObj.searchParams.append('roles', r))
 
         // modeなども維持
         if (searchParams.has('mode')) urlObj.searchParams.set('mode', searchParams.get('mode')!)
@@ -185,6 +199,9 @@ export function DrillBoard() {
       const ranges = currentParams.getAll('ranges')
       ranges.forEach(r => urlObj.searchParams.append('ranges', r))
 
+      const roles = currentParams.getAll('roles')
+      roles.forEach(r => urlObj.searchParams.append('roles', r))
+
       // パスパラメータではなくクエリパラメータのみを使用するため、pathnameは固定でQueryStringを付与
       router.push(urlObj.pathname + urlObj.search)
     }
@@ -226,6 +243,9 @@ export function DrillBoard() {
     const currentParams = new URLSearchParams(searchParams.toString())
     const ranges = currentParams.getAll('ranges')
     ranges.forEach(r => params.append('ranges', r))
+
+    const roles = currentParams.getAll('roles')
+    roles.forEach(r => params.append('roles', r))
 
     const queryString = params.toString()
     router.replace(queryString ? `/problems/score/play?${queryString}` : '/problems/score/play')

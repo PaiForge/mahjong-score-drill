@@ -197,7 +197,7 @@ function generateDoraMarkers(kantsuCount: number): HaiKindId[] {
 export function generateQuestion(
   options: QuestionGeneratorOptions = {}
 ): DrillQuestion | null {
-  const { includeFuro = true, includeChiitoi = false } = options
+  const { includeFuro = true, includeChiitoi = false, includeParent = true, includeChild = true } = options
 
   // 手牌を生成（七対子は10%の確率）
   const isChiitoi = includeChiitoi && Math.random() < 0.1
@@ -217,7 +217,23 @@ export function generateQuestion(
 
   // コンテキストを生成
   const isTsumo = Math.random() < 0.5
-  const jikaze = randomChoice(KAZEHAI)
+
+  // 自風の決定 (親・子の除外設定を反映)
+  let validKazehai: Kazehai[] = [...KAZEHAI]
+
+  if (!includeParent) {
+    validKazehai = validKazehai.filter(k => k !== HaiKind.Ton)
+  }
+  if (!includeChild) {
+    // 東以外を除外 -> 東のみにする
+    validKazehai = validKazehai.filter(k => k === HaiKind.Ton)
+  }
+
+  // 両方falseの場合はありえないが、SetupScreenで防いでいる。
+  // 万が一空になった場合はデフォルト(全種類)に戻す
+  if (validKazehai.length === 0) validKazehai = [...KAZEHAI]
+
+  const jikaze = randomChoice(validKazehai)
   const bakaze = randomChoice([HaiKind.Ton, HaiKind.Nan] as Kazehai[])
   const kantsuCount = countKantsu(tehai)
   const doraMarkers = generateDoraMarkers(kantsuCount)

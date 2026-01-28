@@ -12,6 +12,10 @@ interface SettingsState {
     setTargetScoreRanges: (ranges: ('non_mangan' | 'mangan_plus')[]) => void
     autoNext: boolean
     setAutoNext: (enabled: boolean) => void
+    includeParent: boolean
+    setIncludeParent: (enabled: boolean) => void
+    includeChild: boolean
+    setIncludeChild: (enabled: boolean) => void
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -27,6 +31,10 @@ export const useSettingsStore = create<SettingsState>()(
             setTargetScoreRanges: (targetScoreRanges) => set({ targetScoreRanges }),
             autoNext: false,
             setAutoNext: (autoNext) => set({ autoNext }),
+            includeParent: true,
+            setIncludeParent: (includeParent) => set({ includeParent }),
+            includeChild: true,
+            setIncludeChild: (includeChild) => set({ includeChild }),
         }),
         {
             name: 'mahjong-drill-settings',
