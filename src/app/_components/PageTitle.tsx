@@ -7,7 +7,7 @@ interface PageTitleProps {
 
 export function PageTitle({ children, className }: PageTitleProps) {
     return (
-        <h1 className={cn("text-lg font-bold text-slate-800 text-center mb-6", className)}>
+        <h1 className={cn("text-2xl text-slate-900 text-center mb-8", className)}>
             {children}
         </h1>
     )

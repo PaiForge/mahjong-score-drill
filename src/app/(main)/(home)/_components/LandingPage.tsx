@@ -33,15 +33,6 @@ export function LandingPage() {
                             className="bg-blue-600 text-white font-bold text-lg px-8 py-4 rounded-full shadow-lg hover:bg-blue-700 hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2"
                         >
                             <span>やってみる</span>
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                            </svg>
-                        </Link>
-                        <Link
-                            href="/articles/introduction"
-                            className="px-8 py-4 text-slate-600 font-bold hover:text-slate-900 hover:bg-slate-100 rounded-full transition-colors"
-                        >
-                            点数計算の仕組みとは？
                         </Link>
                     </div>
                 </div>
@@ -88,6 +79,25 @@ export function LandingPage() {
                             移動中や隙間時間にも。スマートフォンで見やすく、操作しやすいデザインを追求しています。
                         </p>
                     </div>
+                </div>
+            </section>
+
+            {/* Articles Section */}
+            <section className="py-24 px-6 bg-slate-50 border-y border-slate-100">
+                <div className="max-w-4xl mx-auto text-center space-y-8">
+                    <h2 className="text-3xl font-bold text-slate-900">
+                        まずはここから
+                    </h2>
+                    <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+                        点数計算の仕組みや、このサイトの活用方法について解説しています。
+                    </p>
+
+                    <Link
+                        href="/articles/introduction"
+                        className="group relative inline-flex items-center justify-center px-8 py-6 text-lg font-bold text-white transition-all duration-200 bg-slate-900 rounded-xl hover:bg-slate-800 hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
+                    >
+                        <span className="mr-2">はじめよう 🚀</span>
+                    </Link>
                 </div>
             </section>
 

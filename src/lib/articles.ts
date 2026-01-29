@@ -31,3 +31,28 @@ export async function getAllArticleSlugs(): Promise<string[]> {
         return [];
     }
 }
+
+function getArticleTitle(content: string, slug: string): string {
+    const titleMatch = content.match(/^#\s+(.+)$/m);
+    return titleMatch ? titleMatch[1] : slug;
+}
+
+export interface ArticleMeta {
+    slug: string;
+    title: string;
+}
+
+export async function getAllArticles(): Promise<ArticleMeta[]> {
+    const slugs = await getAllArticleSlugs();
+    const articles = await Promise.all(
+        slugs.map(async (slug) => {
+            const article = await getArticleBySlug(slug);
+            if (!article) return null;
+            return {
+                slug,
+                title: getArticleTitle(article.content, slug),
+            };
+        })
+    );
+    return articles.filter((a): a is ArticleMeta => a !== null);
+}

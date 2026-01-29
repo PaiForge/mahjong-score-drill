@@ -113,16 +113,49 @@ export function ArticleMarkdown({ content }: Readonly<ArticleMarkdownProps>) {
                 components={{
                     // テキストノードをカスタム処理
                     p: ({ node, children, ...props }) => (
-                        <p {...props} className="mb-4 last:mb-0">
+                        <p {...props} className="text-slate-700 leading-8 mb-6 last:mb-0">
                             {processChildren(children)}
                         </p>
                     ),
-                    li: ({ children }) => <li>{processChildren(children)}</li>,
-                    h1: ({ children }) => <h1>{processChildren(children)}</h1>,
-                    h2: ({ children }) => <h2>{processChildren(children)}</h2>,
-                    h3: ({ children }) => <h3>{processChildren(children)}</h3>,
-                    strong: ({ children }) => <strong>{processChildren(children)}</strong>,
-                    em: ({ children }) => <em>{processChildren(children)}</em>,
+                    li: ({ children }) => (
+                        <li className="text-slate-700 leading-7 ml-4 mb-2">
+                            {processChildren(children)}
+                        </li>
+                    ),
+                    ul: ({ children }) => (
+                        <ul className="list-disc list-outside mb-6 pl-4 space-y-1">
+                            {children}
+                        </ul>
+                    ),
+                    ol: ({ children }) => (
+                        <ol className="list-decimal list-outside mb-6 pl-4 space-y-1">
+                            {children}
+                        </ol>
+                    ),
+                    h1: ({ children }) => (
+                        <h1 className="text-2xl font-normal text-slate-900 mt-10 mb-6 pb-2 border-b border-slate-200">
+                            {processChildren(children)}
+                        </h1>
+                    ),
+                    h2: ({ children }) => (
+                        <h2 className="text-lg font-normal text-slate-900 mt-10 mb-4 flex items-center gap-2">
+                            <span className="w-1.5 h-6 bg-blue-500 rounded-full" />
+                            {processChildren(children)}
+                        </h2>
+                    ),
+                    h3: ({ children }) => (
+                        <h3 className="text-base font-normal text-slate-900 mt-8 mb-3">
+                            {processChildren(children)}
+                        </h3>
+                    ),
+                    strong: ({ children }) => <strong className="font-bold text-slate-900">{processChildren(children)}</strong>,
+                    em: ({ children }) => <em className="italic text-slate-800">{processChildren(children)}</em>,
+                    blockquote: ({ children }) => (
+                        <blockquote className="border-l-4 border-blue-200 bg-blue-50/50 py-3 px-4 my-6 rounded-r-lg text-slate-600 italic">
+                            {children}
+                        </blockquote>
+                    ),
+                    hr: () => <hr className="my-8 border-slate-200" />,
                 }}
             >
                 {processedContent}
