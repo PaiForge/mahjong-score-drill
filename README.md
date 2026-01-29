@@ -16,6 +16,14 @@
   - [`@pai-forge/mahjong-react-ui`](https://github.com/PaiForge/mahjong-react-ui) - 用于显示麻雀牌和和牌的轻量级 UI 库
   - [`@pai-forge/riichi-mahjong`](https://github.com/PaiForge/riichi-mahjong) - リーチ麻雀のルール・計算ロジック
 
+## Deployment
+
+### Environment Variables
+
+| Variable Name | Description | Required | 
+|---|---|---|
+| `NEXT_PUBLIC_GA_MEASUREMENT_ID` | Google Analytics 4 Measurement ID (e.g. `G-XXXXXXXXXX`). GA script will only be loaded if this variable is set. | No (Production Only) |
+
 ## 開発環境のセットアップ (Getting Started)
 
 ### 前提条件 (Prerequisites)

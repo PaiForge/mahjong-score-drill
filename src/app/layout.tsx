@@ -3,6 +3,7 @@ import './globals.css'
 import { SidebarProvider } from '@/app/_contexts/SidebarContext'
 import { I18nProvider } from '@/components/I18nProvider'
 import jaMessages from '@/messages/ja.json'
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 export const metadata = {
   metadataBase: new URL('https://score.mahjong.help/'),
@@ -31,6 +32,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+
   return (
     <html lang="ja">
       <body>
@@ -39,6 +42,7 @@ export default function RootLayout({
             {children}
           </SidebarProvider>
         </I18nProvider>
+        {gaId && <GoogleAnalytics gaId={gaId} />}
       </body>
     </html>
   )
