@@ -28,12 +28,12 @@ const calculateKoScore = (han: number, fu: number) => {
 const calculateOyaScore = (han: number, fu: number) => {
     let base = fu * Math.pow(2, 2 + han)
     const isMangan = base >= 2000
-    if (isMangan) return { isMangan: true, ron: 12000, tsumo: '4000オール' }
+    if (isMangan) return { isMangan: true, ron: 12000, tsumo: '4000∀' }
 
     const ron = Math.ceil((base * 6) / 100) * 100
     const tsumo = Math.ceil((base * 2) / 100) * 100
 
-    return { isMangan: false, ron, tsumo: `${tsumo}オール` }
+    return { isMangan: false, ron, tsumo: `${tsumo}∀` }
 }
 
 const HIGH_SCORES = [
@@ -48,47 +48,18 @@ export function ScoreTableControls({ size = 'normal' }: { size?: 'normal' | 'sma
     const tProblems = useTranslations('problems')
     const { activeTab, setActiveTab, viewMode, setViewMode, winType, setWinType, setHighlightedCellId } = useScoreTableStore()
 
-    const btnBaseClass = "rounded-md font-bold transition-all shadow-sm"
-    const containerClass = "bg-blue-50 p-1 rounded-lg flex shadow-inner border border-blue-100"
+    const btnBaseClass = "rounded-md font-medium transition-all"
+    const containerClass = "bg-blue-50 p-0.5 rounded-md flex border border-blue-100"
 
-    const isSmall = size === 'small'
-    const btnPadding = isSmall ? 'px-3 py-1 text-xs' : 'px-4 py-1.5 text-sm'
-    const tabBtnPadding = isSmall ? 'px-4 py-1.5 text-xs' : 'px-6 py-2 text-sm'
-    const btnMinWidth = isSmall ? 'min-w-[60px]' : 'min-w-[80px]'
-    const tabBtnMinWidth = isSmall ? 'min-w-[80px]' : 'min-w-[100px]'
-    const viewBtnMinWidth = isSmall ? 'min-w-[100px]' : 'min-w-[120px]'
+    const btnPadding = 'px-2 py-1 text-xs'
 
     return (
-        <div className={`flex flex-wrap ${isSmall ? 'gap-2' : 'gap-4'} items-center justify-end`}>
-            {/* Win Type Switcher */}
-            <div className={containerClass}>
-                <button
-                    onClick={() => { setWinType('ron'); setHighlightedCellId(null); }}
-                    className={cn(btnBaseClass, btnPadding, btnMinWidth,
-                        winType === 'ron'
-                            ? 'bg-blue-600 text-white'
-                            : 'text-gray-700 hover:bg-blue-100'
-                    )}
-                >
-                    {tProblems('question.ron')}
-                </button>
-                <button
-                    onClick={() => { setWinType('tsumo'); setHighlightedCellId(null); }}
-                    className={cn(btnBaseClass, btnPadding, btnMinWidth,
-                        winType === 'tsumo'
-                            ? 'bg-blue-600 text-white'
-                            : 'text-gray-700 hover:bg-blue-100'
-                    )}
-                >
-                    {tProblems('question.tsumo')}
-                </button>
-            </div>
-
-            {/* Main Tabs (Role) */}
+        <div className="flex flex-nowrap gap-2 items-center justify-end">
+            {/* Role (子/親) - 最も基本的な条件なので先頭 */}
             <div className={containerClass}>
                 <button
                     onClick={() => { setActiveTab('ko'); setHighlightedCellId(null); }}
-                    className={cn(btnBaseClass, tabBtnPadding, tabBtnMinWidth,
+                    className={cn(btnBaseClass, btnPadding,
                         activeTab === 'ko'
                             ? 'bg-blue-600 text-white'
                             : 'text-gray-700 hover:bg-blue-100'
@@ -98,7 +69,7 @@ export function ScoreTableControls({ size = 'normal' }: { size?: 'normal' | 'sma
                 </button>
                 <button
                     onClick={() => { setActiveTab('oya'); setHighlightedCellId(null); }}
-                    className={cn(btnBaseClass, tabBtnPadding, tabBtnMinWidth,
+                    className={cn(btnBaseClass, btnPadding,
                         activeTab === 'oya'
                             ? 'bg-blue-600 text-white'
                             : 'text-gray-700 hover:bg-blue-100'
@@ -108,11 +79,35 @@ export function ScoreTableControls({ size = 'normal' }: { size?: 'normal' | 'sma
                 </button>
             </div>
 
-            {/* View Mode Switcher */}
+            {/* Win Type (ロン/ツモ) */}
+            <div className={containerClass}>
+                <button
+                    onClick={() => { setWinType('ron'); setHighlightedCellId(null); }}
+                    className={cn(btnBaseClass, btnPadding,
+                        winType === 'ron'
+                            ? 'bg-blue-600 text-white'
+                            : 'text-gray-700 hover:bg-blue-100'
+                    )}
+                >
+                    {tProblems('question.ron')}
+                </button>
+                <button
+                    onClick={() => { setWinType('tsumo'); setHighlightedCellId(null); }}
+                    className={cn(btnBaseClass, btnPadding,
+                        winType === 'tsumo'
+                            ? 'bg-blue-600 text-white'
+                            : 'text-gray-700 hover:bg-blue-100'
+                    )}
+                >
+                    {tProblems('question.tsumo')}
+                </button>
+            </div>
+
+            {/* View Mode (符翻/満貫+) */}
             <div className={containerClass}>
                 <button
                     onClick={() => { setViewMode('normal'); setHighlightedCellId(null); }}
-                    className={cn(btnBaseClass, tabBtnPadding, viewBtnMinWidth,
+                    className={cn(btnBaseClass, btnPadding,
                         viewMode === 'normal'
                             ? 'bg-blue-600 text-white'
                             : 'text-gray-700 hover:bg-blue-100'
@@ -122,13 +117,13 @@ export function ScoreTableControls({ size = 'normal' }: { size?: 'normal' | 'sma
                 </button>
                 <button
                     onClick={() => { setViewMode('high_score'); setHighlightedCellId(null); }}
-                    className={cn(btnBaseClass, tabBtnPadding, viewBtnMinWidth,
+                    className={cn(btnBaseClass, btnPadding,
                         viewMode === 'high_score'
                             ? 'bg-blue-600 text-white'
                             : 'text-gray-700 hover:bg-blue-100'
                     )}
                 >
-                    {tProblems('form.options.mangan')} +
+                    {tProblems('form.options.mangan')}+
                 </button>
             </div>
         </div>
@@ -158,7 +153,7 @@ export function ScoreTableGrid() {
 
     const renderTsumoScore = (score: string | number) => {
         if (typeof score !== 'string') return score
-        const text = score.replace('オール', '')
+        const text = score.replace('∀', '')
         if (text.includes('/')) {
             const [ko, oya] = text.split('/')
             return (
@@ -170,7 +165,7 @@ export function ScoreTableGrid() {
         }
         return (
             <div className="flex flex-col items-center leading-tight">
-                <span>{text} {tProblems('form.options.all')}</span>
+                <span>{text}∀</span>
             </div>
         )
     }
@@ -311,7 +306,7 @@ export function ScoreTableGrid() {
 export function ScoreTable() {
     return (
         <div className="w-full relative pb-20">
-            <div className="mb-4">
+            <div className="sticky top-14 z-20 bg-white pb-3 mb-1">
                 <ScoreTableControls />
             </div>
             <ScoreTableGrid />
