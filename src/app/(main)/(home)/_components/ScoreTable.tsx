@@ -136,15 +136,19 @@ export function ScoreTableGrid() {
 
     const isKo = activeTab === 'ko'
 
+    // よく使う符（実践で頻出）
+    const frequentFu = [30, 40]
+    const isFrequentFu = (fu: number) => frequentFu.includes(fu)
+
     const getCellClass = (isHidden: boolean, isHighlighted: boolean) => {
-        const base = "border border-gray-300 p-2 relative h-16 align-middle cursor-pointer select-none"
+        const base = "border border-gray-300 p-2 relative h-14 align-middle cursor-pointer select-none transition-colors"
         if (isHighlighted) {
             return `${base} bg-yellow-100 ring-2 ring-yellow-400 ring-inset z-10`
         }
         if (isHidden) {
-            return `${base} bg-gray-200 hover:bg-gray-200`
+            return `${base} bg-gray-200`
         }
-        return `${base} bg-transparent hover:bg-gray-50`
+        return `${base} bg-transparent`
     }
 
     const getContentClass = (isHidden: boolean) => {
@@ -170,6 +174,23 @@ export function ScoreTableGrid() {
         )
     }
 
+    // 行のベース背景色を取得
+    const getRowBgClass = (fu: number, idx: number) => {
+        if (isFrequentFu(fu)) {
+            return 'bg-amber-50/60 hover:bg-amber-100/60'
+        }
+        return idx % 2 === 0 ? 'bg-gray-50/50 hover:bg-gray-100/50' : 'bg-white hover:bg-gray-50/50'
+    }
+
+    // 符ラベルのスタイル（頻出符は強調）
+    const getFuLabelClass = (fu: number) => {
+        const base = "border border-gray-300 text-sm py-1 font-medium"
+        if (isFrequentFu(fu)) {
+            return `${base} bg-amber-100 text-amber-800`
+        }
+        return `${base} bg-gray-200 text-gray-600`
+    }
+
     return (
         <div className="w-full relative">
             <div className="overflow-x-auto w-full">
@@ -177,19 +198,21 @@ export function ScoreTableGrid() {
                     <table className="w-full text-center border-collapse border border-gray-300 bg-white shadow-sm rounded-lg overflow-hidden">
                         <thead>
                             <tr>
-                                <th className="bg-gray-100 border border-gray-300 w-14"></th>
+                                <th className="bg-slate-600 text-white border border-gray-300 w-14 py-2 text-xs font-medium">
+                                    {tProblems('form.options.fu_suffix')}＼{tProblems('form.options.han_suffix')}
+                                </th>
                                 {HAN_COLS.map(han => (
-                                    <th key={han} className="bg-gray-200 border border-gray-300 py-3 text-base text-gray-700 font-normal">
-                                        {han}{tProblems('form.options.han_suffix')}
+                                    <th key={han} className="bg-slate-600 text-white border border-gray-300 py-2 text-lg font-bold">
+                                        {han}<span className="text-xs font-normal ml-0.5">{tProblems('form.options.han_suffix')}</span>
                                     </th>
                                 ))}
                             </tr>
                         </thead>
                         <tbody>
                             {FU_ROWS.map((fu, idx) => (
-                                <tr key={fu} className={idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                                    <td className="bg-gray-200 border border-gray-300 text-sm text-gray-700 py-1 font-normal">
-                                        {fu}{tProblems('form.options.fu_suffix')}
+                                <tr key={fu} className={getRowBgClass(fu, idx)}>
+                                    <td className={getFuLabelClass(fu)}>
+                                        {fu}
                                     </td>
                                     {HAN_COLS.map(han => {
                                         if (
@@ -199,7 +222,7 @@ export function ScoreTableGrid() {
                                             (winType === 'tsumo' && han === 2 && fu === 25)
                                         ) {
                                             return (
-                                                <td key={han} className="border border-gray-300 text-gray-300 bg-gray-50/50 h-16">
+                                                <td key={han} className="border border-gray-300 text-gray-300 bg-gray-100/50 h-14">
                                                     <div className="text-gray-300 text-sm">-</div>
                                                 </td>
                                             )
@@ -217,10 +240,20 @@ export function ScoreTableGrid() {
                                             return (
                                                 <td
                                                     key={han}
-                                                    className={`border border-gray-300 p-1 cursor-pointer transition-all duration-300 select-none relative ${isHighlighted ? 'bg-yellow-100 ring-2 ring-yellow-400 ring-inset z-10' : (isHidden ? 'bg-gray-200' : 'bg-blue-50/30 hover:bg-blue-100/50')}`}
+                                                    className={cn(
+                                                        "border border-gray-300 p-1 cursor-pointer transition-colors select-none relative h-14",
+                                                        isHighlighted
+                                                            ? 'bg-yellow-100 ring-2 ring-yellow-400 ring-inset z-10'
+                                                            : isHidden
+                                                                ? 'bg-gray-200'
+                                                                : 'bg-blue-100 hover:bg-blue-200'
+                                                    )}
                                                     onClick={() => toggleCellVisibility(cellId)}
                                                 >
-                                                    <div className={`flex items-center justify-center h-full text-sm text-gray-600 py-2 ${getContentClass(isHidden)}`}>
+                                                    <div className={cn(
+                                                        "flex items-center justify-center h-full text-sm font-bold text-blue-700",
+                                                        getContentClass(isHidden)
+                                                    )}>
                                                         {tProblems('form.options.mangan')}
                                                     </div>
                                                 </td>
@@ -234,12 +267,12 @@ export function ScoreTableGrid() {
                                                 onClick={() => toggleCellVisibility(cellId)}
                                             >
                                                 {winType === 'ron' && (
-                                                    <div className={`text-gray-800 text-sm ${getContentClass(isHidden)}`}>
+                                                    <div className={cn("text-gray-800 text-sm font-medium", getContentClass(isHidden))}>
                                                         {score.ron}
                                                     </div>
                                                 )}
                                                 {winType === 'tsumo' && (
-                                                    <div className={`text-gray-800 text-sm flex items-center justify-center h-full ${getContentClass(isHidden)}`}>
+                                                    <div className={cn("text-gray-800 text-sm font-medium flex items-center justify-center h-full", getContentClass(isHidden))}>
                                                         {renderTsumoScore(score.tsumo)}
                                                     </div>
                                                 )}
@@ -255,9 +288,9 @@ export function ScoreTableGrid() {
                     <table className="w-full text-center border-collapse border border-gray-300 bg-white shadow-sm rounded-lg overflow-hidden">
                         <thead>
                             <tr>
-                                <th className="bg-gray-200 border border-gray-300 py-3 text-gray-700 font-normal">{tProblems('form.labels.yaku')}</th>
-                                <th className="bg-gray-200 border border-gray-300 py-3 text-gray-700 font-normal">{tProblems('form.labels.han')}</th>
-                                <th className="bg-gray-200 border border-gray-300 py-3 text-gray-700 font-normal">
+                                <th className="bg-slate-600 text-white border border-gray-300 py-2 font-medium">{tProblems('form.labels.yaku')}</th>
+                                <th className="bg-slate-600 text-white border border-gray-300 py-2 font-medium">{tProblems('form.labels.han')}</th>
+                                <th className="bg-slate-600 text-white border border-gray-300 py-2 font-medium">
                                     {tProblems('result.score')}
                                 </th>
                             </tr>
@@ -268,13 +301,24 @@ export function ScoreTableGrid() {
                                 const isHidden = !!hiddenCells[cellId]
                                 const isHighlighted = highlightedCellId === cellId
 
+                                // 役満は特別な色
+                                const isYakuman = item.nameKey === 'yakuman'
+                                const rowBgClass = isYakuman
+                                    ? 'bg-purple-50 hover:bg-purple-100'
+                                    : idx % 2 === 0
+                                        ? 'bg-gray-50/50 hover:bg-gray-100/50'
+                                        : 'bg-white hover:bg-gray-50/50'
+
                                 return (
-                                    <tr key={item.nameKey} className={idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                                        <td className="bg-gray-200 border border-gray-300 text-sm text-gray-700 py-4 font-normal">
+                                    <tr key={item.nameKey} className={rowBgClass}>
+                                        <td className={cn(
+                                            "border border-gray-300 text-sm py-3 font-medium",
+                                            isYakuman ? "bg-purple-100 text-purple-800" : "bg-blue-100 text-blue-800"
+                                        )}>
                                             {/* @ts-ignore dynamic key */}
                                             {tProblems(`form.options.${item.nameKey}`)}
                                         </td>
-                                        <td className="border border-gray-300 font-medium text-gray-600">
+                                        <td className="border border-gray-300 font-medium text-gray-600 text-sm">
                                             {item.han}{tProblems('form.options.han_suffix')}
                                         </td>
                                         <td
@@ -282,12 +326,12 @@ export function ScoreTableGrid() {
                                             onClick={() => toggleCellVisibility(cellId)}
                                         >
                                             {winType === 'ron' && (
-                                                <div className={`text-gray-800 text-sm ${getContentClass(isHidden)}`}>
+                                                <div className={cn("text-gray-800 text-sm font-medium", getContentClass(isHidden))}>
                                                     {isKo ? item.ronKo : item.ronOya}
                                                 </div>
                                             )}
                                             {winType === 'tsumo' && (
-                                                <div className={`text-gray-800 text-sm flex items-center justify-center h-full ${getContentClass(isHidden)}`}>
+                                                <div className={cn("text-gray-800 text-sm font-medium flex items-center justify-center h-full", getContentClass(isHidden))}>
                                                     {renderTsumoScore(isKo ? item.tsumoKo : item.tsumoOya)}
                                                 </div>
                                             )}
