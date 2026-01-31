@@ -350,7 +350,7 @@ export function ScoreTableGrid() {
 export function ScoreTable() {
     return (
         <div className="w-full relative pb-20">
-            <div className="sticky top-14 z-20 bg-white pb-3 mb-1">
+            <div className="sticky top-0 z-20 bg-white pb-3 mb-1">
                 <ScoreTableControls />
             </div>
             <ScoreTableGrid />
