@@ -55,7 +55,7 @@ export function Sidebar() {
             {/* オーバーレイ（ヘッダー下から表示） */}
             {isOpen && (
                 <div
-                    className="fixed top-14 inset-x-0 bottom-0 bg-black/30 backdrop-blur-sm z-40"
+                    className="fixed top-20 inset-x-0 bottom-0 bg-black/30 backdrop-blur-sm z-40"
                     onClick={closeSidebar}
                     aria-hidden="true"
                 />
@@ -63,7 +63,7 @@ export function Sidebar() {
 
             {/* サイドバーパネル */}
             <div
-                className={`fixed top-14 left-0 bottom-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
+                className={`fixed top-20 left-0 bottom-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
                     }`}
             >
                 {/* ナビゲーションリンク */}

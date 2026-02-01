@@ -3,25 +3,48 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useState, useEffect } from 'react'
 import { useSidebar } from '@/app/_contexts/SidebarContext'
 
 /**
  * ヘッダーコンポーネント
  *
  * ロゴとサイドバー開閉ボタンを含むヘッダー。
- * 問題ページでは非表示。
+ * 初期状態は背景透明、スクロール時に背景がかかる。
  */
 export function Header() {
     const pathname = usePathname()
     const { isOpen, toggleSidebar } = useSidebar()
+    const [isScrolled, setIsScrolled] = useState(false)
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 10)
+        }
+
+        window.addEventListener('scroll', handleScroll, { passive: true })
+        handleScroll()
+
+        return () => window.removeEventListener('scroll', handleScroll)
+    }, [])
 
     return (
-        <header className="bg-white border-b border-gray-200 shadow-sm">
-            <div className="flex items-center h-14 px-4">
+        <header
+            className={`sticky top-0 z-50 transition-all duration-300 ${
+                isScrolled
+                    ? 'bg-transparent'
+                    : 'bg-white/80 backdrop-blur-md shadow-sm'
+            }`}
+        >
+            <div className="flex items-center h-20 px-4">
                 {/* ハンバーガーボタン */}
                 <button
                     onClick={toggleSidebar}
-                    className="p-2 rounded-md hover:bg-gray-100 transition-colors mr-3"
+                    className={`p-2.5 transition-all duration-300 mr-3 ${
+                        isScrolled
+                            ? 'bg-white rounded-full shadow-md hover:bg-gray-100'
+                            : 'rounded-md hover:bg-gray-500/10'
+                    }`}
                     aria-label={isOpen ? 'メニューを閉じる' : 'メニューを開く'}
                     aria-expanded={isOpen}
                 >
@@ -63,18 +86,15 @@ export function Header() {
                     )}
                 </button>
 
-                {/* ロゴ + タイトル */}
-                <Link href="/" className="flex items-center gap-2">
+                {/* ロゴ */}
+                <Link href="/">
                     <Image
                         src="/logo.png"
                         alt="麻雀点数ドリル"
-                        width={40}
-                        height={40}
+                        width={48}
+                        height={48}
                         className="rounded"
                     />
-                    <span className="text-lg font-bold text-gray-800">
-                        麻雀点数ドリル
-                    </span>
                 </Link>
             </div>
         </header>
