@@ -1,5 +1,11 @@
 import { PageTitle } from '@/app/_components/PageTitle'
 import Link from 'next/link'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+    title: '待ちの符計算 | Mahjong Score Drill',
+    description: '待ちの形（ペンチャン・カンチャン・単騎など）による符計算ドリル。聴牌時の待ちによる加符を練習できます。',
+}
 
 export default function MachiFuSetupPage() {
     return (

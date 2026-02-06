@@ -1,5 +1,11 @@
 import { PageTitle } from '@/app/_components/PageTitle'
 import Link from 'next/link'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+    title: '手牌の符計算 | Mahjong Score Drill',
+    description: '手牌全体の符計算ドリル。副底（20符）に加え、面子・雀頭・待ち・ツモ/ロンによる加符を総合的に計算する練習ができます。',
+}
 
 export default function TehaiFuSetupPage() {
     return (
