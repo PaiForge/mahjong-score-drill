@@ -133,13 +133,13 @@ export function ArticleMarkdown({ content }: Readonly<ArticleMarkdownProps>) {
                         </ol>
                     ),
                     h1: ({ children }) => (
-                        <h1 className="text-2xl font-normal text-slate-900 mt-10 mb-6 pb-2 border-b border-slate-200">
+                        <h1 className="text-2xl font-bold text-slate-900 mt-10 mb-6 pb-2 border-b border-slate-200">
                             {processChildren(children)}
                         </h1>
                     ),
                     h2: ({ children }) => (
-                        <h2 className="text-lg font-normal text-slate-900 mt-10 mb-4 flex items-center gap-2">
-                            <span className="w-1.5 h-6 bg-blue-500 rounded-full" />
+                        <h2 className="text-lg font-semibold text-slate-900 mt-10 mb-4 flex items-center gap-2">
+                            <span className="w-1.5 h-6 bg-green-600 rounded-full" />
                             {processChildren(children)}
                         </h2>
                     ),
@@ -151,7 +151,7 @@ export function ArticleMarkdown({ content }: Readonly<ArticleMarkdownProps>) {
                     strong: ({ children }) => <strong className="font-bold text-slate-900">{processChildren(children)}</strong>,
                     em: ({ children }) => <em className="italic text-slate-800">{processChildren(children)}</em>,
                     blockquote: ({ children }) => (
-                        <blockquote className="border-l-4 border-blue-200 bg-blue-50/50 py-3 px-4 my-6 rounded-r-lg text-slate-600 italic">
+                        <blockquote className="border-l-4 border-amber-200 bg-amber-50/50 py-3 px-4 my-6 rounded-r-lg text-slate-600 italic">
                             {children}
                         </blockquote>
                     ),

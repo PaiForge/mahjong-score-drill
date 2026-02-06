@@ -64,6 +64,10 @@ export function GlobalCheatsheet() {
 
 
 
+    if (pathname !== '/problems/score/play') {
+        return null
+    }
+
     return (
         <>
             {/* Floating Action Button */}

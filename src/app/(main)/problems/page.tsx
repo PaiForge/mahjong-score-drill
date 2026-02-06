@@ -82,6 +82,21 @@ export default function ProblemsPage() {
                     </Link>
                 ))}
             </div>
+            <nav className="mt-8 pt-8 border-t border-slate-200 w-full" aria-label="Breadcrumb">
+                <ol className="flex items-center space-x-2 text-sm text-slate-500">
+                    <li>
+                        <Link href="/" className="hover:text-amber-600 transition-colors">
+                            Home
+                        </Link>
+                    </li>
+                    <li>
+                        <span className="mx-2 text-slate-300">/</span>
+                    </li>
+                    <li className="text-slate-800 font-medium" aria-current="page">
+                        ドリル一覧
+                    </li>
+                </ol>
+            </nav>
         </div>
     )
 }

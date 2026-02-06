@@ -73,7 +73,7 @@ export function MentsuFuDrill() {
     }
 
     const handleEnd = () => {
-        router.push('/problems')
+        router.push('/problems/mentsu-fu')
     }
 
     return (

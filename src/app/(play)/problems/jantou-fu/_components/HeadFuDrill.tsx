@@ -130,7 +130,7 @@ export function HeadFuDrill() {
                     )}
                     <div className="text-center">
                         <button
-                            onClick={() => router.push('/problems')}
+                            onClick={() => router.push('/problems/jantou-fu')}
                             className="text-gray-400 hover:text-gray-600 underline text-sm"
                         >
                             終了する

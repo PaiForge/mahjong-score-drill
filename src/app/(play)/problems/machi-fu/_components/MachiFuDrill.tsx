@@ -40,7 +40,7 @@ export function MachiFuDrill() {
     if (!mounted || !question) return null
 
     const handleEnd = () => {
-        router.push('/problems')
+        router.push('/problems/machi-fu')
     }
 
     return (

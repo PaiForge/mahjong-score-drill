@@ -1,4 +1,6 @@
 import { GlobalCheatsheet } from '@/app/_components/GlobalCheatsheet'
+import { Header } from '@/app/_components/Header'
+import { Sidebar } from '@/app/_components/Sidebar'
 
 export default function PlayLayout({
     children,
@@ -7,9 +9,13 @@ export default function PlayLayout({
 }) {
     return (
         <>
-            <main className="flex-1 min-h-screen bg-slate-50">
-                {children}
-            </main>
+            <div className="flex flex-col min-h-screen">
+                <Header />
+                <Sidebar />
+                <main className="flex-1 min-h-screen bg-slate-50">
+                    {children}
+                </main>
+            </div>
             <GlobalCheatsheet />
         </>
     )

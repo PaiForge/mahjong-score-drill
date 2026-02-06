@@ -11,13 +11,22 @@ interface NavigationItem {
 }
 
 interface NavigationSection {
-    readonly title: string
+    readonly title?: string
+    readonly href?: string
     readonly items: NavigationItem[]
+    readonly withSeparator?: boolean
 }
 
 const navigationSections: NavigationSection[] = [
     {
+        items: [
+            { id: 'home', href: '/', label: 'Home' },
+        ]
+    },
+    {
         title: 'ドリル',
+        href: '/problems',
+        withSeparator: true,
         items: [
             { id: 'jantou-fu', href: '/problems/jantou-fu', label: '雀頭の符計算' },
             { id: 'machi-fu', href: '/problems/machi-fu', label: '待ちの符計算' },
@@ -28,12 +37,13 @@ const navigationSections: NavigationSection[] = [
     },
     {
         title: '記事',
+        href: '/articles',
         items: [
             { id: 'introduction', href: '/articles/introduction', label: 'はじめに' },
         ]
     },
     {
-        title: '資料',
+        withSeparator: true,
         items: [
             { id: 'cheatsheet', href: '/cheatsheet', label: '点数早見表' },
         ]
@@ -55,7 +65,7 @@ export function Sidebar() {
             {/* オーバーレイ（ヘッダー下から表示） */}
             {isOpen && (
                 <div
-                    className="fixed top-20 inset-x-0 bottom-0 bg-black/30 backdrop-blur-sm z-40"
+                    className="fixed top-0 inset-x-0 bottom-0 bg-black/30 backdrop-blur-sm z-40"
                     onClick={closeSidebar}
                     aria-hidden="true"
                 />
@@ -63,17 +73,31 @@ export function Sidebar() {
 
             {/* サイドバーパネル */}
             <div
-                className={`fixed top-20 left-0 bottom-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
+                className={`fixed top-0 left-0 bottom-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
                     }`}
             >
                 {/* ナビゲーションリンク */}
-                <nav className="py-4 overflow-y-auto max-h-full">
+                <nav className="py-4 pt-20 overflow-y-auto max-h-full">
                     <div className="space-y-6">
-                        {navigationSections.map((section) => (
-                            <div key={section.title} className="px-3">
-                                <h3 className="px-3 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                    {section.title}
-                                </h3>
+
+
+                        {navigationSections.map((section, idx) => (
+                            <div key={idx} className={section.withSeparator ? "border-t border-gray-100 pt-4 mt-4 px-3" : "px-3"}>
+                                {section.title && (
+                                    section.href ? (
+                                        <Link
+                                            href={section.href}
+                                            onClick={closeSidebar}
+                                            className="block px-3 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider hover:text-blue-600 transition-colors"
+                                        >
+                                            {section.title}
+                                        </Link>
+                                    ) : (
+                                        <h3 className="px-3 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                            {section.title}
+                                        </h3>
+                                    )
+                                )}
                                 <ul className="space-y-1">
                                     {section.items.map((item) => {
                                         const isActive = pathname === item.href

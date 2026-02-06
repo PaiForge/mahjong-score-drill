@@ -217,7 +217,7 @@ export function TehaiFuDrill() {
                     )}
                     <div className="text-center">
                         <button
-                            onClick={() => router.push('/problems')}
+                            onClick={() => router.push('/problems/tehai-fu')}
                             className="text-gray-400 hover:text-gray-600 underline text-sm"
                         >
                             終了する

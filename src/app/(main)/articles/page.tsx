@@ -25,10 +25,10 @@ export default async function ArticlesPage() {
                                 className="block group bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-all border border-slate-100"
                             >
                                 <div className="flex items-center justify-between">
-                                    <h2 className="text-xl text-slate-800 group-hover:text-blue-600 transition-colors">
+                                    <h2 className="text-xl text-slate-800 group-hover:text-amber-600 transition-colors">
                                         {article.title}
                                     </h2>
-                                    <svg className="w-5 h-5 text-slate-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className="w-5 h-5 text-slate-400 group-hover:text-amber-500 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                     </svg>
                                 </div>
@@ -41,7 +41,7 @@ export default async function ArticlesPage() {
             <nav className="mt-16 pt-8 border-t border-slate-200" aria-label="Breadcrumb">
                 <ol className="flex items-center space-x-2 text-sm text-slate-500">
                     <li>
-                        <Link href="/" className="hover:text-blue-600 transition-colors">
+                        <Link href="/" className="hover:text-amber-600 transition-colors">
                             Home
                         </Link>
                     </li>

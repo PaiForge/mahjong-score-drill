@@ -8,21 +8,21 @@ export function LandingPage() {
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900">
             {/* Hero Section */}
-            <section className="relative min-h-[85vh] flex flex-col items-center justify-center p-6 bg-gradient-to-br from-slate-100 via-white to-blue-50 overflow-hidden">
+            <section className="relative min-h-[85vh] flex flex-col items-center justify-center p-6 bg-gradient-to-br from-green-800 to-green-900 overflow-hidden text-white">
                 {/* Background Accents */}
-                <div className="absolute top-10 right-10 opacity-10 blur-3xl w-96 h-96 bg-blue-400 rounded-full" />
-                <div className="absolute bottom-10 left-10 opacity-10 blur-3xl w-96 h-96 bg-purple-400 rounded-full" />
+                <div className="absolute top-10 right-10 opacity-20 blur-3xl w-96 h-96 bg-green-600 rounded-full" />
+                <div className="absolute bottom-10 left-10 opacity-20 blur-3xl w-96 h-96 bg-amber-500 rounded-full" />
 
                 <div className="text-center w-full max-w-5xl mx-auto space-y-12 z-10">
                     <div className="space-y-6">
-                        <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight text-slate-900">
-                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+                        <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight text-white">
+                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-400 to-yellow-300">
                                 麻雀点数計算
                             </span>
                             <br />
                             完全攻略
                         </h1>
-                        <p className="text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
+                        <p className="text-lg sm:text-xl text-green-100 max-w-2xl mx-auto leading-relaxed">
                             点数計算を大体は理解している人は早速問題を解いてみましょう。
                         </p>
                     </div>
@@ -30,7 +30,7 @@ export function LandingPage() {
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                         <Link
                             href="/problems/score"
-                            className="bg-blue-600 text-white font-bold text-lg px-8 py-4 rounded-full shadow-lg hover:bg-blue-700 hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2"
+                            className="bg-amber-500 text-white font-bold text-lg px-8 py-4 rounded-full shadow-lg hover:bg-amber-600 hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2"
                         >
                             <span>やってみる</span>
                         </Link>
@@ -94,7 +94,7 @@ export function LandingPage() {
 
                     <Link
                         href="/articles/introduction"
-                        className="group relative inline-flex items-center justify-center px-8 py-6 text-lg font-bold text-white transition-all duration-200 bg-slate-900 rounded-xl hover:bg-slate-800 hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
+                        className="group relative inline-flex items-center justify-center px-8 py-6 text-lg font-bold text-white transition-all duration-200 bg-amber-500 rounded-xl hover:bg-amber-600 hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
                     >
                         <span className="mr-2">はじめよう 🚀</span>
                     </Link>
@@ -102,21 +102,13 @@ export function LandingPage() {
             </section>
 
             {/* Footer */}
-            <footer className="py-12 bg-slate-900 text-slate-400 text-center">
+            <footer className="py-12 bg-green-900 text-green-100 text-center">
                 <div className="container mx-auto px-6">
                     <div className="flex flex-col items-center gap-6">
                         <div className="text-2xl font-bold text-white tracking-tight">
                             PaiForge
                         </div>
-                        <div className="flex gap-6 text-sm">
-                            <Link href="/articles/introduction" className="hover:text-white transition-colors">
-                                点数計算とは
-                            </Link>
-                            <Link href="/cheatsheet" className="hover:text-white transition-colors">
-                                点数早見表
-                            </Link>
-                        </div>
-                        <div className="text-xs pt-4 border-t border-slate-800 w-full max-w-xs">
+                        <div className="text-xs pt-4 border-t border-green-800 w-full max-w-xs opacity-60">
                             © {new Date().getFullYear()} Mahjong Score Drill
                         </div>
                     </div>

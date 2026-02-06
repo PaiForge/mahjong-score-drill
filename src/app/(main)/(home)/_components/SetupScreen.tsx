@@ -7,7 +7,7 @@ import { useDrillStore } from '@/lib/problem/stores/useDrillStore'
 import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
-export function SetupScreen({ className, hideDrillLinks = false }: { className?: string, hideDrillLinks?: boolean }) {
+export function SetupScreen({ className, hideDrillLinks = false, hideTitle = false }: { className?: string, hideDrillLinks?: boolean, hideTitle?: boolean }) {
   const tHome = useTranslations('home')
   const router = useRouter()
   // Hydration mismatch avoidance: wait for client mount
@@ -96,11 +96,13 @@ export function SetupScreen({ className, hideDrillLinks = false }: { className?:
 
   return (
     <div className={cn("bg-white rounded-2xl shadow-xl w-full max-w-md p-8 text-center space-y-10 border border-slate-100", className)}>
-      <div className="space-y-3">
-        <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">
-          {tHome('title')}
-        </h1>
-      </div>
+      {!hideTitle && (
+        <div className="space-y-3">
+          <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">
+            {tHome('title')}
+          </h1>
+        </div>
+      )}
 
       <div className="space-y-6">
         {/* Settings Area */}
@@ -172,7 +174,7 @@ export function SetupScreen({ className, hideDrillLinks = false }: { className?:
                   className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 focus:ring-offset-0"
                 />
                 <span className="text-slate-700 text-sm font-semibold select-none">
-                  親（東家）
+                  親
                 </span>
               </label>
               <label className="group inline-flex items-center gap-3 py-2 px-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200">
@@ -183,7 +185,7 @@ export function SetupScreen({ className, hideDrillLinks = false }: { className?:
                   className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 focus:ring-offset-0"
                 />
                 <span className="text-slate-700 text-sm font-semibold select-none">
-                  子（散家）
+                  子
                 </span>
               </label>
             </div>
@@ -229,7 +231,7 @@ export function SetupScreen({ className, hideDrillLinks = false }: { className?:
               : "bg-amber-500 text-white hover:bg-amber-600"
           )}
         >
-          <span>{tHome('setup.button')}</span>
+          <span>開始する</span>
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
           </svg>
@@ -238,6 +240,7 @@ export function SetupScreen({ className, hideDrillLinks = false }: { className?:
         {/* Other Drills - Conditionally Hidden */}
         {!hideDrillLinks && (
           <>
+            {/* ... existing drill links ... */}
             {/* Head Fu Drill Action */}
             <div className="pt-2 border-t border-slate-100 w-full">
               <button
@@ -291,19 +294,6 @@ export function SetupScreen({ className, hideDrillLinks = false }: { className?:
             </div>
           </>
         )}
-
-        {/* Footer Links */}
-        <div className="pt-2 border-t border-slate-100">
-          <button
-            onClick={() => router.push('/cheatsheet')}
-            className="text-slate-500 hover:text-blue-600 font-medium text-sm py-2 px-4 rounded transition-colors inline-flex items-center gap-1"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-            </svg>
-            {tHome('setup.links.cheatsheet')}
-          </button>
-        </div>
       </div>
     </div>
   )

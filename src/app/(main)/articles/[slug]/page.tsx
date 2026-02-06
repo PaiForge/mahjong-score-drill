@@ -58,7 +58,7 @@ export default async function ArticlePage({ params }: PageProps) {
             <nav className="mt-16 pt-8 border-t border-slate-200" aria-label="Breadcrumb">
                 <ol className="flex items-center space-x-2 text-sm text-slate-500">
                     <li>
-                        <Link href="/" className="hover:text-blue-600 transition-colors">
+                        <Link href="/" className="hover:text-amber-600 transition-colors">
                             Home
                         </Link>
                     </li>
@@ -66,7 +66,7 @@ export default async function ArticlePage({ params }: PageProps) {
                         <span className="mx-2 text-slate-300">/</span>
                     </li>
                     <li>
-                        <Link href="/articles" className="hover:text-blue-600 transition-colors">
+                        <Link href="/articles" className="hover:text-amber-600 transition-colors">
                             記事一覧
                         </Link>
                     </li>
