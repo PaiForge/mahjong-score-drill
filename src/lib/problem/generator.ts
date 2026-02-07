@@ -105,7 +105,7 @@ function generateMentsuTehai(
 
   // 面子からの候補
   structuralMentsu.forEach((m, idx) => {
-    if (!m.isFuro) {
+    if (!m.isFuro && m.type !== MentsuType.Kantsu) {
       m.hais.forEach((hai) => {
         candidates.push({ hai, target: { type: 'mentsu', index: idx } })
       })
