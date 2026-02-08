@@ -6,7 +6,6 @@ import { generateMachiFuQuestion } from '@/lib/problem/machi-fu/generator'
 import type { MachiFuQuestion } from '@/lib/problem/machi-fu/types'
 import { cn } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 
 const FU_OPTIONS = [0, 2] as const
 
@@ -117,7 +116,7 @@ export function MachiFuDrill() {
                         </div>
                         <button
                             onClick={nextQuestion}
-                            className="mt-4 w-full py-3 bg-blue-600 text-white font-bold rounded-lg shadow hover:bg-blue-700 transition-colors"
+                            className="mt-4 w-full py-3 bg-amber-500 text-white font-bold rounded-lg shadow hover:bg-amber-600 transition-colors"
                         >
                             次の問題へ
                         </button>
@@ -130,7 +129,7 @@ export function MachiFuDrill() {
                         <div className="text-center">
                             <button
                                 onClick={nextQuestion}
-                                className="text-gray-500 hover:text-gray-700 underline text-sm"
+                                className="text-slate-500 hover:text-slate-700 underline text-sm"
                             >
                                 スキップ
                             </button>
@@ -139,7 +138,7 @@ export function MachiFuDrill() {
                     <div className="text-center">
                         <button
                             onClick={handleEnd}
-                            className="text-gray-400 hover:text-gray-600 underline text-sm"
+                            className="text-slate-500 hover:text-slate-600 underline text-sm"
                         >
                             終了する
                         </button>

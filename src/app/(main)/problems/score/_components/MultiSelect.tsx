@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Modal } from '@/app/_components/Modal'
+import { cn } from '@/lib/utils'
 
 export interface MultiSelectOption {
     value: string
@@ -52,11 +53,13 @@ export function MultiSelect({
     }
 
     return (
-        <div className={`w-full ${className}`}>
+        <div className={cn("w-full", className)}>
             {/* Chips Display / Trigger */}
             <div
-                className={`min-h-[46px] w-full px-2 py-2 border border-gray-300 rounded-lg bg-white flex flex-wrap gap-2 items-center ${disabled ? 'bg-gray-100 cursor-not-allowed' : 'cursor-pointer'
-                    }`}
+                className={cn(
+                    "min-h-[46px] w-full px-2 py-2 border border-slate-300 rounded-lg bg-white flex flex-wrap gap-2 items-center",
+                    disabled ? 'bg-slate-100 cursor-not-allowed' : 'cursor-pointer'
+                )}
                 onClick={() => !disabled && setIsModalOpen(true)}
             >
                 {value.length > 0 ? (
@@ -81,7 +84,7 @@ export function MultiSelect({
                         ))}
                     </>
                 ) : (
-                    <span className="text-gray-400 text-sm px-1">{placeholder}</span>
+                    <span className="text-slate-400 text-sm px-1">{placeholder}</span>
                 )}
 
                 {/* Add Button - Only show when items are selected */}
@@ -92,7 +95,7 @@ export function MultiSelect({
                             e.stopPropagation()
                             setIsModalOpen(true)
                         }}
-                        className="ml-auto p-1 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors"
+                        className="ml-auto p-1 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition-colors"
                         title={labels.add}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -106,20 +109,20 @@ export function MultiSelect({
             {/* Modal Selection */}
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <div className="flex flex-col h-[70vh] md:h-96">
-                    <h3 className="text-lg font-bold mb-4 text-gray-900">{labels.title}</h3>
-                    <div className="flex-1 overflow-y-auto border border-gray-200 rounded-lg">
+                    <h3 className="text-lg font-bold mb-4 text-slate-900">{labels.title}</h3>
+                    <div className="flex-1 overflow-y-auto border border-slate-200 rounded-lg">
                         {options.map((option) => {
                             const isSelected = value.includes(option.value)
                             return (
                                 <div
                                     key={option.value}
                                     onClick={() => toggleOption(option.value)}
-                                    className={`px-4 py-3 cursor-pointer transition-colors text-sm border-b border-gray-100 last:border-0
-                                        ${isSelected
+                                    className={cn(
+                                        "px-4 py-3 cursor-pointer transition-colors text-sm border-b border-slate-100 last:border-0",
+                                        isSelected
                                             ? 'bg-amber-100 text-amber-900 font-medium'
-                                            : 'text-gray-700 hover:bg-gray-50'
-                                        }
-                                    `}
+                                            : 'text-slate-700 hover:bg-slate-50'
+                                    )}
                                 >
                                     <div className="flex items-center justify-between">
                                         <span>{option.label}</span>

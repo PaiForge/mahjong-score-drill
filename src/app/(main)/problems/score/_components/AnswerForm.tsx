@@ -189,7 +189,7 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
 
       {/* 翻数入力 */}
       <div>
-        <label className="block text-sm font-bold text-gray-700 mb-2">
+        <label className="block text-sm font-bold text-slate-700 mb-2">
           {tProblems('form.labels.han')}
         </label>
         <select
@@ -198,8 +198,8 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
           disabled={disabled}
           required
           className={cn(
-            "w-full px-2 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100",
-            han === null ? "text-gray-400" : "text-gray-900"
+            "w-full px-2 py-3 border border-slate-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-slate-100",
+            han === null ? "text-slate-400" : "text-slate-900"
           )}
         >
           {hanOptions.map((option) => (
@@ -213,7 +213,7 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
       {/* 符入力（満貫未満または符入力必須の場合） */}
       {isFuRequired && (
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2">
+          <label className="block text-sm font-bold text-slate-700 mb-2">
             {tProblems('form.labels.fu')}
           </label>
           <select
@@ -222,8 +222,8 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
             disabled={disabled}
             required
             className={cn(
-              "w-full px-2 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100",
-              fu === null ? "text-gray-400" : "text-gray-900"
+              "w-full px-2 py-3 border border-slate-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-slate-100",
+              fu === null ? "text-slate-400" : "text-slate-900"
             )}
           >
             {fuOptions.map((option) => (
@@ -236,7 +236,7 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
       )}
 
       {!isFuRequired && isMangan && (
-        <div className="text-sm text-gray-500 italic">
+        <div className="text-sm text-slate-500 italic">
           {/* Note: Missing specific message key in previously created JSON, using general placeholder or adding it */}
           {/* I will use 'form.messages.fuNotRequired' if I assume I will add it, or just ignore for now? */}
           {/* Detailed plan: I will update en.json/ja.json to include these missing keys. */}
@@ -246,7 +246,7 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
 
       {/* 点数入力 */}
       <div>
-        <label className="block text-sm font-bold text-gray-700 mb-2">
+        <label className="block text-sm font-bold text-slate-700 mb-2">
           {tProblems('form.labels.score')}
         </label>
         {isKoTsumo ? (
@@ -258,8 +258,8 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
                 disabled={disabled}
                 required
                 className={cn(
-                  "w-full px-2 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100",
-                  scoreFromKo === '' ? "text-gray-400" : "text-gray-900"
+                  "w-full px-2 py-3 border border-slate-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-slate-100",
+                  scoreFromKo === '' ? "text-slate-400" : "text-slate-900"
                 )}
               >
                 <option value="" disabled>{tProblems('form.placeholders.fromKo')}</option>
@@ -268,7 +268,7 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
                 ))}
               </select>
             </div>
-            <span className="text-gray-500 font-medium">/</span>
+            <span className="text-slate-500 font-medium">/</span>
             <div className="flex-1">
               <select
                 value={scoreFromOya}
@@ -276,8 +276,8 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
                 disabled={disabled}
                 required
                 className={cn(
-                  "w-full px-2 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100",
-                  scoreFromOya === '' ? "text-gray-400" : "text-gray-900"
+                  "w-full px-2 py-3 border border-slate-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-slate-100",
+                  scoreFromOya === '' ? "text-slate-400" : "text-slate-900"
                 )}
               >
                 <option value="" disabled>{tProblems('form.placeholders.fromOya')}</option>
@@ -294,8 +294,8 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
             disabled={disabled}
             required
             className={cn(
-              "w-full px-2 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-gray-100",
-              score === '' ? "text-gray-400" : "text-gray-900"
+              "w-full px-2 py-3 border border-slate-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:bg-slate-100",
+              score === '' ? "text-slate-400" : "text-slate-900"
             )}
           >
             <option value="" disabled>{tProblems('form.placeholders.select')}</option>
@@ -321,7 +321,7 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
       <button
         type="submit"
         disabled={disabled}
-        className="w-full py-3 px-6 bg-amber-500 text-white font-bold rounded-lg hover:bg-amber-600 transition-colors disabled:bg-gray-400 disabled:text-gray-200 disabled:cursor-not-allowed"
+        className="w-full py-3 px-6 bg-amber-500 text-white font-bold rounded-lg hover:bg-amber-600 transition-colors disabled:bg-slate-400 disabled:text-slate-200 disabled:cursor-not-allowed"
       >
         {tProblems('form.buttons.answer')}
       </button>
@@ -332,7 +332,7 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
           <button
             type="button"
             onClick={onSkip}
-            className="text-gray-500 hover:text-gray-700 underline text-sm"
+            className="text-slate-500 hover:text-slate-700 underline text-sm"
           >
             {tProblems('form.buttons.skip')}
           </button>
@@ -345,12 +345,12 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
           <button
             type="button"
             onClick={onExit}
-            className="text-gray-400 hover:text-gray-600 underline text-sm"
+            className="text-slate-500 hover:text-slate-600 underline text-sm"
           >
             {tProblems('form.buttons.exit')}
           </button>
         </div>
       )}
-    </form >
+    </form>
   )
 }

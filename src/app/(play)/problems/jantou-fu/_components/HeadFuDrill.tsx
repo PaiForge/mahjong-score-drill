@@ -7,7 +7,6 @@ import { generateHeadFuQuestion } from '@/lib/problem/jantou-fu/generator'
 import type { HeadFuQuestion } from '@/lib/problem/jantou-fu/types'
 import { cn } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 
 import { PageTitle } from '@/app/_components/PageTitle'
 
@@ -110,7 +109,7 @@ export function HeadFuDrill() {
                 {isAnswered && (
                     <button
                         onClick={nextQuestion}
-                        className="w-full py-3 px-6 bg-blue-600 text-white font-bold rounded-lg shadow-md hover:shadow-lg hover:bg-blue-700 transition-all active:translate-y-0.5 animate-in slide-in-from-bottom-4 duration-300"
+                        className="w-full py-3 px-6 bg-amber-500 text-white font-bold rounded-lg shadow-md hover:shadow-lg hover:bg-amber-600 transition-all active:translate-y-0.5 animate-in slide-in-from-bottom-4 duration-300"
                     >
                         次の問題へ
                     </button>
@@ -122,7 +121,7 @@ export function HeadFuDrill() {
                         <div className="text-center">
                             <button
                                 onClick={nextQuestion}
-                                className="text-gray-500 hover:text-gray-700 underline text-sm"
+                                className="text-slate-500 hover:text-slate-700 underline text-sm"
                             >
                                 スキップ
                             </button>
@@ -131,7 +130,7 @@ export function HeadFuDrill() {
                     <div className="text-center">
                         <button
                             onClick={() => router.push('/problems/jantou-fu')}
-                            className="text-gray-400 hover:text-gray-600 underline text-sm"
+                            className="text-slate-500 hover:text-slate-600 underline text-sm"
                         >
                             終了する
                         </button>

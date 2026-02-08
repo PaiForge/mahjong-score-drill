@@ -7,7 +7,7 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
 export function RiichiStick({ width = 120, className = '', ...props }: Props) {
     return (
         <div
-            className={`relative inline-flex items-center justify-center h-2 bg-white rounded-sm shadow-md border border-gray-300 overflow-hidden ${className}`}
+            className={`relative inline-flex items-center justify-center h-2 bg-white rounded-sm shadow-md border border-slate-300 overflow-hidden ${className}`}
             style={{ width }}
             {...props}
         >

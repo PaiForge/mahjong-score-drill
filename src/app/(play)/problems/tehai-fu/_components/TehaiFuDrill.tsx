@@ -9,7 +9,6 @@ import { generateTehaiFuQuestion } from '@/lib/problem/tehai-fu/generator'
 import type { TehaiFuQuestion, TehaiFuItem } from '@/lib/problem/tehai-fu/types'
 import { cn } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { QuestionDisplay } from '@/app/(main)/problems/score/_components/QuestionDisplay'
 import type { DrillQuestion } from '@/lib/problem/types'
 
@@ -146,7 +145,7 @@ export function TehaiFuDrill() {
 
                                         <select
                                             className={cn(
-                                                "form-select block w-24 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 font-bold text-lg h-10 py-1",
+                                                "form-select block w-24 rounded-md border-slate-300 shadow-sm focus:border-amber-300 focus:ring focus:ring-amber-200 focus:ring-opacity-50 font-bold text-lg h-10 py-1",
                                                 isSubmitted
                                                     ? isCorrect ? "border-green-500 bg-green-50 text-green-900"
                                                         : "border-red-500 bg-red-50 text-red-900"
@@ -189,7 +188,7 @@ export function TehaiFuDrill() {
                                 disabled={!allAnswered}
                                 className={cn(
                                     "w-full py-4 text-white font-bold rounded-xl shadow-lg transition-all text-lg",
-                                    allAnswered ? "bg-blue-600 hover:bg-blue-700 hover:shadow-xl hover:-translate-y-0.5" : "bg-slate-300 cursor-not-allowed"
+                                    allAnswered ? "bg-amber-500 hover:bg-amber-600 hover:shadow-xl hover:-translate-y-0.5" : "bg-slate-300 cursor-not-allowed"
                                 )}
                             >
                                 答え合わせ
@@ -198,7 +197,7 @@ export function TehaiFuDrill() {
                             <div className="text-center">
                                 <button
                                     onClick={nextQuestion}
-                                    className="text-gray-500 hover:text-gray-700 underline text-sm"
+                                    className="text-slate-500 hover:text-slate-700 underline text-sm"
                                 >
                                     スキップ
                                 </button>
@@ -209,7 +208,7 @@ export function TehaiFuDrill() {
                         <div className="space-y-4">
                             <button
                                 onClick={nextQuestion}
-                                className="w-full py-4 bg-indigo-600 text-white font-bold rounded-xl shadow-lg hover:bg-indigo-700 hover:shadow-xl hover:-translate-y-0.5 transition-all text-lg animate-in slide-in-from-bottom-2"
+                                className="w-full py-4 bg-amber-500 text-white font-bold rounded-xl shadow-lg hover:bg-amber-600 hover:shadow-xl hover:-translate-y-0.5 transition-all text-lg animate-in slide-in-from-bottom-2"
                             >
                                 次の問題へ
                             </button>
@@ -218,7 +217,7 @@ export function TehaiFuDrill() {
                     <div className="text-center">
                         <button
                             onClick={() => router.push('/problems/tehai-fu')}
-                            className="text-gray-400 hover:text-gray-600 underline text-sm"
+                            className="text-slate-500 hover:text-slate-600 underline text-sm"
                         >
                             終了する
                         </button>

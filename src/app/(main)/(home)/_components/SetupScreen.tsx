@@ -83,10 +83,10 @@ export function SetupScreen({ className, hideDrillLinks = false, hideTitle = fal
     return (
       <div className={cn("bg-white rounded-lg shadow-md w-full max-w-md p-8 text-center space-y-8", className)}>
         <div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          <h1 className="text-3xl font-bold text-slate-800 mb-2">
             ...
           </h1>
-          <p className="text-gray-600">
+          <p className="text-slate-600">
             ...
           </p>
         </div>
@@ -113,7 +113,7 @@ export function SetupScreen({ className, hideDrillLinks = false, hideTitle = fal
                 type="checkbox"
                 checked={requireYaku}
                 onChange={(e) => setRequireYaku(e.target.checked)}
-                className="peer w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 focus:ring-offset-0"
+                className="peer w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-amber-500 focus:ring-offset-0"
               />
             </div>
             <span className="text-slate-700 font-semibold select-none group-hover:text-slate-900">
@@ -127,7 +127,7 @@ export function SetupScreen({ className, hideDrillLinks = false, hideTitle = fal
                 type="checkbox"
                 checked={simplifyMangan}
                 onChange={(e) => setSimplifyMangan(e.target.checked)}
-                className="peer w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 focus:ring-offset-0"
+                className="peer w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-amber-500 focus:ring-offset-0"
               />
             </div>
             <span className="text-slate-700 font-semibold select-none group-hover:text-slate-900">
@@ -141,7 +141,7 @@ export function SetupScreen({ className, hideDrillLinks = false, hideTitle = fal
                 type="checkbox"
                 checked={requireFuForMangan}
                 onChange={(e) => setRequireFuForMangan(e.target.checked)}
-                className="peer w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 focus:ring-offset-0"
+                className="peer w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-amber-500 focus:ring-offset-0"
               />
             </div>
             <span className="text-slate-700 font-semibold select-none group-hover:text-slate-900">
@@ -155,7 +155,7 @@ export function SetupScreen({ className, hideDrillLinks = false, hideTitle = fal
                 type="checkbox"
                 checked={autoNext}
                 onChange={(e) => setAutoNext(e.target.checked)}
-                className="peer w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 focus:ring-offset-0"
+                className="peer w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-amber-500 focus:ring-offset-0"
               />
             </div>
             <span className="text-slate-700 font-semibold select-none group-hover:text-slate-900">
@@ -171,7 +171,7 @@ export function SetupScreen({ className, hideDrillLinks = false, hideTitle = fal
                   type="checkbox"
                   checked={includeParent}
                   onChange={(e) => setIncludeParent(e.target.checked)}
-                  className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 focus:ring-offset-0"
+                  className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-amber-500 focus:ring-offset-0"
                 />
                 <span className="text-slate-700 text-sm font-semibold select-none">
                   親
@@ -182,7 +182,7 @@ export function SetupScreen({ className, hideDrillLinks = false, hideTitle = fal
                   type="checkbox"
                   checked={includeChild}
                   onChange={(e) => setIncludeChild(e.target.checked)}
-                  className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 focus:ring-offset-0"
+                  className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-amber-500 focus:ring-offset-0"
                 />
                 <span className="text-slate-700 text-sm font-semibold select-none">
                   子
@@ -199,7 +199,7 @@ export function SetupScreen({ className, hideDrillLinks = false, hideTitle = fal
                   type="checkbox"
                   checked={targetScoreRanges.includes('non_mangan')}
                   onChange={() => handleToggleRange('non_mangan')}
-                  className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 focus:ring-offset-0"
+                  className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-amber-500 focus:ring-offset-0"
                 />
                 <span className="text-slate-700 text-sm font-semibold select-none">
                   {tHome('setup.settings.nonMangan')}
@@ -210,7 +210,7 @@ export function SetupScreen({ className, hideDrillLinks = false, hideTitle = fal
                   type="checkbox"
                   checked={targetScoreRanges.includes('mangan_plus')}
                   onChange={() => handleToggleRange('mangan_plus')}
-                  className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 focus:ring-offset-0"
+                  className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-amber-500 focus:ring-offset-0"
                 />
                 <span className="text-slate-700 text-sm font-semibold select-none">
                   {tHome('setup.settings.manganPlus')}

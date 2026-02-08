@@ -73,7 +73,7 @@ export function GlobalCheatsheet() {
             {/* Floating Action Button */}
             <button
                 onClick={() => setIsOpen(true)}
-                className="fixed top-4 right-4 z-40 bg-white p-3 rounded-full shadow-lg border border-gray-200 hover:bg-gray-50 hover:shadow-xl transition-all group"
+                className="fixed top-4 right-4 z-40 bg-white p-3 rounded-full shadow-lg border border-slate-200 hover:bg-slate-50 hover:shadow-xl transition-all group"
                 aria-label={tHome('setup.links.cheatsheet')}
             >
                 <svg
@@ -90,7 +90,7 @@ export function GlobalCheatsheet() {
                 >
                     <path d="M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18" />
                 </svg>
-                <span className="absolute right-full mr-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                <span className="absolute right-full mr-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-slate-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                     {tHome('setup.links.cheatsheet')}
                 </span>
             </button>
@@ -101,7 +101,7 @@ export function GlobalCheatsheet() {
                     <div className="mb-4 pt-12">
                         <ScoreTableControls size="small" />
                     </div>
-                    <div className="flex-1 overflow-y-auto border border-gray-200 rounded-lg">
+                    <div className="flex-1 overflow-y-auto border border-slate-200 rounded-lg">
                         <ScoreTableGrid />
                     </div>
                 </div>

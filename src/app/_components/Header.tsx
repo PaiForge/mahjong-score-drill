@@ -37,8 +37,8 @@ export function Header() {
                 <button
                     onClick={toggleSidebar}
                     className={`p-2.5 transition-all duration-300 mr-3 pointer-events-auto ${isScrolled
-                        ? 'bg-white rounded-full shadow-md hover:bg-gray-100'
-                        : 'rounded-md hover:bg-gray-500/10'
+                        ? 'bg-white rounded-full shadow-md hover:bg-slate-100'
+                        : 'rounded-md hover:bg-slate-500/10'
                         }`}
                     aria-label={isOpen ? 'メニューを閉じる' : 'メニューを開く'}
                     aria-expanded={isOpen}
@@ -55,7 +55,7 @@ export function Header() {
                             strokeWidth="2"
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                            className="text-gray-700"
+                            className="text-slate-700"
                         >
                             <line x1="18" y1="6" x2="6" y2="18" />
                             <line x1="6" y1="6" x2="18" y2="18" />
@@ -72,7 +72,7 @@ export function Header() {
                             strokeWidth="2"
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                            className="text-gray-700"
+                            className="text-slate-700"
                         >
                             <line x1="3" y1="6" x2="21" y2="6" />
                             <line x1="3" y1="12" x2="21" y2="12" />

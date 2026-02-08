@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useSyncExternalStore, useCallback, useRef } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { HaiKind } from '@pai-forge/riichi-mahjong'
 import { Toaster, toast } from 'react-hot-toast'
@@ -139,7 +139,7 @@ export function DrillBoard() {
   if (!isClient) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-gray-500">{tProblems('loading')}</div>
+        <div className="text-slate-500">{tProblems('loading')}</div>
       </div>
     )
   }
@@ -149,7 +149,7 @@ export function DrillBoard() {
       <div className="flex items-center justify-center min-h-screen bg-red-50">
         <div className="bg-white p-6 rounded-lg shadow-md max-w-md w-full">
           <h2 className="text-xl font-bold text-red-600 mb-4">{tProblems('error.title')}</h2>
-          <p className="text-gray-700 mb-6">{error}</p>
+          <p className="text-slate-700 mb-6">{error}</p>
           <button
             onClick={() => {
               // クエリパラメータを削除してリロード（ランダム生成へ）
@@ -157,7 +157,7 @@ export function DrillBoard() {
               setError(null)
               generateNewQuestion()
             }}
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+            className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded"
           >
             {tProblems('error.backToRandom')}
           </button>
@@ -169,7 +169,7 @@ export function DrillBoard() {
   if (!currentQuestion) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-gray-500">{tProblems('generating')}</div>
+        <div className="text-slate-500">{tProblems('generating')}</div>
       </div>
     )
   }
@@ -252,7 +252,7 @@ export function DrillBoard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
+    <div className="min-h-screen bg-slate-50 py-4 sm:py-8">
       <Toaster />
       <div className="max-w-2xl mx-auto px-1 sm:px-4">
         {/* 問題表示 */}

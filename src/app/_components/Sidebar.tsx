@@ -82,18 +82,18 @@ export function Sidebar() {
 
 
                         {navigationSections.map((section, idx) => (
-                            <div key={idx} className={section.withSeparator ? "border-t border-gray-100 pt-4 mt-4 px-3" : "px-3"}>
+                            <div key={idx} className={section.withSeparator ? "border-t border-slate-100 pt-4 mt-4 px-3" : "px-3"}>
                                 {section.title && (
                                     section.href ? (
                                         <Link
                                             href={section.href}
                                             onClick={closeSidebar}
-                                            className="block px-3 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider hover:text-blue-600 transition-colors"
+                                            className="block px-3 mb-2 text-xs font-semibold text-slate-500 uppercase tracking-wider hover:text-blue-600 transition-colors"
                                         >
                                             {section.title}
                                         </Link>
                                     ) : (
-                                        <h3 className="px-3 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                        <h3 className="px-3 mb-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                                             {section.title}
                                         </h3>
                                     )
@@ -108,7 +108,7 @@ export function Sidebar() {
                                                     onClick={closeSidebar}
                                                     className={`block px-3 py-2 text-sm font-medium rounded-md transition-colors ${isActive
                                                         ? 'bg-blue-50 text-blue-700'
-                                                        : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                                                        : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
                                                         }`}
                                                 >
                                                     {item.label}
