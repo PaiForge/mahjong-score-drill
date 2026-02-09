@@ -1,4 +1,5 @@
 import { PageTitle } from '@/app/_components/PageTitle'
+import { SectionHeader } from '@/app/_components/SectionHeader'
 import Link from 'next/link'
 import { Metadata } from 'next'
 
@@ -9,12 +10,12 @@ export const metadata: Metadata = {
 
 export default function JantouFuSetupPage() {
     return (
-        <div className="container mx-auto px-4 py-8 flex flex-col items-center max-w-2xl">
+        <div className="container mx-auto px-4 py-8 flex flex-col items-center max-w-4xl">
             <PageTitle>雀頭の符計算</PageTitle>
 
-            <div className="bg-white rounded-xl shadow-sm p-8 w-full mb-8 space-y-8">
+            <div className="w-full mb-8 space-y-8">
                 <div>
-                    <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">ルール説明</h2>
+                    <SectionHeader>ルール説明</SectionHeader>
                     <div className="space-y-4 text-gray-600">
                         <p>
                             表示された牌を「雀頭」とした場合に、何符付くかを回答するドリルです。

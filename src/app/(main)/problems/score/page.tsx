@@ -10,12 +10,12 @@ export const metadata: Metadata = {
 
 export default function ScoreSetupPage() {
     return (
-        <div className="container mx-auto px-4 py-8 flex flex-col items-center max-w-2xl">
+        <div className="container mx-auto px-4 py-8 flex flex-col items-center max-w-4xl">
             <PageTitle>点数計算ドリル</PageTitle>
             <SetupScreen
                 hideDrillLinks={true}
                 hideTitle={true}
-                className="max-w-full shadow-sm rounded-xl"
+                className="max-w-full"
             />
 
             <nav className="mt-8 pt-8 border-t border-slate-200 w-full max-w-2xl" aria-label="Breadcrumb">

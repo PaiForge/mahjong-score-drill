@@ -1,4 +1,5 @@
 import { PageTitle } from '@/app/_components/PageTitle'
+import { SectionHeader } from '@/app/_components/SectionHeader'
 import Link from 'next/link'
 import { Metadata } from 'next'
 
@@ -9,12 +10,16 @@ export const metadata: Metadata = {
 
 export default function MachiFuSetupPage() {
     return (
-        <div className="container mx-auto px-4 py-8 flex flex-col items-center max-w-2xl">
+        <div className="container mx-auto px-4 py-8 flex flex-col items-center max-w-4xl">
             <PageTitle>待ちの符計算</PageTitle>
 
-            <div className="bg-white rounded-xl shadow-sm p-8 w-full mb-8 space-y-8">
+            {/* import {SectionHeader} from '@/app/_components/SectionHeader' */} {/* This line was removed as it was an erroneous import inside the component's return */}
+
+            {/* ... */}
+
+            <div className="w-full mb-8 space-y-8">
                 <div>
-                    <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">ルール説明</h2>
+                    <SectionHeader>ルール説明</SectionHeader>
                     <div className="space-y-4 text-gray-600">
                         <p>
                             聴牌の形（待ち）から付く符を回答するドリルです。

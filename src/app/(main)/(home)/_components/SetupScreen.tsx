@@ -95,7 +95,7 @@ export function SetupScreen({ className, hideDrillLinks = false, hideTitle = fal
   }
 
   return (
-    <div className={cn("bg-white rounded-2xl shadow-xl w-full max-w-md p-8 text-center space-y-10 border border-slate-100", className)}>
+    <div className={cn("w-full max-w-md text-center space-y-10", className)}>
       {!hideTitle && (
         <div className="space-y-3">
           <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">

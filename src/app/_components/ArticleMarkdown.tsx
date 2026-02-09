@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
+import { SectionHeader } from "@/app/_components/SectionHeader";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
@@ -138,10 +139,9 @@ export function ArticleMarkdown({ content }: Readonly<ArticleMarkdownProps>) {
                         </h1>
                     ),
                     h2: ({ children }) => (
-                        <h2 className="text-lg font-semibold text-slate-900 mt-10 mb-4 flex items-center gap-2">
-                            <span className="w-1.5 h-6 bg-green-600 rounded-full" />
+                        <SectionHeader className="mt-10">
                             {processChildren(children)}
-                        </h2>
+                        </SectionHeader>
                     ),
                     h3: ({ children }) => (
                         <h3 className="text-base font-normal text-slate-900 mt-8 mb-3">
