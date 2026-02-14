@@ -11,20 +11,8 @@ import {
 import type { DrillQuestion, YakuDetail } from './types'
 import { recalculateScore } from '@/lib/score/calculator'
 import { getDoraFromIndicator } from '@/lib/core/haiNames'
+import { YAKU_NAME_MAP } from '@/lib/core/constants'
 
-// 役名マッピング (questionGenerator.ts からの複製 - リファクタすべきだが一旦このままで)
-const YAKU_NAME_MAP: Record<string, string> = {
-    'Tanyao': '断変九', 'Pinfu': '平和', 'Iipeikou': '一盃口', 'MenzenTsumo': '門前清自摸和', 'Riichi': '立直',
-    'Yakuhai': '役牌', 'Haku': '役牌 白', 'Hatsu': '役牌 發', 'Chun': '役牌 中',
-    'SanshokuDoujun': '三色同順', 'Ikkitsuukan': '一気通貫', 'Honchan': '混全帯么九', 'Chiitoitsu': '七対子',
-    'Toitoi': '対々和', 'Sanankou': '三暗刻', 'Sankantsu': '三槓子', 'SanshokuDoukou': '三色同刻',
-    'Honroutou': '混老頭', 'Shousangen': '小三元', 'DoubleRiichi': 'ダブル立直',
-    'Honitsu': '混一色', 'Junchan': '純全帯么九', 'Ryanpeikou': '二盃口',
-    'Chinitsu': '清一色',
-    'KokushiMusou': '国士無双', 'Suuankou': '四暗刻', 'Daisangen': '大三元', 'Shousuushii': '小四喜',
-    'Daisuushii': '大四喜', 'Tsuuiisou': '字一色', 'Chinroutou': '清老頭', 'Ryuuiisou': '緑一色',
-    'ChuurenPoutou': '九蓮宝燈', 'Suukantsu': '四槓子',
-}
 function getYakuNameJa(name: string): string { return YAKU_NAME_MAP[name] || name }
 
 
@@ -364,9 +352,11 @@ function tehaiToMspz(tehai: Tehai14): string {
         if (mSous.length) meldStr += mSous.join('') + 's'
         if (mZis.length) meldStr += mZis.join('') + 'z'
 
-        if (meld.type === 'Kantsu') {
+        if (meld.type === 'Kantsu' && !meld.furo) {
+            // 暗槓: (...) 表記
             result += `(${meldStr})`
         } else {
+            // 副露（チー・ポン・大明槓）: [...] 表記
             result += `[${meldStr}]`
         }
     })

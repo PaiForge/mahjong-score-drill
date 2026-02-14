@@ -2,7 +2,7 @@
 // ここに定義されている順序で表示される
 const YAKU_ORDER = [
     // 1 Han
-    '立直', '門前清自摸和', '断変九', '平和', '一盃口',
+    '立直', '門前清自摸和', '断么九', '平和', '一盃口',
     '役牌 東', '役牌 南', '役牌 西', '役牌 北',
     '役牌 白', '役牌 發', '役牌 中',
 
@@ -25,7 +25,7 @@ const YAKU_ORDER = [
 // Note: riichi-mahjong library returns 'Yakuhai' for winds usually, need to check if we can distinguish
 export const YAKU_NAME_MAP: Record<string, string> = {
     // 1 Han
-    'Tanyao': '断変九',
+    'Tanyao': '断么九',
     'Pinfu': '平和',
     'Iipeikou': '一盃口',
     'MenzenTsumo': '門前清自摸和',
@@ -81,7 +81,7 @@ export const YAKU_NAME_MAP: Record<string, string> = {
 }
 
 // 判定時に無視する役（ドラなど）
-export const IGNORE_YAKU_FOR_JUDGEMENT = ['ドラ', '裏ドラ']
+export const IGNORE_YAKU_FOR_JUDGEMENT = ['ドラ', '裏ドラ', '一発', '海底摸月', '河底撈魚', '嶺上開花', '槍槓', 'ダブル立直', '天和', '地和']
 
 // ドロップダウンリスト用の選択肢
 // YAKU_ORDER に定義されたものがそのまま選択肢となる

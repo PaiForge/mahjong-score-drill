@@ -26,10 +26,12 @@ export function recalculateScore(
     let basePoints = fu * Math.pow(2, 2 + newHan)
     let scoreLevel = originalResult.scoreLevel
 
-    if (newHan >= 13) {
-        scoreLevel = 'Yakuman' // ※数え役満: 13翻以上
+    if (newHan >= 26) {
+        scoreLevel = 'DoubleYakuman'
+        basePoints = 16000
+    } else if (newHan >= 13) {
+        scoreLevel = 'Yakuman'
         basePoints = 8000
-        // ダブル役満等は考慮簡略化（ドリルなので）
     } else if (newHan >= 11) {
         scoreLevel = 'Sanbaiman'
         basePoints = 6000
