@@ -15,8 +15,8 @@ importers:
         specifier: ^0.2.0
         version: 0.2.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@pai-forge/riichi-mahjong':
-        specifier: ^0.3.0
-        version: 0.3.1
+        specifier: ^0.3.2
+        version: 0.3.2
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -490,8 +490,8 @@ packages:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
 
-  '@pai-forge/riichi-mahjong@0.3.1':
-    resolution: {integrity: sha512-Fi1Q0Y7S2tygoFlAj22Wnq0nYMNsyFJe0d3VggHxkT7qM7MPYaYjZC0vCwPfeU6l5Gz3ds/H1A8WnrkvnZMFxg==}
+  '@pai-forge/riichi-mahjong@0.3.2':
+    resolution: {integrity: sha512-u47x5Fg6lZB+ChewbmPp4tqq06ADgp4jZ7lSmU5RYtb8DDQN1b6EC+YsdQ66WXx1O99Iu0YBX5Cp+mzLuHyPVA==}
     engines: {node: '>=20.0.0'}
 
   '@parcel/watcher-android-arm64@2.5.4':
@@ -3008,12 +3008,12 @@ snapshots:
 
   '@pai-forge/mahjong-react-ui@0.2.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
     dependencies:
-      '@pai-forge/riichi-mahjong': 0.3.1
+      '@pai-forge/riichi-mahjong': 0.3.2
       ajv: 8.17.1
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
 
-  '@pai-forge/riichi-mahjong@0.3.1': {}
+  '@pai-forge/riichi-mahjong@0.3.2': {}
 
   '@parcel/watcher-android-arm64@2.5.4':
     optional: true
