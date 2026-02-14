@@ -70,10 +70,10 @@ export function ResultDisplay({ question, userAnswer, result, onNext, onExit, re
       <div className="bg-slate-50 rounded-lg p-4">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b">
-              <th className="text-left text-slate-600 py-2 pr-4 font-medium"></th>
-              <th className="text-left text-slate-600 py-2 pr-4 font-medium">{tProblems('result.headers.answer')}</th>
-              <th className="text-left text-slate-600 py-2 font-medium">{tProblems('result.headers.correct')}</th>
+            <tr className="border-b border-slate-200">
+              <th className="text-left text-slate-600 pt-2 pb-3 pr-4 font-bold"></th>
+              <th className="text-left text-slate-600 pt-2 pb-3 pr-4 font-bold">{tProblems('result.headers.answer')}</th>
+              <th className="text-left text-slate-600 pt-2 pb-3 font-bold">{tProblems('result.headers.correct')}</th>
             </tr>
           </thead>
           <tbody>
@@ -130,14 +130,16 @@ export function ResultDisplay({ question, userAnswer, result, onNext, onExit, re
             {showYakuDetails && question.yakuDetails && (
               <tr>
                 <td colSpan={3} className="py-2">
-                  <div className="bg-white rounded p-2 text-xs text-slate-600">
-                    {question.yakuDetails.map((detail, idx) => (
-                      <div key={idx} className="flex justify-between border-b border-slate-100 last:border-0 py-1">
-                        <span>{detail.name}</span>
-                        <span>{detail.han}{tProblems('form.options.han_suffix')}</span>
-                      </div>
-                    ))}
-                    <div className="flex justify-between font-bold mt-2 pt-1 border-t border-slate-200">
+                  <div className="bg-white rounded px-2 py-0 text-xs text-slate-600">
+                    <div>
+                      {question.yakuDetails.map((detail, idx) => (
+                        <div key={idx} className="flex justify-between border-b border-slate-100 last:border-0 py-1.5">
+                          <span>{detail.name}</span>
+                          <span>{detail.han}{tProblems('form.options.han_suffix')}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex justify-between font-bold mt-0 pt-1.5 pb-1.5 border-t border-slate-200">
                       <span>{tProblems('result.details.total')}</span>
                       <span>
                         {question.yakuDetails.reduce((acc, curr) => acc + curr.han, 0)}{tProblems('form.options.han_suffix')}
@@ -171,14 +173,16 @@ export function ResultDisplay({ question, userAnswer, result, onNext, onExit, re
                 {showFuDetails && question.fuDetails && (
                   <tr>
                     <td colSpan={3} className="py-2">
-                      <div className="bg-white rounded p-2 text-xs text-slate-600">
-                        {question.fuDetails.map((detail, idx) => (
-                          <div key={idx} className="flex justify-between border-b border-slate-100 last:border-0 py-1">
-                            <span>{detail.reason}</span>
-                            <span>{detail.fu}{tProblems('form.options.fu_suffix')}</span>
-                          </div>
-                        ))}
-                        <div className="flex justify-between font-bold mt-2 pt-1 border-t border-slate-200">
+                      <div className="bg-white rounded px-2 py-0 text-xs text-slate-600">
+                        <div>
+                          {question.fuDetails.map((detail, idx) => (
+                            <div key={idx} className="flex justify-between border-b border-slate-100 last:border-0 py-1.5">
+                              <span>{detail.reason}</span>
+                              <span>{detail.fu}{tProblems('form.options.fu_suffix')}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="flex justify-between font-bold mt-0 pt-1.5 pb-1.5 border-t border-slate-200">
                           <span>{tProblems('result.details.total')}</span>
                           <span>
                             {question.fuDetails.reduce((acc, curr) => acc + curr.fu, 0)}{tProblems('form.options.fu_suffix')}
