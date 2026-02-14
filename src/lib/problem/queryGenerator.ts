@@ -169,7 +169,7 @@ export function generateQuestionFromQuery(params: URLSearchParams): QueryResult 
                 })
             }
 
-            finalAnswer = recalculateScore(answer, addedHan + uraDoraHan, { isTsumo, isOya })
+            finalAnswer = recalculateScore(answer, answer.han + addedHan + uraDoraHan, { isTsumo, isOya })
 
             yakuDetails.unshift({ name: '立直', han: 1 })
             if (uraDoraHan > 0) {
