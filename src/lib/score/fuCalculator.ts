@@ -95,7 +95,10 @@ export function calculateFuDetails(
         pairNamePart.push('三元牌')
     }
 
-    // Notice: Double Wind is +4 (accumulated above).
+    // 連風牌の加算上限（riichi-mahjong の DOUBLE_WIND_CAP = 2 に準拠）
+    if (pairFu > 2) {
+        pairFu = 2
+    }
     if (pairFu > 0) {
         details.push({ reason: `雀頭(${pairNamePart.join('・')})`, fu: pairFu })
     }
