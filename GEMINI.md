@@ -6,6 +6,7 @@
 
 - https://raw.githubusercontent.com/PaiForge/docs/refs/heads/main/coding-standards.md
 - https://raw.githubusercontent.com/PaiForge/docs/refs/heads/main/extended-mspz.md
+- https://raw.githubusercontent.com/PaiForge/docs/refs/heads/main/release-process.md
 
 ## ローカルドキュメント（読み込み）
 
