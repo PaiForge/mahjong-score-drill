@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "記事一覧 | Mahjong Score Drill",
+    title: "記事一覧",
 };
 
 export default async function ArticlesPage() {

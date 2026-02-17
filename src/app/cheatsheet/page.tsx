@@ -4,7 +4,7 @@ import { Header } from '@/app/_components/Header'
 import { Sidebar } from '@/app/_components/Sidebar'
 
 export const metadata: Metadata = {
-    title: '点数早見表 | Mahjong Score Drill',
+    title: '点数早見表',
     description: '麻雀の点数計算早見表（符×翻）。親・子の点数を一覧で確認できます。',
 }
 

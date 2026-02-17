@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-    title: 'ドリル一覧 | Mahjong Score Drill',
+    title: 'ドリル一覧',
     description: '麻雀の点数計算練習ドリル一覧。符計算（雀頭・待ち・面子・手牌）と点数計算の総合問題を練習できます。',
 }
 

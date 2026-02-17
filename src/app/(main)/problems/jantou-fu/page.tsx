@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-    title: '雀頭の符計算 | Mahjong Score Drill',
+    title: '雀頭の符計算',
     description: '雀頭（アタマ）の符計算ドリル。役牌・連風牌などの雀頭につく符を練習できます。',
 }
 

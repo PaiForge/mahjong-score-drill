@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const title = titleMatch ? titleMatch[1] : slug;
 
     return {
-        title: `${title} | Mahjong Score Drill`,
+        title,
     };
 }
 

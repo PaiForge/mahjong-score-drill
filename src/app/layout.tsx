@@ -60,13 +60,11 @@ export default function RootLayout({
 
   return (
     <html lang="ja">
-      <head>
+      <body>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-      </head>
-      <body>
         <I18nProvider initialLocale="ja" initialMessages={jaMessages}>
           <SidebarProvider>
             {children}

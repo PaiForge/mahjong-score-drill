@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-    title: '面子の符計算 | Mahjong Score Drill',
+    title: '面子の符計算',
     description: '面子の構成（明刻・暗刻・明槓・暗槓）による符計算ドリル。順子と刻子・槓子の違いによる符を練習できます。',
 }
 

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-    title: '点数計算ドリル | Mahjong Score Drill',
+    title: '点数計算ドリル',
     description: '麻雀の点数計算（符数×翻数）をマスターするための実践ドリル。実戦形式で素早く正確に計算する力を養います。',
 }
 
