@@ -51,3 +51,9 @@ next-env.d.ts
 *.sln
 *.sw?
 dist
+
+# Claude Code
+.claude/settings.local.json
+
+# Screenshots (generated artifacts)
+screenshots/
