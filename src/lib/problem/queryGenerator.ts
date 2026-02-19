@@ -10,10 +10,8 @@ import {
 } from '@pai-forge/riichi-mahjong'
 import type { DrillQuestion, YakuDetail } from './types'
 import { recalculateScore } from '@/lib/score/calculator'
-import { getDoraFromIndicator } from '@/lib/core/haiNames'
-import { YAKU_NAME_MAP } from '@/lib/core/constants'
-
-function getYakuNameJa(name: string): string { return YAKU_NAME_MAP[name] || name }
+import { countDoraInTehai } from '@/lib/core/haiNames'
+import { getYakuNameJa } from '@/lib/core/constants'
 
 
 export type QueryResult =
@@ -145,17 +143,7 @@ export function generateQuestionFromQuery(params: URLSearchParams): QueryResult 
         let finalAnswer = answer;
         if (isRiichi) {
             const addedHan = 1 // リーチ
-            let uraDoraHan = 0
-
-            if (uraDoraMarkers) {
-                uraDoraMarkers.forEach((marker) => {
-                    const doraHai = getDoraFromIndicator(marker)
-                    uraDoraHan += tehai.closed.filter((h) => h === doraHai).length
-                    tehai.exposed.forEach((mentsu) => {
-                        uraDoraHan += mentsu.hais.filter((h) => h === doraHai).length
-                    })
-                })
-            }
+            const uraDoraHan = uraDoraMarkers ? countDoraInTehai(tehai, uraDoraMarkers) : 0
 
             finalAnswer = recalculateScore(answer, answer.han + addedHan + uraDoraHan, { isTsumo, isOya })
 
@@ -166,12 +154,7 @@ export function generateQuestionFromQuery(params: URLSearchParams): QueryResult 
         }
 
         // ドラ (表ドラ) の加算
-        let doraHan = 0
-        doraMarkers.forEach(marker => {
-            const doraHai = getDoraFromIndicator(marker)
-            doraHan += tehai.closed.filter(h => h === doraHai).length
-            tehai.exposed.forEach(m => doraHan += m.hais.filter(h => h === doraHai).length)
-        })
+        const doraHan = countDoraInTehai(tehai, doraMarkers)
 
         if (doraHan > 0) {
             yakuDetails.push({ name: 'ドラ', han: doraHan })

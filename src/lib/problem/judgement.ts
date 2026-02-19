@@ -1,16 +1,5 @@
 import type { DrillQuestion, UserAnswer, JudgementResult } from './types'
-import { IGNORE_YAKU_FOR_JUDGEMENT } from '@/lib/core/constants'
-
-// ScoreLevel定数（ライブラリのメインエクスポートにないためローカル定義）
-const ScoreLevel = {
-  Normal: 'Normal',
-  Mangan: 'Mangan',
-  Haneman: 'Haneman',
-  Baiman: 'Baiman',
-  Sanbaiman: 'Sanbaiman',
-  Yakuman: 'Yakuman',
-  DoubleYakuman: 'DoubleYakuman',
-} as const
+import { IGNORE_YAKU_FOR_JUDGEMENT, ScoreLevel } from '@/lib/core/constants'
 
 /**
  * 満貫以上かどうかを判定

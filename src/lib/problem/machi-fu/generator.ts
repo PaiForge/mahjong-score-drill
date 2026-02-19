@@ -1,14 +1,6 @@
 import { HaiKind, type HaiKindId } from '@pai-forge/riichi-mahjong'
 import type { MachiFuQuestion } from './types'
-
-// Range helpers
-function randomInt(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1)) + min
-}
-
-function randomChoice<T>(arr: readonly T[]): T {
-    return arr[Math.floor(Math.random() * arr.length)]
-}
+import { randomInt, randomChoice } from '@/lib/core/random'
 
 // 1. Ryanmen (0 Fu)
 // Example: 23 wait 1,4 (Agari = 1 or 4)

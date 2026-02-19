@@ -1,6 +1,7 @@
 import { HaiKind, type HaiKindId, type Kazehai } from '@pai-forge/riichi-mahjong'
 import type { HeadFuQuestion } from './types'
 import { getKazeName } from '@/lib/core/haiNames'
+import { randomChoice, shuffle } from '@/lib/core/random'
 
 const KAZEHAI = [HaiKind.Ton, HaiKind.Nan, HaiKind.Sha, HaiKind.Pei] as const
 const SANGENHAI = [HaiKind.Haku, HaiKind.Hatsu, HaiKind.Chun] as const
@@ -14,19 +15,6 @@ for (let i = HaiKind.ManZu1; i <= HaiKind.ManZu9; i++) NUMBER_TILES_FOR_HEAD.pus
 for (let i = HaiKind.PinZu1; i <= HaiKind.PinZu9; i++) NUMBER_TILES_FOR_HEAD.push(i as HaiKindId)
 // Souzu
 for (let i = HaiKind.SouZu1; i <= HaiKind.SouZu9; i++) NUMBER_TILES_FOR_HEAD.push(i as HaiKindId)
-
-function shuffle<T>(array: T[]): T[] {
-    const result = [...array]
-    for (let i = result.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
-            ;[result[i], result[j]] = [result[j], result[i]]
-    }
-    return result
-}
-
-function randomChoice<T>(arr: readonly T[]): T {
-    return arr[Math.floor(Math.random() * arr.length)]
-}
 
 export function generateHeadFuQuestion(): HeadFuQuestion {
     const bakaze = randomChoice(KAZEHAI)

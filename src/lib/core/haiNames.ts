@@ -1,4 +1,4 @@
-import { HaiKind, type HaiKindId, type Kazehai } from '@pai-forge/riichi-mahjong'
+import { HaiKind, type HaiKindId, type Kazehai, type Tehai14 } from '@pai-forge/riichi-mahjong'
 
 /**
  * 風牌の日本語名を取得
@@ -53,6 +53,24 @@ export function getDoraFromIndicator(indicator: HaiKindId): HaiKindId {
       : indicator + 1) as HaiKindId
   }
   return indicator
+}
+
+/**
+ * 手牌中のドラ枚数をカウント
+ */
+export function countDoraInTehai(
+  tehai: Tehai14,
+  markers: readonly HaiKindId[]
+): number {
+  let count = 0
+  markers.forEach((marker) => {
+    const doraHai = getDoraFromIndicator(marker)
+    count += tehai.closed.filter((h) => h === doraHai).length
+    tehai.exposed.forEach((mentsu) => {
+      count += mentsu.hais.filter((h) => h === doraHai).length
+    })
+  })
+  return count
 }
 
 /**

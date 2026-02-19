@@ -1,3 +1,14 @@
+/** 点数レベル定数（ライブラリのメインエクスポートにないためローカル定義） */
+export const ScoreLevel = {
+  Normal: 'Normal',
+  Mangan: 'Mangan',
+  Haneman: 'Haneman',
+  Baiman: 'Baiman',
+  Sanbaiman: 'Sanbaiman',
+  Yakuman: 'Yakuman',
+  DoubleYakuman: 'DoubleYakuman',
+} as const
+
 // 優先度順（頻出度≒翻数の低い順）
 // ここに定義されている順序で表示される
 const YAKU_ORDER = [
@@ -78,6 +89,11 @@ export const YAKU_NAME_MAP: Record<string, string> = {
     'Suukantsu': '四槓子',
     'Tenhou': '天和',
     'Chiihou': '地和',
+}
+
+/** 役名の英語キーから日本語名を取得 */
+export function getYakuNameJa(name: string): string {
+  return YAKU_NAME_MAP[name] || name
 }
 
 // 判定時に無視する役（ドラなど）

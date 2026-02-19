@@ -9,8 +9,8 @@ import {
     type Kantsu
 } from '@pai-forge/riichi-mahjong'
 import type { MentsuFuQuestion } from './types'
+import { randomInt, randomChoice } from '@/lib/core/random'
 
-// Range helpers
 const RAND_KAZESAN: HaiKindId[] = [HaiKind.Ton, HaiKind.Nan, HaiKind.Sha, HaiKind.Pei, HaiKind.Haku, HaiKind.Hatsu, HaiKind.Chun]
 // Terminals (1,9)
 const TERMINALS: HaiKindId[] = [
@@ -18,14 +18,6 @@ const TERMINALS: HaiKindId[] = [
     HaiKind.PinZu1, HaiKind.PinZu9,
     HaiKind.SouZu1, HaiKind.SouZu9
 ]
-
-function randomInt(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1)) + min
-}
-
-function randomChoice<T>(arr: readonly T[]): T {
-    return arr[Math.floor(Math.random() * arr.length)]
-}
 
 // Generate a random simple (2-8) tile
 function randomSimple(): HaiKindId {
