@@ -10,6 +10,7 @@ import {
 } from '@pai-forge/riichi-mahjong'
 import type { MentsuFuQuestion } from './types'
 import { randomInt, randomChoice } from '@/lib/core/random'
+import { assertHaiKindId } from '@/lib/core/type-guards'
 
 const RAND_KAZESAN: HaiKindId[] = [HaiKind.Ton, HaiKind.Nan, HaiKind.Sha, HaiKind.Pei, HaiKind.Haku, HaiKind.Hatsu, HaiKind.Chun]
 // Terminals (1,9)
@@ -26,7 +27,9 @@ function randomSimple(): HaiKindId {
     let base: HaiKindId = HaiKind.ManZu1
     if (suit === 'p') base = HaiKind.PinZu1
     if (suit === 's') base = HaiKind.SouZu1
-    return (base + num - 1) as HaiKindId
+    const result = base + num - 1
+    assertHaiKindId(result)
+    return result
 }
 
 // Generate a random Yaochu tile (1,9 or Honor)
@@ -38,15 +41,21 @@ function randomYaochu(): HaiKindId {
 
 function createShuntsu(): MentsuFuQuestion {
     // Always 0 Fu
-    const start = randomChoice([
+    const startValue = randomChoice([
         randomInt(HaiKind.ManZu1, HaiKind.ManZu7),
         randomInt(HaiKind.PinZu1, HaiKind.PinZu7),
         randomInt(HaiKind.SouZu1, HaiKind.SouZu7),
-    ]) as HaiKindId
+    ])
+    assertHaiKindId(startValue)
+    const start = startValue
 
     const isFuro = Math.random() < 0.5
 
-    const hais = [start, (start + 1) as HaiKindId, (start + 2) as HaiKindId] as const
+    const h2 = start + 1
+    const h3 = start + 2
+    assertHaiKindId(h2)
+    assertHaiKindId(h3)
+    const hais = [start, h2, h3] as const
 
     const mentsu: Shuntsu = isFuro ? {
         type: MentsuType.Shuntsu,

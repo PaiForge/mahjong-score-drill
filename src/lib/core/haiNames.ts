@@ -1,4 +1,5 @@
 import { HaiKind, type HaiKindId, type Kazehai, type Tehai14 } from '@pai-forge/riichi-mahjong'
+import { assertHaiKindId } from './type-guards'
 
 /**
  * 風牌の日本語名を取得
@@ -24,33 +25,33 @@ export function getKazeName(kaze: Kazehai): string {
 export function getDoraFromIndicator(indicator: HaiKindId): HaiKindId {
   // 萬子
   if (indicator >= HaiKind.ManZu1 && indicator <= HaiKind.ManZu9) {
-    return (indicator === HaiKind.ManZu9
-      ? HaiKind.ManZu1
-      : indicator + 1) as HaiKindId
+    const next = indicator === HaiKind.ManZu9 ? HaiKind.ManZu1 : indicator + 1
+    assertHaiKindId(next)
+    return next
   }
   // 筒子
   if (indicator >= HaiKind.PinZu1 && indicator <= HaiKind.PinZu9) {
-    return (indicator === HaiKind.PinZu9
-      ? HaiKind.PinZu1
-      : indicator + 1) as HaiKindId
+    const next = indicator === HaiKind.PinZu9 ? HaiKind.PinZu1 : indicator + 1
+    assertHaiKindId(next)
+    return next
   }
   // 索子
   if (indicator >= HaiKind.SouZu1 && indicator <= HaiKind.SouZu9) {
-    return (indicator === HaiKind.SouZu9
-      ? HaiKind.SouZu1
-      : indicator + 1) as HaiKindId
+    const next = indicator === HaiKind.SouZu9 ? HaiKind.SouZu1 : indicator + 1
+    assertHaiKindId(next)
+    return next
   }
   // 風牌
   if (indicator >= HaiKind.Ton && indicator <= HaiKind.Pei) {
-    return (indicator === HaiKind.Pei
-      ? HaiKind.Ton
-      : indicator + 1) as HaiKindId
+    const next = indicator === HaiKind.Pei ? HaiKind.Ton : indicator + 1
+    assertHaiKindId(next)
+    return next
   }
   // 三元牌
   if (indicator >= HaiKind.Haku && indicator <= HaiKind.Chun) {
-    return (indicator === HaiKind.Chun
-      ? HaiKind.Haku
-      : indicator + 1) as HaiKindId
+    const next = indicator === HaiKind.Chun ? HaiKind.Haku : indicator + 1
+    assertHaiKindId(next)
+    return next
   }
   return indicator
 }

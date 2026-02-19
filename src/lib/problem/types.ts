@@ -59,8 +59,8 @@ export interface FuDetail {
 export interface UserAnswer {
   /** 翻数 */
   han: number
-  /** 符（満貫以上の場合はnull） */
-  fu: number | null
+  /** 符（満貫以上の場合は undefined） */
+  fu: number | undefined
   /** 点数（ロンまたは親ツモの場合） */
   score?: number
   /** 子のツモ時: 子からの点数 */

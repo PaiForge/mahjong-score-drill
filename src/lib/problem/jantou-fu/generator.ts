@@ -2,19 +2,13 @@ import { HaiKind, type HaiKindId, type Kazehai } from '@pai-forge/riichi-mahjong
 import type { HeadFuQuestion } from './types'
 import { getKazeName } from '@/lib/core/haiNames'
 import { randomChoice, shuffle } from '@/lib/core/random'
+import { KAZEHAI, SANGENHAI } from '@/lib/core/constants'
+import { isHaiKindId } from '@/lib/core/type-guards'
 
-const KAZEHAI = [HaiKind.Ton, HaiKind.Nan, HaiKind.Sha, HaiKind.Pei] as const
-const SANGENHAI = [HaiKind.Haku, HaiKind.Hatsu, HaiKind.Chun] as const
-
-const NUMBER_TILES_FOR_HEAD: HaiKindId[] = []
-// Using some representative number tiles (2-8) and terminals (1, 9)
-// Terminals are 0 fu for head, same as simples.
-// Manzu
-for (let i = HaiKind.ManZu1; i <= HaiKind.ManZu9; i++) NUMBER_TILES_FOR_HEAD.push(i as HaiKindId)
-// Pinzu
-for (let i = HaiKind.PinZu1; i <= HaiKind.PinZu9; i++) NUMBER_TILES_FOR_HEAD.push(i as HaiKindId)
-// Souzu
-for (let i = HaiKind.SouZu1; i <= HaiKind.SouZu9; i++) NUMBER_TILES_FOR_HEAD.push(i as HaiKindId)
+const NUMBER_TILES_FOR_HEAD: HaiKindId[] = Array.from(
+    { length: HaiKind.SouZu9 + 1 },
+    (_, i) => i
+).filter(isHaiKindId)
 
 export function generateHeadFuQuestion(): HeadFuQuestion {
     const bakaze = randomChoice(KAZEHAI)

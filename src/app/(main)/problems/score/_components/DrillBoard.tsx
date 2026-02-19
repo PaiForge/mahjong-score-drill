@@ -13,6 +13,31 @@ import { generateQuestionFromQuery, generatePathAndQueryFromQuestion } from '@/l
 import type { UserAnswer } from '@/lib/problem/types'
 import { useTranslations } from 'next-intl'
 
+/** 現在の searchParams からオプションパラメータを引き継いだ URLSearchParams を構築する */
+function buildDrillQueryParams(
+  searchParams: URLSearchParams,
+  overrides?: URLSearchParams
+): URLSearchParams {
+  const params = overrides ?? new URLSearchParams()
+
+  const optionKeys = ['mode', 'simple', 'fu_mangan', 'auto_next'] as const
+  for (const key of optionKeys) {
+    if (searchParams.has(key) && !params.has(key)) {
+      params.set(key, searchParams.get(key)!)
+    }
+  }
+
+  const multiValueKeys = ['ranges', 'roles'] as const
+  for (const key of multiValueKeys) {
+    if (!params.has(key)) {
+      const values = searchParams.getAll(key)
+      values.forEach(v => params.append(key, v))
+    }
+  }
+
+  return params
+}
+
 // SSR安全なクライアント判定フック
 function useIsClient() {
   const [isClient, setIsClient] = useState(false)
@@ -98,28 +123,12 @@ export function DrillBoard() {
 
       generateNewQuestion()
 
-      // ランダム生成後、即座にクエリパラメータ付きURLへ遷移
       const newQuestion = useDrillStore.getState().currentQuestion
       if (newQuestion) {
-        // generatePathAndQueryFromQuestion は /problems/score?tehai=... を返す
         const newUrlBase = generatePathAndQueryFromQuestion(newQuestion)
         const urlObj = new URL(newUrlBase, 'http://dummy.com')
-
-        // オプション定義 (rangesなど) は維持したいが、generateNewQuestionでstoreに入っているので
-        // 次回のレンダリングで正しいはずだが、URLには残しておきたい
         const currentParams = new URLSearchParams(searchParams.toString())
-        const ranges = currentParams.getAll('ranges')
-        ranges.forEach(r => urlObj.searchParams.append('ranges', r))
-
-        const roles = currentParams.getAll('roles')
-        roles.forEach(r => urlObj.searchParams.append('roles', r))
-
-        // modeなども維持
-        if (searchParams.has('mode')) urlObj.searchParams.set('mode', searchParams.get('mode')!)
-        if (searchParams.has('simple')) urlObj.searchParams.set('simple', searchParams.get('simple')!)
-        if (searchParams.has('fu_mangan')) urlObj.searchParams.set('fu_mangan', searchParams.get('fu_mangan')!)
-        if (searchParams.has('auto_next')) urlObj.searchParams.set('auto_next', searchParams.get('auto_next')!)
-
+        buildDrillQueryParams(currentParams, urlObj.searchParams)
         router.replace(urlObj.pathname + urlObj.search)
       }
     }
@@ -182,27 +191,12 @@ export function DrillBoard() {
   const handleNext = () => {
     setHighlightedCellId(null)
     nextQuestion()
-    // 新しいURLへ遷移
     const newQuestion = useDrillStore.getState().currentQuestion
     if (newQuestion) {
-      // 現在のオプションパラメータを引き継ぐ
       const newUrlBase = generatePathAndQueryFromQuestion(newQuestion)
       const urlObj = new URL(newUrlBase, 'http://dummy.com')
-
-      if (requireYaku) urlObj.searchParams.set('mode', 'with_yaku')
-      if (simplifyMangan) urlObj.searchParams.set('simple', '1')
-      if (requireFuForMangan) urlObj.searchParams.set('fu_mangan', '1')
-      if (autoNext) urlObj.searchParams.set('auto_next', '1')
-
-      // ranges
       const currentParams = new URLSearchParams(searchParams.toString())
-      const ranges = currentParams.getAll('ranges')
-      ranges.forEach(r => urlObj.searchParams.append('ranges', r))
-
-      const roles = currentParams.getAll('roles')
-      roles.forEach(r => urlObj.searchParams.append('roles', r))
-
-      // パスパラメータではなくクエリパラメータのみを使用するため、pathnameは固定でQueryStringを付与
+      buildDrillQueryParams(currentParams, urlObj.searchParams)
       router.push(urlObj.pathname + urlObj.search)
     }
   }
@@ -231,22 +225,8 @@ export function DrillBoard() {
       }
     }
 
-    // URLパラメータを維持
-    const params = new URLSearchParams()
-    if (requireYaku) params.set('mode', 'with_yaku')
-    if (simplifyMangan) params.set('simple', '1')
-    if (requireFuForMangan) params.set('fu_mangan', '1')
-    if (autoNext) params.set('auto_next', '1')
-
-
-    // 現在のパラメータからrangesを引き継ぐ
     const currentParams = new URLSearchParams(searchParams.toString())
-    const ranges = currentParams.getAll('ranges')
-    ranges.forEach(r => params.append('ranges', r))
-
-    const roles = currentParams.getAll('roles')
-    roles.forEach(r => params.append('roles', r))
-
+    const params = buildDrillQueryParams(currentParams)
     const queryString = params.toString()
     router.replace(queryString ? `/problems/score/play?${queryString}` : '/problems/score/play')
   }

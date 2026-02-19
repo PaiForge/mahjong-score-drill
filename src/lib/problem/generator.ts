@@ -25,8 +25,9 @@ import { recalculateScore } from '@/lib/score/calculator'
 import { getKeyForKazehai, countDoraInTehai } from '@/lib/core/haiNames'
 import type { DrillQuestion, QuestionGeneratorOptions, YakuDetail } from './types'
 
-import { ScoreLevel, getYakuNameJa } from '@/lib/core/constants'
+import { ScoreLevel, getYakuNameJa, KAZEHAI } from '@/lib/core/constants'
 import { randomInt, randomChoice, shuffle } from '@/lib/core/random'
+import { assertHaiKindId, isHaiKindId } from '@/lib/core/type-guards'
 
 // 数牌の範囲
 const MANZU_START = HaiKind.ManZu1 // 0
@@ -172,7 +173,8 @@ function generateDoraMarkers(kantsuCount: number): HaiKindId[] {
   const markers: HaiKindId[] = []
 
   for (let i = 0; i < count; i++) {
-    const kindId = randomInt(0, 33) as HaiKindId
+    const kindId = randomInt(0, 33)
+    assertHaiKindId(kindId)
     markers.push(kindId)
   }
 
@@ -331,12 +333,14 @@ function boostToMangan(ctx: BoostContext): { answer: ScoreResult; doraMarkers: H
     if (currentDoraMarkers.length >= 5) break
 
     // 新しいドラ表示牌を追加
-    const newMarker = randomInt(0, 33) as HaiKindId
+    const newMarker = randomInt(0, 33)
+    assertHaiKindId(newMarker)
     currentDoraMarkers.push(newMarker)
 
     // リーチ時は裏ドラも増やす (整合性のため)
     if (ctx.isRiichi && uraDoraMarkers && uraDoraMarkers.length < currentDoraMarkers.length) {
-      const newUraMarker = randomInt(0, 33) as HaiKindId
+      const newUraMarker = randomInt(0, 33)
+      assertHaiKindId(newUraMarker)
       uraDoraMarkers.push(newUraMarker)
     }
 
@@ -591,8 +595,6 @@ export function generateQuestion(
   }
 }
 
-// 風牌
-const KAZEHAI: readonly Kazehai[] = [HaiKind.Ton, HaiKind.Nan, HaiKind.Sha, HaiKind.Pei]
 
 
 /**
@@ -630,9 +632,15 @@ function generateShuntsu(
     // 順子の開始位置をランダムに決定（1-7）
     const startPositions = shuffle(Array.from({ length: 7 }, (_, i) => i))
     for (const pos of startPositions) {
-      const hai1 = (suit.start + pos) as HaiKindId
-      const hai2 = (suit.start + pos + 1) as HaiKindId
-      const hai3 = (suit.start + pos + 2) as HaiKindId
+      const h1 = suit.start + pos
+      const h2 = suit.start + pos + 1
+      const h3 = suit.start + pos + 2
+      assertHaiKindId(h1)
+      assertHaiKindId(h2)
+      assertHaiKindId(h3)
+      const hai1 = h1
+      const hai2 = h2
+      const hai3 = h3
 
       if (tracker.canUse(hai1) && tracker.canUse(hai2) && tracker.canUse(hai3)) {
         tracker.use(hai1)
@@ -668,7 +676,7 @@ function generateKoutsu(
   furo: boolean = false
 ): Koutsu | null {
   // すべての牌種からランダムに選択
-  const allKinds = shuffle(Array.from({ length: 34 }, (_, i) => i as HaiKindId))
+  const allKinds = shuffle(Array.from({ length: 34 }, (_, i) => i).filter(isHaiKindId))
 
   for (const kindId of allKinds) {
     if (tracker.canUse(kindId, 3)) {
@@ -702,7 +710,7 @@ function generateKantsu(
   furo: boolean = false
 ): Kantsu | null {
   // すべての牌種からランダムに選択
-  const allKinds = shuffle(Array.from({ length: 34 }, (_, i) => i as HaiKindId))
+  const allKinds = shuffle(Array.from({ length: 34 }, (_, i) => i).filter(isHaiKindId))
 
   for (const kindId of allKinds) {
     if (tracker.canUse(kindId, 4)) {
@@ -734,7 +742,7 @@ function generateKantsu(
  * 対子（雀頭）を生成
  */
 function generateToitsu(tracker: HaiUsageTracker): HaiKindId | null {
-  const allKinds = shuffle(Array.from({ length: 34 }, (_, i) => i as HaiKindId))
+  const allKinds = shuffle(Array.from({ length: 34 }, (_, i) => i).filter(isHaiKindId))
 
   for (const kindId of allKinds) {
     if (tracker.canUse(kindId, 2)) {

@@ -1,6 +1,7 @@
 import { HaiKind, type HaiKindId } from '@pai-forge/riichi-mahjong'
 import type { MachiFuQuestion } from './types'
 import { randomInt, randomChoice } from '@/lib/core/random'
+import { assertHaiKindId } from '@/lib/core/type-guards'
 
 // 1. Ryanmen (0 Fu)
 // Example: 23 wait 1,4 (Agari = 1 or 4)
@@ -12,11 +13,19 @@ function createRyanmen(): MachiFuQuestion {
     if (suit === 'p') base = HaiKind.PinZu1
     if (suit === 's') base = HaiKind.SouZu1
 
-    const t1 = (base + start - 1) as HaiKindId
-    const t2 = (base + start) as HaiKindId
+    const t1v = base + start - 1
+    const t2v = base + start
+    const w1v = base + start - 2
+    const w2v = base + start + 1
+    assertHaiKindId(t1v)
+    assertHaiKindId(t2v)
+    assertHaiKindId(w1v)
+    assertHaiKindId(w2v)
+    const t1 = t1v
+    const t2 = t2v
 
-    const wait1 = (base + start - 2) as HaiKindId
-    const wait2 = (base + start + 1) as HaiKindId
+    const wait1 = w1v
+    const wait2 = w2v
 
     const agari = Math.random() < 0.5 ? wait1 : wait2
 
@@ -44,12 +53,22 @@ function createPenchan(): MachiFuQuestion {
 
     if (isLow) { // 12
         t1 = base
-        t2 = (base + 1) as HaiKindId
-        agari = (base + 2) as HaiKindId // 3
+        const t2v = base + 1
+        const av = base + 2
+        assertHaiKindId(t2v)
+        assertHaiKindId(av)
+        t2 = t2v
+        agari = av
     } else { // 89
-        t1 = (base + 7) as HaiKindId
-        t2 = (base + 8) as HaiKindId
-        agari = (base + 6) as HaiKindId // 7
+        const t1v = base + 7
+        const t2v = base + 8
+        const av = base + 6
+        assertHaiKindId(t1v)
+        assertHaiKindId(t2v)
+        assertHaiKindId(av)
+        t1 = t1v
+        t2 = t2v
+        agari = av
     }
 
     return {
@@ -72,9 +91,15 @@ function createKanchan(): MachiFuQuestion {
     if (suit === 'p') base = HaiKind.PinZu1
     if (suit === 's') base = HaiKind.SouZu1
 
-    const agari = (base + center - 1) as HaiKindId
-    const t1 = (base + center - 2) as HaiKindId
-    const t2 = (base + center) as HaiKindId
+    const av = base + center - 1
+    const t1v = base + center - 2
+    const t2v = base + center
+    assertHaiKindId(av)
+    assertHaiKindId(t1v)
+    assertHaiKindId(t2v)
+    const agari = av
+    const t1 = t1v
+    const t2 = t2v
 
     return {
         id: crypto.randomUUID(),
@@ -89,7 +114,9 @@ function createKanchan(): MachiFuQuestion {
 // 4. Tanki (2 Fu)
 // Example: 1 wait 1
 function createTanki(): MachiFuQuestion {
-    const tile = Math.floor(Math.random() * 34) as HaiKindId
+    const tileValue = Math.floor(Math.random() * 34)
+    assertHaiKindId(tileValue)
+    const tile = tileValue
 
     return {
         id: crypto.randomUUID(),
@@ -121,10 +148,16 @@ function createTanki(): MachiFuQuestion {
 // Let's generate two random pairs.
 function createShanpon(): MachiFuQuestion {
     // Pick two distinct tiles
-    const t1Base = Math.floor(Math.random() * 34) as HaiKindId
-    let t2Base = Math.floor(Math.random() * 34) as HaiKindId
+    const t1v = Math.floor(Math.random() * 34)
+    assertHaiKindId(t1v)
+    const t1Base = t1v
+    let t2v = Math.floor(Math.random() * 34)
+    assertHaiKindId(t2v)
+    let t2Base: HaiKindId = t2v
     while (t1Base === t2Base) {
-        t2Base = Math.floor(Math.random() * 34) as HaiKindId
+        const next = Math.floor(Math.random() * 34)
+        assertHaiKindId(next)
+        t2Base = next
     }
 
     // Agari is one of them

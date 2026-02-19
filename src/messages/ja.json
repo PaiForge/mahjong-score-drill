@@ -18,6 +18,16 @@
                 "nonMangan": "満貫未満",
                 "manganPlus": "満貫以上"
             },
+            "questionMode": "出題モード",
+            "oya": "親",
+            "ko": "子",
+            "start": "開始する",
+            "drills": {
+                "jantouFu": "符計算ドリル（雀頭）",
+                "mentsuFu": "符計算ドリル（面子）",
+                "tehaiFu": "符計算ドリル（手牌）",
+                "machiFu": "符計算ドリル（待ち）"
+            },
             "links": {
                 "cheatsheet": "点数早見表を確認する"
             }

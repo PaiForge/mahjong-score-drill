@@ -8,11 +8,8 @@ import {
 } from '@pai-forge/riichi-mahjong'
 import type { TehaiFuQuestion, TehaiFuItem } from './types'
 import { generateMentsuFuQuestion } from '@/lib/problem/mentsu-fu/generator'
-
-const KAZEHAI = [HaiKind.Ton, HaiKind.Nan, HaiKind.Sha, HaiKind.Pei] as const
-
-// Range helpers (reuse for head gen)
-const SANGENHAI = [HaiKind.Haku, HaiKind.Hatsu, HaiKind.Chun] as const
+import { KAZEHAI, SANGENHAI } from '@/lib/core/constants'
+import { assertHaiKindId, isHaiKindId } from '@/lib/core/type-guards'
 
 function calculateHeadFu(
     tile: HaiKindId,
@@ -59,12 +56,12 @@ export function generateTehaiFuQuestion(): TehaiFuQuestion | null {
             const tiles = q.mentsu.hais
 
             // Check availability
-            const tempCount = new Map<number, number>()
+            const tempCount = new Map<HaiKindId, number>()
             for (const t of tiles) tempCount.set(t, (tempCount.get(t) || 0) + 1)
 
             let possible = true
             for (const [t, c] of tempCount.entries()) {
-                if (!canUse(t as HaiKindId, c)) {
+                if (!canUse(t, c)) {
                     possible = false
                     break
                 }
@@ -98,14 +95,18 @@ export function generateTehaiFuQuestion(): TehaiFuQuestion | null {
 
     // Extra context for display
     const doraMarkers: HaiKindId[] = []
-    doraMarkers.push(Math.floor(Math.random() * 34) as HaiKindId)
+    const doraValue = Math.floor(Math.random() * 34)
+    assertHaiKindId(doraValue)
+    doraMarkers.push(doraValue)
 
     const isRiichi = false
 
     // 3. Generate Head
     let head: TehaiFuItem | null = null
     for (let retry = 0; retry < 50; retry++) {
-        const t = Math.floor(Math.random() * 34) as HaiKindId
+        const tv = Math.floor(Math.random() * 34)
+        assertHaiKindId(tv)
+        const t = tv
         if (canUse(t, 2)) {
             use(t, 2)
             const res = calculateHeadFu(t, bakaze, jikaze)

@@ -18,6 +18,16 @@
                 "nonMangan": "Non-Mangan",
                 "manganPlus": "Mangan+"
             },
+            "questionMode": "Question Mode",
+            "oya": "Dealer",
+            "ko": "Non-Dealer",
+            "start": "Start",
+            "drills": {
+                "jantouFu": "Fu Drill (Head)",
+                "mentsuFu": "Fu Drill (Meld)",
+                "tehaiFu": "Fu Drill (Hand)",
+                "machiFu": "Fu Drill (Wait)"
+            },
             "links": {
                 "cheatsheet": "View Score Cheatsheet"
             }

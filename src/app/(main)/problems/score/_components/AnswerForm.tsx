@@ -69,18 +69,6 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
       { value: 13, label: tProblems('form.options.yakuman') },
     ]
 
-    // Add missing translation keys to avoid runtime error?
-    // tProblems('form.options.mangan') might fail if I didn't add it to en.json/ja.json.
-    // I recall adding "yakuman", "double_yakuman", "triple_yakuman".
-    // I missed "mangan", "haneman", "baiman", "sanbaiman" in my write_to_file calls earlier.
-    // I should fix the dictionary files AFTER this rewrite, or safer: hardcode for now if keys missing.
-    // Actually, looking at my write_to_file content for ja.json:
-    // "options": { "han_suffix": "翻", "yakuman": "役満", ... }
-    // It DOES NOT have "mangan", "haneman" etc.
-    // I MUST UPDATE DICTIONARIES.
-    // For now I will use placeholders or English/Japanese literals to avoid runtime crash if key missing (it just returns key path).
-    // Better strategy: Use the helper function or just plain strings for now, and I will update dictionary next.
-
     return opts
   }, [simplifyMangan, tProblems])
 
@@ -142,14 +130,10 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
     // 符が必要な場合は必須
     if (isFuRequired && fu === null) return
 
-    // 役入力が必要な場合、役が選択されているかチェックできるが、
-    // 現在の仕様では空でもOKとするか、バリデーションを追加するかは要検討
-    // いいったんそのまま通す（役なし＝空配列）
-
     // 提出する役リスト（不要なら空にする）
     const submitYakus = requireYaku ? yakus : []
 
-    const submitFu = isFuRequired ? fu : (isMangan ? null : fu)
+    const submitFu = isFuRequired ? (fu ?? undefined) : (isMangan ? undefined : (fu ?? undefined))
 
     if (isKoTsumo) {
       const koScore = parseInt(scoreFromKo, 10)
@@ -237,9 +221,6 @@ export function AnswerForm({ onSubmit, disabled = false, isTsumo, isOya, require
 
       {!isFuRequired && isMangan && (
         <div className="text-sm text-slate-500 italic">
-          {/* Note: Missing specific message key in previously created JSON, using general placeholder or adding it */}
-          {/* I will use 'form.messages.fuNotRequired' if I assume I will add it, or just ignore for now? */}
-          {/* Detailed plan: I will update en.json/ja.json to include these missing keys. */}
           {tProblems('form.messages.fuNotRequired')}
         </div>
       )}
