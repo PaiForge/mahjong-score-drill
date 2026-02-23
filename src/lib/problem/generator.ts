@@ -86,7 +86,6 @@ export class ScoreDrillGenerator implements ProblemGenerator<DrillQuestion | nul
       const yakuDetails: YakuDetail[] = []
 
       yakuResult.forEach(([name, han]) => {
-        if ((name as string) === 'Haku' || (name as string) === 'Hatsu' || (name as string) === 'Chun') return
         yakuDetails.push({ name: getYakuNameJa(name as string), han })
       })
 
