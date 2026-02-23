@@ -40,7 +40,8 @@
     "eslint-config-next": "^16.1.2",
     "eslint-plugin-react-hooks": "^7.0.1",
     "tailwindcss": "^4.1.18",
-    "typescript": "~5.9.3"
+    "typescript": "~5.9.3",
+    "vitest": "^4.0.18"
   },
   "volta": {
     "node": "24.13.0"

@@ -67,13 +67,13 @@ export class ScoreReconciler {
 
         // Check dragons
         const dragons = [
-            { id: 31, name: '役牌 白' },
-            { id: 32, name: '役牌 發' },
-            { id: 33, name: '役牌 中' },
+            { id: 31, name: '役牌 白', key: 'Haku' },
+            { id: 32, name: '役牌 發', key: 'Hatsu' },
+            { id: 33, name: '役牌 中', key: 'Chun' },
         ] as const
 
-        for (const { id, name } of dragons) {
-            const hasDragon = yakuResult.some(y => y[0] === name || y[0] === name.replace('役牌 ', ''))
+        for (const { id, name, key } of dragons) {
+            const hasDragon = yakuResult.some(y => y[0] === key)
             if (!hasDragon && countHai(id as HaiKindId) >= 3) {
                 extraYakuhaiHan += 1
                 yakuDetails.push({ name, han: 1 })
