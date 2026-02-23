@@ -8,9 +8,7 @@ import {
   type ScoreResult,
 } from '@pai-forge/riichi-mahjong'
 import {
-  calculateFuDetails,
-  calculateChiitoiFuDetails,
-  type HandStructure,
+  convertScoreDetailToFuDetails,
 } from '@/lib/score/fuCalculator'
 import { ScoreLevel, getYakuNameJa, KAZEHAI } from '@/lib/core/constants'
 import { randomChoice } from '@/lib/core/random'
@@ -68,7 +66,6 @@ export class ScoreDrillGenerator implements ProblemGenerator<DrillQuestion | nul
     if (!tehaiResult) return null
 
     const { tehai, agariHai } = tehaiResult
-    const structure = 'structure' in tehaiResult ? (tehaiResult.structure as HandStructure) : null
 
     const isTsumo = Math.random() < 0.5
 
@@ -110,12 +107,9 @@ export class ScoreDrillGenerator implements ProblemGenerator<DrillQuestion | nul
         yakuDetails.push({ name: 'ドラ', han: doraHan })
       }
 
-      let fuDetails
-      if (isChiitoi) {
-        fuDetails = calculateChiitoiFuDetails()
-      } else if (structure) {
-        fuDetails = calculateFuDetails(structure, { agariHai, isTsumo, bakaze, jikaze })
-      }
+      const fuDetails = answer.detail
+        ? convertScoreDetailToFuDetails(answer.detail, { agariHai, isTsumo, bakaze, jikaze })
+        : undefined
 
       const { allowedRanges = ['non_mangan', 'mangan_plus'] } = options
 

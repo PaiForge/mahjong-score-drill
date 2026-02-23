@@ -11,6 +11,7 @@ import {
 } from '@pai-forge/riichi-mahjong'
 import type { DrillQuestion, YakuDetail } from './types'
 import { recalculateScore } from '@/lib/score/calculator'
+import { convertScoreDetailToFuDetails } from '@/lib/score/fuCalculator'
 import { countDoraInTehai } from '@/lib/core/haiNames'
 import { getYakuNameJa } from '@/lib/core/constants'
 
@@ -106,7 +107,6 @@ export function generateQuestionFromQuery(params: URLSearchParams): QueryResult 
         const uraDoraMarkers = uraDoraStr ? parseHais(uraDoraStr) : undefined
         const isOya = jikaze === HaiKind.Ton
 
-        // 点数計算（fuDetails は構造解析が必要なため Query 生成時は省略）
         const answer = calculateScoreForTehai(tehai, {
             agariHai,
             isTsumo,
@@ -156,7 +156,9 @@ export function generateQuestionFromQuery(params: URLSearchParams): QueryResult 
                 isRiichi,
                 uraDoraMarkers,
                 answer: finalAnswer,
-                fuDetails: undefined,
+                fuDetails: answer.detail
+                    ? convertScoreDetailToFuDetails(answer.detail, { agariHai, isTsumo, bakaze, jikaze })
+                    : undefined,
                 yakuDetails,
             }
         }
