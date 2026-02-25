@@ -117,7 +117,7 @@ export function generateQuestionFromQuery(params: URLSearchParams): QueryResult 
 
         if (answer.han === 0) return { type: 'error', message: 'No yaku (Yaku Nashi).' }
 
-        const yakuResult = detectYaku(tehai, agariHai, bakaze, jikaze, doraMarkers, uraDoraMarkers, isTsumo)
+        const yakuResult = detectYaku(tehai, { agariHai, bakaze, jikaze, doraMarkers, uraDoraMarkers, isTsumo })
         const yakuDetails: YakuDetail[] = yakuResult.map(([name, han]) => ({
             name: getYakuNameJa(name),
             han: han

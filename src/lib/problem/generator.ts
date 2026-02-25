@@ -82,7 +82,7 @@ export class ScoreDrillGenerator implements ProblemGenerator<DrillQuestion | nul
 
     try {
       let answer = calculateScoreForTehai(tehai, { agariHai, isTsumo, jikaze, bakaze, doraMarkers })
-      const yakuResult = detectYaku(tehai, agariHai, bakaze, jikaze, doraMarkers, undefined, isTsumo)
+      const yakuResult = detectYaku(tehai, { agariHai, bakaze, jikaze, doraMarkers, isTsumo })
       const yakuDetails: YakuDetail[] = []
 
       yakuResult.forEach(([name, han]) => {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { HaiKind, type HaiKindId, type Kazehai, type Tehai14, type ScoreResult } from '@pai-forge/riichi-mahjong'
+import { HaiKind, assertTehai14, type HaiKindId, type Kazehai, type Tehai14, type ScoreResult } from '@pai-forge/riichi-mahjong'
 import { ScoreReconciler } from './reconciler'
 import type { YakuDetail } from '../types'
 
@@ -8,7 +8,9 @@ import type { YakuDetail } from '../types'
  * closed に指定した牌を並べ、exposed は空配列にする
  */
 function createTehai(closed: HaiKindId[], exposed: Tehai14['exposed'] = []): Tehai14 {
-    return { closed, exposed }
+    const tehai = { closed, exposed }
+    assertTehai14(tehai)
+    return tehai
 }
 
 /**
@@ -26,13 +28,12 @@ function createScoreResult(han: number, fu: 30 | 40 = 30): ScoreResult {
 describe('ScoreReconciler.reconcileYakuhai', () => {
     describe('三元牌の検出', () => {
         it('發のみ（1翻）の手牌が正しく1翻と判定されること', () => {
-            // 發が3枚ある手牌（刻子）
+            // 發が3枚ある手牌（刻子）- 副露の3枚は exposed に入るため closed は11枚
             const tehai = createTehai([
                 HaiKind.ManZu1, HaiKind.ManZu2, HaiKind.ManZu3,
                 HaiKind.PinZu1, HaiKind.PinZu2, HaiKind.PinZu3,
                 HaiKind.SouZu1, HaiKind.SouZu2, HaiKind.SouZu3,
-                HaiKind.ManZu4, HaiKind.ManZu5, HaiKind.ManZu6,
-                HaiKind.Hatsu, HaiKind.Hatsu,
+                HaiKind.ManZu4, HaiKind.ManZu4,
             ] as HaiKindId[], [
                 {
                     type: 'Koutsu' as const,

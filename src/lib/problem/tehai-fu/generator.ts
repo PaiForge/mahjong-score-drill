@@ -1,6 +1,7 @@
 import {
     HaiKind,
     MentsuType,
+    assertTehai14,
     type HaiKindId,
     type Tehai14,
     type Kazehai,
@@ -151,9 +152,11 @@ export function generateTehaiFuQuestion(): TehaiFuQuestion | null {
     const allTiles = items.flatMap(i => i.tiles)
     const agariHai = allTiles[Math.floor(Math.random() * allTiles.length)]
 
+    const tehai = { closed, exposed }
+    assertTehai14(tehai)
     return {
         id: crypto.randomUUID(),
-        tehai: { closed, exposed },
+        tehai,
         context: {
             bakaze,
             jikaze,

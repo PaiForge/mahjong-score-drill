@@ -1,4 +1,4 @@
-import type { HaiKindId, Tehai14 } from '@pai-forge/riichi-mahjong'
+import { assertTehai14, type HaiKindId, type Tehai14 } from '@pai-forge/riichi-mahjong'
 import { randomChoice } from '@/lib/core/random'
 import { HaiUsageTracker } from '@/lib/core/haiTracker'
 import { generateToitsu } from '../utils/shapeGenerator'
@@ -29,12 +29,8 @@ export class ChiitoiTehaiStrategy {
         // 和了牌を決定
         const agariHai = randomChoice(closedHais)
 
-        return {
-            tehai: {
-                closed: closedHais,
-                exposed: [],
-            },
-            agariHai,
-        }
+        const tehai = { closed: closedHais, exposed: [] as const }
+        assertTehai14(tehai)
+        return { tehai, agariHai }
     }
 }
