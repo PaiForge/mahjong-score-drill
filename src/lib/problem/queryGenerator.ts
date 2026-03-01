@@ -38,23 +38,21 @@ export function generateQuestionFromQuery(params: URLSearchParams): QueryResult 
 
         // 手牌のパース (Extended MSPZ, fallback to Standard MSPZ)
         let tehai: Tehai14
-        try {
-            const parsed = parseExtendedMspz(tehaiStr)
-            if (!isTehai14(parsed)) {
+        const extResult = parseExtendedMspz(tehaiStr)
+        if (extResult.isOk()) {
+            if (!isTehai14(extResult.value)) {
                 return { type: 'error', message: `Invalid tehai: not a valid 14-tile hand.` }
             }
-            tehai = parsed
-        } catch {
-            try {
-                // 標準MSPZとして再試行 (Extended parserが標準記法に厳密で失敗する場合の救済)
-                const parsed = parseMspz(tehaiStr)
-                if (!isTehai14(parsed)) {
-                    return { type: 'error', message: `Invalid tehai: not a valid 14-tile hand.` }
-                }
-                tehai = parsed
-            } catch {
+            tehai = extResult.value
+        } else {
+            const stdResult = parseMspz(tehaiStr)
+            if (stdResult.isErr()) {
                 return { type: 'error', message: `Invalid Extended MSPZ string: ${tehaiStr}` }
             }
+            if (!isTehai14(stdResult.value)) {
+                return { type: 'error', message: `Invalid tehai: not a valid 14-tile hand.` }
+            }
+            tehai = stdResult.value
         }
 
         // ドラ表示牌リスト
@@ -86,15 +84,14 @@ export function generateQuestionFromQuery(params: URLSearchParams): QueryResult 
 
         // 和了牌のパース（parseMspz → parseExtendedMspz のフォールバック）
         let agariHai: HaiKindId | undefined
-        try {
-            const agariTehai = parseMspz(agariStr)
-            agariHai = agariTehai.closed[0]
-        } catch {
-            // 拡張構文だった場合のフォールバック（単一牌ではあまりないが）
-            try {
-                const agariTehai = parseExtendedMspz(agariStr)
-                agariHai = agariTehai.closed[0]
-            } catch {
+        const agariResult = parseMspz(agariStr)
+        if (agariResult.isOk()) {
+            agariHai = agariResult.value.closed[0]
+        } else {
+            const agariExtResult = parseExtendedMspz(agariStr)
+            if (agariExtResult.isOk()) {
+                agariHai = agariExtResult.value.closed[0]
+            } else {
                 return null
             }
         }
@@ -288,32 +285,24 @@ function tehaiToMspz(tehai: Tehai14): string {
 // ヘルパー: 牌文字列(MSPZ)をIDリストに変換
 function parseHais(str: string | null): HaiKindId[] {
     if (!str) return []
-    try {
-        // まず標準MSPZとしてパースを試みる
-        const tehai = parseMspz(str)
-        return [...tehai.closed]
-    } catch {
-        try {
-            // 失敗したら拡張MSPZとして
-            const tehai = parseExtendedMspz(str)
-            return [...tehai.closed]
-        } catch {
-            return []
-        }
-    }
+    const result = parseMspz(str)
+    if (result.isOk()) return [...result.value.closed]
+
+    const extResult = parseExtendedMspz(str)
+    if (extResult.isOk()) return [...extResult.value.closed]
+
+    return []
 }
 
 // ヘルパー: 風牌文字列をIDに変換
 function parseKazehai(str: string | null): Kazehai | undefined {
     if (!str) return undefined
-    try {
-        const tehai = parseMspz(str)
-        const id = tehai.closed[0]
-        if (id === HaiKind.Ton || id === HaiKind.Nan || id === HaiKind.Sha || id === HaiKind.Pei) {
-            return id
-        }
-    } catch {
-        // ignore
+    const result = parseMspz(str)
+    if (result.isErr()) return undefined
+
+    const id = result.value.closed[0]
+    if (id === HaiKind.Ton || id === HaiKind.Nan || id === HaiKind.Sha || id === HaiKind.Pei) {
+        return id
     }
     return undefined
 }

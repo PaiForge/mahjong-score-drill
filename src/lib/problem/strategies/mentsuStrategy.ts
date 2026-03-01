@@ -1,6 +1,6 @@
 import {
     MentsuType,
-    assertTehai14,
+    validateTehai14,
     type HaiKindId,
     type Tehai14,
     type CompletedMentsu,
@@ -105,7 +105,8 @@ export class MentsuTehaiStrategy {
         }
 
         const tehai = { closed: closedHais, exposed }
-        assertTehai14(tehai)
-        return { tehai, agariHai, structure }
+        const result = validateTehai14(tehai)
+        if (result.isErr()) return null
+        return { tehai: result.value, agariHai, structure }
     }
 }

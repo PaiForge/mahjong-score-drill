@@ -12,7 +12,6 @@ import {
 } from '@/lib/score/fuCalculator'
 import { ScoreLevel, getYakuNameJa, KAZEHAI } from '@/lib/core/constants'
 import { randomChoice } from '@/lib/core/random'
-import { assertHaiKindId } from '@/lib/core/type-guards'
 import { countDoraInTehai } from '@/lib/core/haiNames'
 
 import type { DrillQuestion, QuestionGeneratorOptions, YakuDetail } from './types'
@@ -80,6 +79,7 @@ export class ScoreDrillGenerator implements ProblemGenerator<DrillQuestion | nul
     const kantsuCount = countKantsu(tehai)
     const doraMarkers = generateDoraMarkers(kantsuCount)
 
+    // ライブラリ境界の防御: calculateScoreForTehai / detectYaku は例外を投げうるため try/catch で保護
     try {
       let answer = calculateScoreForTehai(tehai, { agariHai, isTsumo, jikaze, bakaze, doraMarkers })
       const yakuResult = detectYaku(tehai, { agariHai, bakaze, jikaze, doraMarkers, isTsumo })

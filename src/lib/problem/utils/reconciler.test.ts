@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { HaiKind, assertTehai14, type HaiKindId, type Kazehai, type Tehai14, type ScoreResult } from '@pai-forge/riichi-mahjong'
+import { HaiKind, validateTehai14, type HaiKindId, type Kazehai, type Tehai14, type ScoreResult } from '@pai-forge/riichi-mahjong'
 import { ScoreReconciler } from './reconciler'
 import type { YakuDetail } from '../types'
 
@@ -9,8 +9,9 @@ import type { YakuDetail } from '../types'
  */
 function createTehai(closed: HaiKindId[], exposed: Tehai14['exposed'] = []): Tehai14 {
     const tehai = { closed, exposed }
-    assertTehai14(tehai)
-    return tehai
+    const result = validateTehai14(tehai)
+    if (result.isErr()) throw result.error
+    return result.value
 }
 
 /**

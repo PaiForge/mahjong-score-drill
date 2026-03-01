@@ -1,4 +1,5 @@
 import { parseExtendedMspz, parseMspz, isExtendedMspz } from "@pai-forge/riichi-mahjong";
+import { ok, err, type Result } from "neverthrow";
 import type { HaiKindId } from "@pai-forge/riichi-mahjong";
 
 /**
@@ -10,17 +11,19 @@ export const TILE_NOTATION_PATTERN = /\{\{([^}]+)\}\}/g;
  * タイル記法文字列をHaiKindIdの配列にパースする
  *
  * @param notation - タイル記法文字列（例: "1222m"）
- * @returns パースされたHaiKindIdの配列
- * @throws パースに失敗した場合はエラーをスロー
+ * @returns パースされたHaiKindIdの配列、またはパースエラー
  */
-export function parseTileNotation(notation: string): readonly HaiKindId[] {
+export function parseTileNotation(notation: string): Result<readonly HaiKindId[], Error> {
     if (isExtendedMspz(notation) || notation.includes("[")) {
-        const tehai = parseExtendedMspz(notation);
+        const result = parseExtendedMspz(notation);
+        if (result.isErr()) return err(result.error);
+        const tehai = result.value;
         const exposedTiles = tehai.exposed.flatMap((f) => f.hais);
-        return [...tehai.closed, ...exposedTiles];
+        return ok([...tehai.closed, ...exposedTiles]);
     } else {
-        const tehai = parseMspz(notation);
-        return tehai.closed;
+        const result = parseMspz(notation);
+        if (result.isErr()) return err(result.error);
+        return ok(result.value.closed);
     }
 }
 

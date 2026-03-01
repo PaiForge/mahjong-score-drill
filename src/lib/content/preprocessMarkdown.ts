@@ -31,14 +31,13 @@ export function preprocessMarkdownWithTiles(
             const id = `<<<TILE_${counter}>>>`;
             counter++;
 
-            try {
-                const tiles = parseTileNotation(notation);
-                tilesMap.set(id, { id, notation, tiles });
-                return id;
-            } catch (error) {
-                console.warn(`Failed to parse tile notation: ${notation}`, error);
+            const tileResult = parseTileNotation(notation);
+            if (tileResult.isErr()) {
+                console.warn(`Failed to parse tile notation: ${notation}`, tileResult.error);
                 return match; // パース失敗時は元のまま
             }
+            tilesMap.set(id, { id, notation, tiles: tileResult.value });
+            return id;
         },
     );
 

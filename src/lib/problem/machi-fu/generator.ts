@@ -1,20 +1,27 @@
 import { HaiKind, type HaiKindId } from '@pai-forge/riichi-mahjong'
 import type { MachiFuQuestion } from './types'
 import { randomInt, randomChoice } from '@/lib/core/random'
-import { assertHaiKindId } from '@/lib/core/type-guards'
+import { validateHaiKindId } from '@/lib/core/type-guards'
 import type { ProblemGenerator } from '../interfaces'
 
 export class MachiFuGenerator implements ProblemGenerator<MachiFuQuestion> {
     generate(): MachiFuQuestion {
+        const patterns = [
+            () => this.createRyanmen(),
+            () => this.createPenchan(),
+            () => this.createKanchan(),
+            () => this.createTanki(),
+            () => this.createShanpon(),
+        ]
         const r = Math.random()
-        if (r < 0.2) return this.createRyanmen()
-        if (r < 0.4) return this.createPenchan()
-        if (r < 0.6) return this.createKanchan()
-        if (r < 0.8) return this.createTanki()
-        return this.createShanpon()
+        const index = r < 0.2 ? 0 : r < 0.4 ? 1 : r < 0.6 ? 2 : r < 0.8 ? 3 : 4
+        const result = patterns[index]()
+        // 万一バリデーション失敗した場合は単騎待ちにフォールバック
+        if (result) return result
+        return this.createTanki() ?? this.createShanpon()!
     }
 
-    private createRyanmen(): MachiFuQuestion {
+    private createRyanmen(): MachiFuQuestion | null {
         const suit = randomChoice(['m', 'p', 's'])
         const start = randomInt(2, 7) // 2 means 2-3, waiting 1-4. 7 means 7-8, waiting 6-9.
 
@@ -22,21 +29,18 @@ export class MachiFuGenerator implements ProblemGenerator<MachiFuQuestion> {
         if (suit === 'p') base = HaiKind.PinZu1
         if (suit === 's') base = HaiKind.SouZu1
 
-        const t1 = (base + start - 1) as HaiKindId
-        const t2 = (base + start) as HaiKindId
-        const wait1 = (base + start - 2) as HaiKindId
-        const wait2 = (base + start + 1) as HaiKindId
+        const t1Result = validateHaiKindId(base + start - 1)
+        const t2Result = validateHaiKindId(base + start)
+        const wait1Result = validateHaiKindId(base + start - 2)
+        const wait2Result = validateHaiKindId(base + start + 1)
 
-        assertHaiKindId(t1)
-        assertHaiKindId(t2)
-        assertHaiKindId(wait1)
-        assertHaiKindId(wait2)
+        if (t1Result.isErr() || t2Result.isErr() || wait1Result.isErr() || wait2Result.isErr()) return null
 
-        const agari = Math.random() < 0.5 ? wait1 : wait2
+        const agari = Math.random() < 0.5 ? wait1Result.value : wait2Result.value
 
         return {
             id: crypto.randomUUID(),
-            tiles: [t1, t2],
+            tiles: [t1Result.value, t2Result.value],
             agariHai: agari,
             answer: 0,
             shapeName: '両面待ち',
@@ -44,7 +48,7 @@ export class MachiFuGenerator implements ProblemGenerator<MachiFuQuestion> {
         }
     }
 
-    private createPenchan(): MachiFuQuestion {
+    private createPenchan(): MachiFuQuestion | null {
         const suit = randomChoice(['m', 'p', 's'])
         const isLow = Math.random() < 0.5 // 12 wait 3
 
@@ -52,32 +56,23 @@ export class MachiFuGenerator implements ProblemGenerator<MachiFuQuestion> {
         if (suit === 'p') base = HaiKind.PinZu1
         if (suit === 's') base = HaiKind.SouZu1
 
-        let t1: HaiKindId, t2: HaiKindId, agari: HaiKindId
+        const t1Result = validateHaiKindId(isLow ? base : base + 7)
+        const t2Result = validateHaiKindId(isLow ? base + 1 : base + 8)
+        const agariResult = validateHaiKindId(isLow ? base + 2 : base + 6)
 
-        if (isLow) {
-            t1 = base
-            t2 = (base + 1) as HaiKindId
-            agari = (base + 2) as HaiKindId
-        } else {
-            t1 = (base + 7) as HaiKindId
-            t2 = (base + 8) as HaiKindId
-            agari = (base + 6) as HaiKindId
-        }
-        assertHaiKindId(t1)
-        assertHaiKindId(t2)
-        assertHaiKindId(agari)
+        if (t1Result.isErr() || t2Result.isErr() || agariResult.isErr()) return null
 
         return {
             id: crypto.randomUUID(),
-            tiles: [t1, t2],
-            agariHai: agari,
+            tiles: [t1Result.value, t2Result.value],
+            agariHai: agariResult.value,
             answer: 2,
             shapeName: 'ペンチャン待ち',
             explanation: 'ペンチャン待ちは2符です'
         }
     }
 
-    private createKanchan(): MachiFuQuestion {
+    private createKanchan(): MachiFuQuestion | null {
         const suit = randomChoice(['m', 'p', 's'])
         const center = randomInt(2, 8)
 
@@ -85,53 +80,52 @@ export class MachiFuGenerator implements ProblemGenerator<MachiFuQuestion> {
         if (suit === 'p') base = HaiKind.PinZu1
         if (suit === 's') base = HaiKind.SouZu1
 
-        const agari = (base + center - 1) as HaiKindId
-        const t1 = (base + center - 2) as HaiKindId
-        const t2 = (base + center) as HaiKindId
+        const agariResult = validateHaiKindId(base + center - 1)
+        const t1Result = validateHaiKindId(base + center - 2)
+        const t2Result = validateHaiKindId(base + center)
 
-        assertHaiKindId(agari)
-        assertHaiKindId(t1)
-        assertHaiKindId(t2)
+        if (agariResult.isErr() || t1Result.isErr() || t2Result.isErr()) return null
 
         return {
             id: crypto.randomUUID(),
-            tiles: [t1, t2],
-            agariHai: agari,
+            tiles: [t1Result.value, t2Result.value],
+            agariHai: agariResult.value,
             answer: 2,
             shapeName: 'カンチャン待ち',
             explanation: 'カンチャン待ちは2符です'
         }
     }
 
-    private createTanki(): MachiFuQuestion {
-        const tile = Math.floor(Math.random() * 34) as HaiKindId
-        assertHaiKindId(tile)
+    private createTanki(): MachiFuQuestion | null {
+        const tileResult = validateHaiKindId(Math.floor(Math.random() * 34))
+        if (tileResult.isErr()) return null
 
         return {
             id: crypto.randomUUID(),
-            tiles: [tile],
-            agariHai: tile,
+            tiles: [tileResult.value],
+            agariHai: tileResult.value,
             answer: 2,
             shapeName: '単騎待ち',
             explanation: '単騎待ちは2符です'
         }
     }
 
-    private createShanpon(): MachiFuQuestion {
-        const t1Base = Math.floor(Math.random() * 34) as HaiKindId
-        assertHaiKindId(t1Base)
+    private createShanpon(): MachiFuQuestion | null {
+        const t1Result = validateHaiKindId(Math.floor(Math.random() * 34))
+        if (t1Result.isErr()) return null
 
-        let t2Base = Math.floor(Math.random() * 34) as HaiKindId
-        while (t1Base === t2Base) {
-            t2Base = Math.floor(Math.random() * 34) as HaiKindId
+        let t2Value = Math.floor(Math.random() * 34)
+        while (t1Result.value === t2Value) {
+            t2Value = Math.floor(Math.random() * 34)
         }
-        assertHaiKindId(t2Base)
+        const t2Result = validateHaiKindId(t2Value)
+        if (t2Result.isErr()) return null
 
-        const agari = Math.random() < 0.5 ? t1Base : t2Base
+        const agari = Math.random() < 0.5 ? t1Result.value : t2Result.value
 
         return {
             id: crypto.randomUUID(),
-            tiles: [t1Base, t1Base, t2Base, t2Base],
+            tiles: [t1Result.value, t1Result.value, t2Result.value, t2Result.value],
             agariHai: agari,
             answer: 0,
             shapeName: 'シャンポン待ち',
