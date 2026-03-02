@@ -14,20 +14,25 @@ import { HaiUsageTracker } from '@/lib/core/haiTracker'
 export class MentsuFuGenerator implements ProblemGenerator<MentsuFuQuestion> {
     generate(): MentsuFuQuestion {
         const r = Math.random()
-        if (r < 0.2) return this.createShuntsu()
+        if (r < 0.2) {
+            const result = this.createShuntsu()
+            if (result) return result
+            // 順子生成失敗時は刻子にフォールバック
+            return this.createKoutsu()
+        }
         if (r < 0.7) return this.createKoutsu()
         return this.createKantsu()
     }
 
-    private createShuntsu(): MentsuFuQuestion {
+    private createShuntsu(): MentsuFuQuestion | null {
         const tracker = new HaiUsageTracker()
         const isFuro = Math.random() < 0.5
 
         // Use shared utility
         const mentsu = generateShuntsu(tracker, isFuro)
 
-        // Fallback safety (should not happen with empty tracker)
-        if (!mentsu) throw new Error('Failed to generate Shuntsu')
+        // 空の tracker で生成失敗は通常起きないが、万一の場合は null を返す
+        if (!mentsu) return null
 
         return {
             id: crypto.randomUUID(),

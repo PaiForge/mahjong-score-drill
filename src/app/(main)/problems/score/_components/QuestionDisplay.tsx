@@ -106,18 +106,22 @@ export function QuestionDisplay({ question }: Props) {
           <div>
             <div className="text-slate-500 text-xs mb-1">{tProblems('question.dora')}</div>
             <div className="flex gap-1">
-              {doraMarkers.map((marker, index) => (
-                <Hai key={index} hai={getDoraFromIndicator(marker)} size={haiSize} />
-              ))}
+              {doraMarkers.map((marker, index) => {
+                const result = getDoraFromIndicator(marker)
+                if (result.isErr()) return null
+                return <Hai key={index} hai={result.value} size={haiSize} />
+              })}
             </div>
           </div>
           {question.isRiichi && question.uraDoraMarkers && (
             <div className="border-l border-slate-300 pl-4">
               <div className="text-slate-500 text-xs mb-1">{tProblems('question.uraDora')}</div>
               <div className="flex gap-1">
-                {question.uraDoraMarkers.map((marker, index) => (
-                  <Hai key={`ura-${index}`} hai={getDoraFromIndicator(marker)} size={haiSize} />
-                ))}
+                {question.uraDoraMarkers.map((marker, index) => {
+                  const result = getDoraFromIndicator(marker)
+                  if (result.isErr()) return null
+                  return <Hai key={`ura-${index}`} hai={result.value} size={haiSize} />
+                })}
               </div>
             </div>
           )}

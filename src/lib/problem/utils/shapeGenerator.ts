@@ -9,7 +9,7 @@ import {
     type Kantsu
 } from '@pai-forge/riichi-mahjong'
 import { randomInt, randomChoice } from '@/lib/core/random'
-import { assertHaiKindId } from '@/lib/core/type-guards'
+import { validateHaiKindId } from '@/lib/core/type-guards'
 import type { HaiUsageTracker } from '@/lib/core/haiTracker'
 
 /** 風牌の配列 */
@@ -32,9 +32,8 @@ export function randomSimple(): HaiKindId {
     let base: HaiKindId = HaiKind.ManZu1
     if (suit === 'p') base = HaiKind.PinZu1
     if (suit === 's') base = HaiKind.SouZu1
-    const result = base + num - 1
-    assertHaiKindId(result)
-    return result
+    // 中張牌の範囲計算は常に有効な値を返すが、型安全のため検証する
+    return validateHaiKindId(base + num - 1).unwrapOr(HaiKind.ManZu5)
 }
 
 /**
@@ -78,13 +77,15 @@ export function generateShuntsu(
     if (bases.length === 0) return null
 
     const startValue = randomChoice(bases)
-    assertHaiKindId(startValue)
-    const start = startValue
+    const startResult = validateHaiKindId(startValue)
+    const h2Result = validateHaiKindId(startValue + 1)
+    const h3Result = validateHaiKindId(startValue + 2)
 
-    const h2 = start + 1
-    const h3 = start + 2
-    assertHaiKindId(h2)
-    assertHaiKindId(h3)
+    if (startResult.isErr() || h2Result.isErr() || h3Result.isErr()) return null
+
+    const start = startResult.value
+    const h2 = h2Result.value
+    const h3 = h3Result.value
 
     tracker.use(start)
     tracker.use(h2)
